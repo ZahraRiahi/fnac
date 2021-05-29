@@ -5,7 +5,7 @@ import ir.demisco.cloud.basic.model.entity.org.Organization;
 public class FinancialCodingTypeDto {
     private Long id;
     private String description;
-    private Organization organization;
+    private long organizationId;
 
     public Long getId() {
         return id;
@@ -23,12 +23,12 @@ public class FinancialCodingTypeDto {
         this.description = description;
     }
 
-    public Organization getOrganization() {
-        return organization;
+    public long getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public void setOrganizationId(long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public static Builder builder() {
@@ -56,8 +56,8 @@ public class FinancialCodingTypeDto {
             return this;
         }
 
-        public Builder organization(Organization organization) {
-            financialCodingTypeDto.setOrganization(organization);
+        public Builder organization(Long organizationId) {
+            financialCodingTypeDto.setOrganizationId(organizationId);
             return this;
         }
 

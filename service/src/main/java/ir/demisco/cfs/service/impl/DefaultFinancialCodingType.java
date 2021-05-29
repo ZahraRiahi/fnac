@@ -50,10 +50,11 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
         financialCodingType = financialCodingTypeRepository.save(financialCodingType);
         return convertFinancialPeriodToDto(financialCodingType);
     }
+
     private FinancialCodingTypeDto convertFinancialPeriodToDto(FinancialCodingType financialCodingType) {
-        return FinancialCodingTypeDto.builder()
+        return FinancialCodingTypeDto.builder().id(financialCodingType.getId())
                 .description(financialCodingType.getDescription())
-.organization(financialCodingType.getOrganization())
+                .organization(financialCodingType.getOrganization().getId())
                 .build();
 
     }
