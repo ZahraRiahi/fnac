@@ -31,4 +31,10 @@ public class FinancialCodingTypeController {
             return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
         }
     }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteFinancialCodingType(@PathVariable("id") Long FinancialCodingTypeId) {
+        return ResponseEntity.ok(financialCodingTypeService.deleteFinancialCodingTypeById(FinancialCodingTypeId));
+    }
+
 }

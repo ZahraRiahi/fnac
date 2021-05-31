@@ -10,4 +10,6 @@ public interface FinancialCodingTypeService {
     Long save(FinancialCodingTypeDto financialCodingTypeDto);
 
     FinancialCodingTypeDto update(FinancialCodingTypeDto financialCodingTypeDto);
+
+    Boolean deleteFinancialCodingTypeById(Long financialCodingType);
 }
