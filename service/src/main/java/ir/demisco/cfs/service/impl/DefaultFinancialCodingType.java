@@ -51,6 +51,13 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
         return convertFinancialPeriodToDto(financialCodingType);
     }
 
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean deleteFinancialCodingTypeById(Long financialCodingType) {
+        financialCodingTypeRepository.delete(financialCodingTypeRepository.findById(financialCodingType).orElseThrow(() -> new RuleException("کدینگ حساب با این شناسه وجود ندارد.")));
+        return true;
+    }
+
     private FinancialCodingTypeDto convertFinancialPeriodToDto(FinancialCodingType financialCodingType) {
         return FinancialCodingTypeDto.builder().id(financialCodingType.getId())
                 .description(financialCodingType.getDescription())
