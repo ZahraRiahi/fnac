@@ -54,7 +54,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteFinancialCodingTypeById(Long financialCodingType) {
-        financialCodingTypeRepository.delete(financialCodingTypeRepository.findById(financialCodingType).orElseThrow(() -> new RuleException("کدینگ حساب با این شناسه وجود ندارد.")));
+          financialCodingTypeRepository.delete(financialCodingTypeRepository.findById(financialCodingType).orElseThrow(() -> new RuleException("کدینگ حساب با این شناسه وجود ندارد.")));
         return true;
     }
 
