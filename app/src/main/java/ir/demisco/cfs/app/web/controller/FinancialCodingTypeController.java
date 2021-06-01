@@ -2,6 +2,8 @@ package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
+import ir.demisco.cloud.core.middle.exception.RuleException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,13 @@ public class FinancialCodingTypeController {
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteFinancialCodingType(@PathVariable("id") Long FinancialCodingTypeId) {
-        return ResponseEntity.ok(financialCodingTypeService.deleteFinancialCodingTypeById(FinancialCodingTypeId));
+        boolean result;
+        try {
+            result = financialCodingTypeService.deleteFinancialCodingTypeById(FinancialCodingTypeId);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+        }
+        return ResponseEntity.ok(result);
     }
 
 }
