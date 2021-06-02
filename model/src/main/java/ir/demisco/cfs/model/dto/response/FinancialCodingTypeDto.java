@@ -1,7 +1,5 @@
 package ir.demisco.cfs.model.dto.response;
 
-import ir.demisco.cloud.basic.model.entity.org.Organization;
-
 public class FinancialCodingTypeDto {
     private Long id;
     private String description;
