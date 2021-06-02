@@ -1,6 +1,5 @@
 package ir.demisco.cfs.model.dto.response;
 
-
 public class FinancialAccountStructureDto {
     private Long id;
     private Long sequence;
@@ -9,6 +8,14 @@ public class FinancialAccountStructureDto {
     private Long sumDigit;
     private Long financialCodingTypeId;
     private String color;
+
+    public FinancialAccountStructureDto(Long id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    public FinancialAccountStructureDto() {
+    }
 
     public Long getId() {
         return id;
