@@ -93,6 +93,14 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         return convertFinancialAccountStructureToDto(financialAccountStructure);
     }
 
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean deleteFinancialAccountStructureById(Long financialAccountStructure) {
+        financialAccountStructureRepository.delete(financialAccountStructureRepository.findById(financialAccountStructure).orElseThrow(() -> new RuleException("ساختار حساب با این شناسه وجود ندارد.")));
+
+        return true;
+    }
+
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {
         return FinancialAccountStructureDto.builder().description(financialAccountStructure.getDescription())
                 .sequence(financialAccountStructure.getSequence())
