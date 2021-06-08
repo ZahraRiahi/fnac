@@ -3,11 +3,14 @@ package ir.demisco.cfs.app.web.controller;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
+import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -38,4 +41,16 @@ public class FinancialAccountStructureController {
             return ResponseEntity.ok(financialAccountStructureService.update(financialAccountStructureDto));
         }
     }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Boolean> financialAccountStructure(@PathVariable("id") Long FinancialAccountStructureId) {
+        boolean result;
+        try {
+            result = financialAccountStructureService.deleteFinancialAccountStructureById(FinancialAccountStructureId);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+        }
+        return ResponseEntity.ok(result);
+    }
+
 }
