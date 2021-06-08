@@ -3,6 +3,7 @@ package ir.demisco.cfs.service.impl;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
+import ir.demisco.cfs.model.entity.FinancialCodingType;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
@@ -58,26 +59,37 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence());
+        if (financialAccountStructureCount > 0) {
+            throw new RuleException("ساختار حساب با این sequence وجود دارد.");
+        }
         FinancialAccountStructure financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
         financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
         financialAccountStructure.setDigitCount(financialAccountStructureDto.getDigitCount());
         financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructure.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("test")));
+        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
         return financialAccountStructureRepository.save(financialAccountStructure).getId();
     }
 
     @Override
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
-//        validationUpdate(financialPeriodDto, "start");
         FinancialAccountStructure financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
+        if (financialAccountStructureDto.getSequence() <= 0) {
+            throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
+        }
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence());
+        if (financialAccountStructureCount > 0) {
+            throw new RuleException("ساختار حساب با این sequence وجود دارد.");
+        }
         financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
         financialAccountStructure.setDigitCount(financialAccountStructureDto.getDigitCount());
         financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructure.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("test")));
+        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructure = financialAccountStructureRepository.save(financialAccountStructure);
         return convertFinancialAccountStructureToDto(financialAccountStructure);
     }
 
