@@ -16,4 +16,5 @@ public interface FinancialAccountStructureService {
 
     FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto);
 
+    Boolean deleteFinancialAccountStructureById(Long financialAccountStructure);
 }
