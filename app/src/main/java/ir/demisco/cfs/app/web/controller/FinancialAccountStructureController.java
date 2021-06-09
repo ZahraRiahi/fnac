@@ -9,8 +9,6 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
