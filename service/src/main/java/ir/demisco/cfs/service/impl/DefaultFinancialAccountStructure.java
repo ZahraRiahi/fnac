@@ -3,7 +3,6 @@ package ir.demisco.cfs.service.impl;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
-import ir.demisco.cfs.model.entity.FinancialCodingType;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
