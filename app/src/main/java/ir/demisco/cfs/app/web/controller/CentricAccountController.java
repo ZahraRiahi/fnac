@@ -1,13 +1,14 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.response.CentricAccountDto;
+import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api-centricAccount")
@@ -21,6 +22,12 @@ public class CentricAccountController {
     @PostMapping("/list")
     public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
+    }
+
+    @PostMapping("/Get/{id}")
+    public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@PathVariable("id") Long centricAccountTypeId) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, 1L));
+
     }
 
 }
