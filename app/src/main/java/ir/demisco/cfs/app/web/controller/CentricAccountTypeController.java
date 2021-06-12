@@ -12,6 +12,7 @@ import java.util.List;
 public class CentricAccountTypeController {
     private final CentricAccountTypeService centricAccountTypeService;
 
+
     public CentricAccountTypeController(CentricAccountTypeService centricAccountTypeService) {
         this.centricAccountTypeService = centricAccountTypeService;
     }
@@ -20,4 +21,5 @@ public class CentricAccountTypeController {
     public ResponseEntity<List<CentricAccountTypeResponse>> responseEntity() {
         return ResponseEntity.ok(centricAccountTypeService.getCentricAccountType());
     }
+
 }
