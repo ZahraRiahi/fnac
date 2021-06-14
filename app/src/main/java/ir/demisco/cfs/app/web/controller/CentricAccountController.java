@@ -1,5 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
 import ir.demisco.cfs.service.api.CentricAccountService;
@@ -30,4 +31,14 @@ public class CentricAccountController {
 
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
+        if (centricAccountRequest.getId() == null) {
+            CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
+            return ResponseEntity.ok(centricAccountDto);
+        } else {
+            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
+        }
+    }
 }
+
