@@ -16,7 +16,7 @@ public interface CentricAccountService {
 
     CentricAccountDto save(CentricAccountRequest centricAccountRequest);
 
-    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
+//    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
 
 
 }
