@@ -8,7 +8,6 @@ import ir.demisco.cfs.model.entity.CentricPersonRole;
 import ir.demisco.cfs.model.entity.PersonRoleType;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.repository.*;
-import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
@@ -26,19 +25,19 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final CentricAccountRepository centricAccountRepository;
     private final OrganizationRepository organizationRepository;
     private final PersonRepository personRepository;
-    private final CentricAccountTypeRepository centricAccountTypeRepository;
     private final PersonRoleTypeRepository personRoleTypeRepository;
     private final CentricPersonRoleRepository centricPersonRoleRepository;
+    private final CentricAccountTypeRepository centricAccountTypeRepository;
 
-    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, CentricAccountTypeRepository centricAccountTypeRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, CentricAccountTypeRepository centricAccountTypeRepository1, CentricPersonRoleRepository centricPersonRoleRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1) {
+    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, CentricAccountTypeRepository centricAccountTypeRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, CentricAccountTypeRepository centricAccountTypeRepository1, CentricPersonRoleRepository centricPersonRoleRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2) {
         this.gridFilterService = gridFilterService;
         this.financialPeriodListGridProvider = financialPeriodListGridProvider;
         this.centricAccountRepository = centricAccountRepository;
         this.organizationRepository = organizationRepository;
         this.personRepository = personRepository;
-        this.centricAccountTypeRepository = centricAccountTypeRepository1;
         this.personRoleTypeRepository = personRoleTypeRepository;
         this.centricPersonRoleRepository = centricPersonRoleRepository1;
+        this.centricAccountTypeRepository = centricAccountTypeRepository2;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public CentricAccountDto save(CentricAccountRequest centricAccountRequest) {
         CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId() == null ? 0L : centricAccountRequest.getId()).orElse(new CentricAccount());
-        if (centricAccountRequest.getCentricAccountTypeId().equals(1L)) {
+        if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
             centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
             CentricPersonRole centricPersonRole = new CentricPersonRole();
             centricPersonRole.setCentricAccount(centricAccount);
@@ -72,21 +71,21 @@ public class DefaultCentricAccount implements CentricAccountService {
         return convertCentricAccountToDto(centricAccount);
     }
 
-    @Override
-    @Transactional(rollbackOn = Throwable.class)
-    public CentricAccountDto update(CentricAccountRequest centricAccountRequest) {
-        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی کد تمرکز الزامی میباشد."));
-        if (centricAccountRequest.getCentricAccountTypeId().equals(1L)) {
-            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-            CentricPersonRole centricPersonRole = new CentricPersonRole();
-            centricPersonRole.setCentricAccount(centricAccount);
-            centricPersonRole.setPersonRoleType(personRoleTypeRepository.findById(centricAccountRequest.getPeraonRoleTypeId() == null ? 0L : centricAccountRequest.getPeraonRoleTypeId()).orElse(new PersonRoleType()));
-            centricPersonRoleRepository.save(centricPersonRole);
-        } else {
-            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-        }
-        return convertCentricAccountToDto(centricAccount);
-    }
+//    @Override
+//    @Transactional(rollbackOn = Throwable.class)
+//    public CentricAccountDto update(CentricAccountRequest centricAccountRequest) {
+//        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی کد تمرکز الزامی میباشد."));
+//        if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
+//            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
+//            CentricPersonRole centricPersonRole = new CentricPersonRole();
+//            centricPersonRole.setCentricAccount(centricAccount);
+//            centricPersonRole.setPersonRoleType(personRoleTypeRepository.findById(centricAccountRequest.getPeraonRoleTypeId() == null ? 0L : centricAccountRequest.getPeraonRoleTypeId()).orElse(new PersonRoleType()));
+//            centricPersonRoleRepository.save(centricPersonRole);
+//        } else {
+//            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
+//        }
+//        return convertCentricAccountToDto(centricAccount);
+//    }
 
     private CentricAccountDto convertCentricAccountToDto(CentricAccount centricAccount) {
         return CentricAccountDto.builder()
@@ -107,7 +106,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     private CentricAccount saveCentricAccount(CentricAccount centricAccount, CentricAccountRequest centricAccountRequest) {
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
-        centricAccount.setCentricAccountType(centricAccountTypeRepository.findById(centricAccountRequest.getCentricAccountTypeId()).orElseThrow(() -> new RuleException("test")));
+        centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
         centricAccount.setOrganization(organizationRepository.getOne(1L));
         centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());

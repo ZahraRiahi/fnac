@@ -37,7 +37,8 @@ public class CentricAccountController {
             CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
             return ResponseEntity.ok(centricAccountDto);
         } else {
-            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
+            return null;
+//            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
         }
     }
 }
