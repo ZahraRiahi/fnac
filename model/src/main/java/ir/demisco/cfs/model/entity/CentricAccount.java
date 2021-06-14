@@ -1,5 +1,6 @@
 package ir.demisco.cfs.model.entity;
 
+import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import ir.demisco.cloud.basic.model.entity.org.Organization;
 import ir.demisco.cloud.basic.model.entity.prs.Person;
 
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "centric_account", schema = "fnac")
-public class CentricAccount {
+public class CentricAccount extends AuditModel<Long> {
     private Long id;
     private String code;
     private String name;
@@ -21,6 +22,8 @@ public class CentricAccount {
     private Person person;
 
     @Id
+    @SequenceGenerator(schema = "fnac", name = "centric_account_generator", sequenceName = "sq_centric_account", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "centric_account_generator")
     public Long getId() {
         return id;
     }

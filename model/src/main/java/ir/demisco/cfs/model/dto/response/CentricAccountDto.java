@@ -12,6 +12,7 @@ public class CentricAccountDto {
     private Long personId;
     private String personName;
     private Long activeFlag;
+    private String centricAccountTypeCode;
 
     public Long getId() {
         return id;
@@ -100,9 +101,19 @@ public class CentricAccountDto {
     public void setActiveFlag(Long activeFlag) {
         this.activeFlag = activeFlag;
     }
+
+    public String getCentricAccountTypeCode() {
+        return centricAccountTypeCode;
+    }
+
+    public void setCentricAccountTypeCode(String centricAccountTypeCode) {
+        this.centricAccountTypeCode = centricAccountTypeCode;
+    }
+
     public static CentricAccountDto.Builder builder() {
         return new CentricAccountDto.Builder();
     }
+
     public static final class Builder {
         private CentricAccountDto centricAccountDto;
 
@@ -166,6 +177,11 @@ public class CentricAccountDto {
 
         public Builder activeFlag(Long activeFlag) {
             centricAccountDto.setActiveFlag(activeFlag);
+            return this;
+        }
+
+        public Builder centricAccountTypeCode(String centricAccountTypeCode) {
+            centricAccountDto.setCentricAccountTypeCode(centricAccountTypeCode);
             return this;
         }
 
