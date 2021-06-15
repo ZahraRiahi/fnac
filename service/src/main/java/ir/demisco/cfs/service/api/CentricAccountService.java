@@ -3,7 +3,6 @@ package ir.demisco.cfs.service.api;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 
