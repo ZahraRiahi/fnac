@@ -7,6 +7,7 @@ import ir.demisco.cloud.basic.model.entity.prs.Person;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "centric_account", schema = "fnac")
@@ -20,6 +21,7 @@ public class CentricAccount extends AuditModel<Long> {
     private CentricAccountType centricAccountType;
     private Organization organization;
     private Person person;
+    private List<CentricPersonRole> centricPersonRoleList;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "centric_account_generator", sequenceName = "sq_centric_account", allocationSize = 50)
@@ -105,5 +107,14 @@ public class CentricAccount extends AuditModel<Long> {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "centricAccount")
+    public List<CentricPersonRole> getCentricPersonRoleList() {
+        return centricPersonRoleList;
+    }
+
+    public void setCentricPersonRoleList(List<CentricPersonRole> centricPersonRoleList) {
+        this.centricPersonRoleList = centricPersonRoleList;
     }
 }
