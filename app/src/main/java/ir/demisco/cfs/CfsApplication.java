@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Rasool Aghajani - 4/27/2021
  */
 @EnableFeignClients
-@SpringBootApplication(scanBasePackages = {"ir.demisco.cloud.core.security","ir.demisco.cloud.basic","ir.demisco.cloud.core.middle","ir.demisco.cfs.*"})
+@SpringBootApplication(scanBasePackages = {"ir.demisco.cloud.core.security","ir.demisco.cloud.basic","ir.demisco.cloud.core.middle","ir.demisco.cfs.*","ir.demisco.cloud.core.middle.model.dto"})
 @EntityScan(basePackages = {"ir.demisco.cfs.model","ir.demisco.cloud.basic.model"})
 @EnableJpaRepositories(basePackages = {"ir.demisco.cfs.service.repository"})
 public class CfsApplication {

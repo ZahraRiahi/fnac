@@ -1,8 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
-
 import ir.demisco.cfs.model.dto.response.PersonRoleTypeDto;
-import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.api.PersonRoleTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api-person_role_type")
 public class PersonRoleTypeController {
-private  final PersonRoleTypeService personRoleTypeService;
+    private final PersonRoleTypeService personRoleTypeService;
 
     public PersonRoleTypeController(PersonRoleTypeService personRoleTypeService) {
         this.personRoleTypeService = personRoleTypeService;
