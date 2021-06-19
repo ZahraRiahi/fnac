@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api-person")
+@RequestMapping("/api-centric_person_role")
 public class CentricPersonRoleController {
     private final CentricPersonRoleService centricPersonRoleService;
 
     public CentricPersonRoleController(CentricPersonRoleService centricPersonRoleService) {
         this.centricPersonRoleService = centricPersonRoleService;
     }
+
     @PostMapping("/list")
     public ResponseEntity<List<CentricPersonRoleResponce>> responseEntityCentricPersonRole(@RequestBody CentricPersonRoleRequest centricPersonRoleRequest) {
         return ResponseEntity.ok(centricPersonRoleService.getCentricPersonRoleByOrganAndPersonRoleTypeAndPersonId(centricPersonRoleRequest));
