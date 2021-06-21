@@ -11,7 +11,7 @@ public class CentricAccountDto {
     private Long organizationId;
     private Long personId;
     private String personName;
-    private Long activeFlag;
+    private Boolean activeFlag;
 
     public Long getId() {
         return id;
@@ -93,11 +93,11 @@ public class CentricAccountDto {
         this.personName = personName;
     }
 
-    public Long getActiveFlag() {
+    public Boolean getActiveFlag() {
         return activeFlag;
     }
 
-    public void setActiveFlag(Long activeFlag) {
+    public void setActiveFlag(Boolean activeFlag) {
         this.activeFlag = activeFlag;
     }
 
@@ -166,7 +166,7 @@ public class CentricAccountDto {
             return this;
         }
 
-        public Builder activeFlag(Long activeFlag) {
+        public Builder activeFlag(Boolean activeFlag) {
             centricAccountDto.setActiveFlag(activeFlag);
             return this;
         }

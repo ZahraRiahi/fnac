@@ -15,7 +15,7 @@ public class CentricAccount extends AuditModel<Long> {
     private Long id;
     private String code;
     private String name;
-    private Long activeFlag;
+    private Boolean activeFlag;
     private String abbreviationName;
     private String latinName;
     private CentricAccountType centricAccountType;
@@ -53,11 +53,11 @@ public class CentricAccount extends AuditModel<Long> {
     }
 
     @Column(name = "ACTIVE_FLAG")
-    public Long getActiveFlag() {
+    public Boolean getActiveFlag() {
         return activeFlag;
     }
 
-    public void setActiveFlag(Long activeFlag) {
+    public void setActiveFlag(Boolean activeFlag) {
         this.activeFlag = activeFlag;
     }
 

@@ -7,7 +7,7 @@ public class CentricAccountRequest {
     private String centricAccountTypeCode;
     private Long organizationId;
     private Long personId;
-    private Long activeFlag;
+    private Boolean activeFlag;
     private Long peraonRoleTypeId;
 
     public Long getId() {
@@ -58,11 +58,11 @@ public class CentricAccountRequest {
         this.personId = personId;
     }
 
-    public Long getActiveFlag() {
+    public Boolean getActiveFlag() {
         return activeFlag;
     }
 
-    public void setActiveFlag(Long activeFlag) {
+    public void setActiveFlag(Boolean activeFlag) {
         this.activeFlag = activeFlag;
     }
 
