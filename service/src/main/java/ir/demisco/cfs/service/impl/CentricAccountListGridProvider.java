@@ -54,7 +54,7 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                     .organizationId((Long) array[7])
                     .personId((Long) array[8])
                     .personName((String) array[9])
-                    .activeFlag((Long) array[10])
+                    .activeFlag((Boolean) array[10])
                     .build();
         }).collect(Collectors.toList());
     }
