@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.impl;
 
+import ir.demisco.cfs.model.dto.request.CentricAccountPersonRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
@@ -69,6 +70,16 @@ public class DefaultCentricAccount implements CentricAccountService {
             centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
         }
         return convertCentricAccountToDto(centricAccount);
+    }
+
+
+    @Override
+    public List<CentricAccountNewResponse> getCentricAccountByOrganIdAndPersonId(CentricAccountPersonRequest centricAccountPersonRequest) {
+        List<CentricAccount> centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(1L, centricAccountPersonRequest.getPersonId());
+        return centricAccounts.stream().map(e -> CentricAccountNewResponse.builder().id(e.getId())
+                .name(e.getName())
+                .code(e.getCode()).build()).collect(Collectors.toList());
+
     }
 
 //    @Override
