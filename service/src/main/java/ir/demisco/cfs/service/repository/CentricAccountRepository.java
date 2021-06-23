@@ -19,4 +19,9 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
     @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
             "where ca.organization.id=:organizationId  and ca.person.id=:personId ")
     List<CentricAccount> findByCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
+
+    @Query("select count(ca.id) from CentricAccount ca join ca.centricAccountType cat " +
+            "where ca.organization.id=:organizationId  and ca.person.id=:personId and cat.code='10' ")
+    Long findByCountCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
+
 }
