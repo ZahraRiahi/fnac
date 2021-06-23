@@ -20,5 +20,4 @@ public interface CentricAccountService {
 
 //    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
 
-
 }

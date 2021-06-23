@@ -6,9 +6,9 @@ import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
 import ir.demisco.cfs.model.entity.CentricAccount;
 import ir.demisco.cfs.model.entity.CentricPersonRole;
-import ir.demisco.cfs.model.entity.PersonRoleType;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.repository.*;
+import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
@@ -61,11 +61,19 @@ public class DefaultCentricAccount implements CentricAccountService {
     public CentricAccountDto save(CentricAccountRequest centricAccountRequest) {
         CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId() == null ? 0L : centricAccountRequest.getId()).orElse(new CentricAccount());
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
+            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(2L, centricAccountRequest.getPersonId());
+            if (countCentricAccount > 0) {
+                throw new RuleException("برای این شخص قبلا کد تمرکز ایجاد شده است");
+            }
             centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-            CentricPersonRole centricPersonRole = new CentricPersonRole();
-            centricPersonRole.setCentricAccount(centricAccount);
-            centricPersonRole.setPersonRoleType(personRoleTypeRepository.findById(centricAccountRequest.getPeraonRoleTypeId() == null ? 0L : centricAccountRequest.getPeraonRoleTypeId()).orElse(new PersonRoleType()));
-            centricPersonRoleRepository.save(centricPersonRole);
+            CentricAccount finalCentricAccount = centricAccount;
+            centricAccountRequest.getCentricPersonRoleListId().forEach(aLong -> {
+                CentricPersonRole centricPersonRole = new CentricPersonRole();
+                centricPersonRole.setCentricAccount(finalCentricAccount);
+                centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
+                centricPersonRoleRepository.save(centricPersonRole);
+            });
+
         } else {
             centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
         }
@@ -81,7 +89,6 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .code(e.getCode()).build()).collect(Collectors.toList());
 
     }
-
 //    @Override
 //    @Transactional(rollbackOn = Throwable.class)
 //    public CentricAccountDto update(CentricAccountRequest centricAccountRequest) {
@@ -118,7 +125,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
-        centricAccount.setOrganization(organizationRepository.getOne(1L));
+        centricAccount.setOrganization(organizationRepository.getOne(2L));
         centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
         return centricAccountRepository.save(centricAccount);

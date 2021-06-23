@@ -1,14 +1,16 @@
 package ir.demisco.cfs.model.dto.request;
+import java.util.List;
 
 public class CentricAccountRequest {
     private Long id;
     private String code;
     private String name;
     private String centricAccountTypeCode;
+    private Long centricAccountTypeId;
     private Long organizationId;
     private Long personId;
     private Boolean activeFlag;
-    private Long peraonRoleTypeId;
+    private List<Long> centricPersonRoleListId;
 
     public Long getId() {
         return id;
@@ -42,6 +44,14 @@ public class CentricAccountRequest {
         this.centricAccountTypeCode = centricAccountTypeCode;
     }
 
+    public Long getCentricAccountTypeId() {
+        return centricAccountTypeId;
+    }
+
+    public void setCentricAccountTypeId(Long centricAccountTypeId) {
+        this.centricAccountTypeId = centricAccountTypeId;
+    }
+
     public Long getOrganizationId() {
         return organizationId;
     }
@@ -66,11 +76,11 @@ public class CentricAccountRequest {
         this.activeFlag = activeFlag;
     }
 
-    public Long getPeraonRoleTypeId() {
-        return peraonRoleTypeId;
+    public List<Long> getCentricPersonRoleListId() {
+        return centricPersonRoleListId;
     }
 
-    public void setPeraonRoleTypeId(Long peraonRoleTypeId) {
-        this.peraonRoleTypeId = peraonRoleTypeId;
+    public void setCentricPersonRoleList(List<Long> centricPersonRoleListId) {
+        this.centricPersonRoleListId = centricPersonRoleListId;
     }
 }

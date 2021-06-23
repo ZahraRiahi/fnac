@@ -48,5 +48,6 @@ public class CentricAccountController {
     public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccount(@RequestBody CentricAccountPersonRequest centricAccountPersonRequest) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndPersonId(centricAccountPersonRequest));
     }
+
 }
 
