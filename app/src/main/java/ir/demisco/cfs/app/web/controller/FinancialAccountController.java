@@ -30,4 +30,5 @@ public class FinancialAccountController {
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(1L));
     }
+
 }
