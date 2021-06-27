@@ -1,7 +1,6 @@
 package ir.demisco.cfs.model.dto.response;
 
-
-public class AccountRelationTypeDto {
+public class AccountNatureTypeDto {
     private Long id;
     private String description;
 
@@ -20,34 +19,33 @@ public class AccountRelationTypeDto {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public static AccountRelationTypeDto.Builder builder() {
-        return new AccountRelationTypeDto.Builder();
+    public static AccountNatureTypeDto.Builder builder() {
+        return new AccountNatureTypeDto.Builder();
     }
 
     public static final class Builder {
-        private AccountRelationTypeDto accountRelationTypeDto;
+        private AccountNatureTypeDto accountNatureTypeDto;
 
         private Builder() {
-            accountRelationTypeDto = new AccountRelationTypeDto();
+            accountNatureTypeDto = new AccountNatureTypeDto();
         }
 
-        public static Builder anAccountRelationTypeDto() {
+        public static Builder accountNatureTypeDto() {
             return new Builder();
         }
 
         public Builder id(Long id) {
-            accountRelationTypeDto.setId(id);
+            accountNatureTypeDto.setId(id);
             return this;
         }
 
         public Builder description(String description) {
-            accountRelationTypeDto.setDescription(description);
+            accountNatureTypeDto.setDescription(description);
             return this;
         }
 
-        public AccountRelationTypeDto build() {
-            return accountRelationTypeDto;
+        public AccountNatureTypeDto build() {
+            return accountNatureTypeDto;
         }
     }
 }
