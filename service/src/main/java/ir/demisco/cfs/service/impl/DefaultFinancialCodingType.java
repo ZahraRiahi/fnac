@@ -36,7 +36,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Transactional(rollbackOn = Throwable.class)
     public Long save(FinancialCodingTypeDto financialCodingTypeDto) {
         FinancialCodingType financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeDto.getId() == null ? 0L : financialCodingTypeDto.getId()).orElse(new FinancialCodingType());
-        financialCodingType.setOrganization(organizationRepository.getOne(4L));
+        financialCodingType.setOrganization(organizationRepository.getOne(2L));
         financialCodingType.setDescription(financialCodingTypeDto.getDescription());
         return financialCodingTypeRepository.save(financialCodingType).getId();
     }
