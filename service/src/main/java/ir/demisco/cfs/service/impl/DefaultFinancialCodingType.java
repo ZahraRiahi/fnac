@@ -1,14 +1,17 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
+import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.model.entity.FinancialCodingType;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
+import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
 import ir.demisco.cfs.service.repository.OrganizationRepository;
 import ir.demisco.cloud.core.middle.exception.RuleException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +19,13 @@ import java.util.stream.Collectors;
 public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     private final FinancialCodingTypeRepository financialCodingTypeRepository;
     private final OrganizationRepository organizationRepository;
+    private final FinancialAccountStructureRepository financialAccountStructureRepository;
 
 
-    public DefaultFinancialCodingType(FinancialCodingTypeRepository financialCodingTypeRepository, OrganizationRepository organizationRepository) {
+    public DefaultFinancialCodingType(FinancialCodingTypeRepository financialCodingTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository) {
         this.financialCodingTypeRepository = financialCodingTypeRepository;
         this.organizationRepository = organizationRepository;
+        this.financialAccountStructureRepository = financialAccountStructureRepository;
     }
 
     @Override
@@ -53,9 +58,17 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
-    public Boolean deleteFinancialCodingTypeById(Long financialCodingType) {
-          financialCodingTypeRepository.delete(financialCodingTypeRepository.findById(financialCodingType).orElseThrow(() -> new RuleException("کدینگ حساب با این شناسه وجود ندارد.")));
-        return true;
+    public boolean deleteFinancialCodingTypeById(Long financialCodingTypeId) {
+        List<FinancialAccountStructure> financialAccountStructures = financialAccountStructureRepository.findByFinancialCodingTypeId(financialCodingTypeId);
+        FinancialCodingType financialCodingType;
+        if (!financialAccountStructures.isEmpty()) {
+            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+        } else {
+            financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
+            financialCodingType.setDeletedDate(LocalDateTime.now());
+            financialCodingTypeRepository.save(financialCodingType);
+            return true;
+        }
     }
 
     private FinancialCodingTypeDto convertFinancialPeriodToDto(FinancialCodingType financialCodingType) {

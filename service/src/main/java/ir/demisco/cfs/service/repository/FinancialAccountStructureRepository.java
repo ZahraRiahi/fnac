@@ -14,4 +14,6 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
 
     @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas where fas.sequence=:sequence ")
     Long getCountByFinancialAccountStructureSequenceAndId(Long sequence);
+
+
 }

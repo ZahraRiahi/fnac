@@ -11,5 +11,5 @@ public interface FinancialCodingTypeService {
 
     FinancialCodingTypeDto update(FinancialCodingTypeDto financialCodingTypeDto);
 
-    Boolean deleteFinancialCodingTypeById(Long financialCodingType);
+    boolean deleteFinancialCodingTypeById(Long financialCodingType);
 }
