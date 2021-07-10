@@ -1,5 +1,7 @@
 package ir.demisco.cfs.model.dto.response;
 
+import java.time.LocalDateTime;
+
 public class FinancialAccountStructureDto {
     private Long id;
     private Long sequence;
@@ -8,6 +10,7 @@ public class FinancialAccountStructureDto {
     private Long sumDigit;
     private Long financialCodingTypeId;
     private String color;
+    private LocalDateTime deletedDate;
 
     public FinancialAccountStructureDto(Long id, String description) {
         this.id = id;
@@ -73,6 +76,14 @@ public class FinancialAccountStructureDto {
         this.color = color;
     }
 
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
+    }
+
     public static FinancialAccountStructureDto.Builder builder() {
         return new FinancialAccountStructureDto.Builder();
     }
@@ -120,6 +131,11 @@ public class FinancialAccountStructureDto {
 
         public Builder color(String color) {
             financialAccountStructureDto.setColor(color);
+            return this;
+        }
+
+        public Builder deletedDate(LocalDateTime deletedDate) {
+            financialAccountStructureDto.setDeletedDate(deletedDate);
             return this;
         }
 

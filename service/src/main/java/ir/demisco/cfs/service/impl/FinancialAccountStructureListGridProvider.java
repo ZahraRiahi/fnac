@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Selection;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,8 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                 filterContext.getPath("digitCount"),
                 filterContext.getPath("sumDigit"),
                 filterContext.getPath("color"),
-                filterContext.getPath("financialCodingType.id")
+                filterContext.getPath("financialCodingType.id"),
+                filterContext.getPath("deletedDate")
         );
     }
 
@@ -52,6 +54,7 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                     .sumDigit((Long) array[4])
                     .color((String) array[5])
                     .financialCodingTypeId((Long) array[6])
+                    .deletedDate((LocalDateTime) array[7])
                     .build();
         }).collect(Collectors.toList());
     }
