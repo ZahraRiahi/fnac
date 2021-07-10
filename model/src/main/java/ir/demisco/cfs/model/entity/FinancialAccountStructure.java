@@ -5,6 +5,7 @@ import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "financial_account_structure", schema = "fnac")
@@ -16,6 +17,7 @@ public class FinancialAccountStructure extends AuditModel<Long> {
     private Long sumDigit;
     private FinancialCodingType financialCodingType;
     private String color;
+    private LocalDateTime deletedDate;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_structure_generator", sequenceName = "sq_financial_account_structure", allocationSize = 50)
@@ -81,5 +83,14 @@ public class FinancialAccountStructure extends AuditModel<Long> {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Column(name = "DELETED_DATE")
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
     }
 }
