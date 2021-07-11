@@ -5,6 +5,7 @@ import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "centric_account_type", schema = "fnac")
@@ -20,6 +21,7 @@ public class CentricAccountType extends AuditModel<Long> {
     private Long activeFlag;
     private Long documentRelatedFlag;
     private Long parrentFlag;
+    private LocalDateTime deletedDate;
 
     @Id
     public Long getId() {
@@ -119,4 +121,14 @@ public class CentricAccountType extends AuditModel<Long> {
     public void setParrentFlag(Long parrentFlag) {
         this.parrentFlag = parrentFlag;
     }
+
+    @Column(name = "DELETED_DATE")
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
+    }
+
 }
