@@ -5,6 +5,7 @@ import ir.demisco.cloud.basic.model.entity.org.Organization;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "financial_account", schema = "fnac")
@@ -27,6 +28,7 @@ public class FinancialAccount {
     private Boolean convertFlag;
     private Boolean exchangeFlag;
     private FinancialAccount accountAdjustment;
+    private LocalDateTime deletedDate;
 
     @Id
     public Long getId() {
@@ -194,5 +196,14 @@ public class FinancialAccount {
 
     public void setAccountAdjustment(FinancialAccount accountAdjustment) {
         this.accountAdjustment = accountAdjustment;
+    }
+
+    @Column(name = "DELETED_DATE")
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
     }
 }
