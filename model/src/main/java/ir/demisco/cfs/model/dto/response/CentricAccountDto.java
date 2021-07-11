@@ -1,5 +1,7 @@
 package ir.demisco.cfs.model.dto.response;
 
+import java.time.LocalDateTime;
+
 public class CentricAccountDto {
     private Long id;
     private String code;
@@ -12,6 +14,7 @@ public class CentricAccountDto {
     private Long personId;
     private String personName;
     private Boolean activeFlag;
+    private LocalDateTime deletedDate;
 
     public Long getId() {
         return id;
@@ -101,6 +104,14 @@ public class CentricAccountDto {
         this.activeFlag = activeFlag;
     }
 
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
+    }
+
     public static CentricAccountDto.Builder builder() {
         return new CentricAccountDto.Builder();
     }
@@ -168,6 +179,11 @@ public class CentricAccountDto {
 
         public Builder activeFlag(Boolean activeFlag) {
             centricAccountDto.setActiveFlag(activeFlag);
+            return this;
+        }
+
+        public CentricAccountDto.Builder deletedDate(LocalDateTime deletedDate) {
+            centricAccountDto.setDeletedDate(deletedDate);
             return this;
         }
 
