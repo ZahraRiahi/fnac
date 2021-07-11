@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Selection;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,8 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                 filterContext.getPath("organization.id"),
                 filterContext.getPath("person.id"),
                 filterContext.getPath("person.personName"),
-                filterContext.getPath("activeFlag")
+                filterContext.getPath("activeFlag"),
+                filterContext.getPath("deletedDate")
         );
     }
 
@@ -55,6 +57,7 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                     .personId((Long) array[8])
                     .personName((String) array[9])
                     .activeFlag((Boolean) array[10])
+                    .deletedDate((LocalDateTime) array[11])
                     .build();
         }).collect(Collectors.toList());
     }
@@ -69,7 +72,7 @@ public class CentricAccountListGridProvider implements GridDataProvider {
             if ("name".equals(filter.getField())) {
                 isName = true;
                 name = (String) filter.getValue();
-                if (name == null||name.equals("")) {
+                if (name == null || name.equals("")) {
                     nameEqualNull = true;
                     filter.setDisable(true);
                 }
