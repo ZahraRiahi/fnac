@@ -2,8 +2,10 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
+import ir.demisco.cfs.model.entity.FinancialAccount;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
+import ir.demisco.cfs.service.repository.FinancialAccountRepository;
 import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
 import ir.demisco.cloud.core.middle.exception.RuleException;
@@ -14,6 +16,7 @@ import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +27,14 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     private final FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
     private final FinancialCodingTypeRepository financialCodingTypeRepository;
+    private final FinancialAccountRepository financialAccountRepository;
 
-    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialCodingTypeRepository financialCodingTypeRepository, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1) {
+    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialCodingTypeRepository financialCodingTypeRepository, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
         this.gridFilterService = gridFilterService;
         this.financialAccountStructureListGridProvider = financialAccountStructureListGridProvider;
         this.financialAccountStructureRepository = financialAccountStructureRepository;
         this.financialCodingTypeRepository = financialCodingTypeRepository1;
+        this.financialAccountRepository = financialAccountRepository;
     }
 
     @Override
@@ -95,10 +100,17 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
-    public Boolean deleteFinancialAccountStructureById(Long financialAccountStructure) {
-        financialAccountStructureRepository.delete(financialAccountStructureRepository.findById(financialAccountStructure).orElseThrow(() -> new RuleException("ساختار حساب با این شناسه وجود ندارد.")));
-
-        return true;
+    public Boolean deleteFinancialAccountStructureById(Long financialAccountStructureId) {
+        List<FinancialAccount> financialAccounts = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
+        FinancialAccountStructure financialAccountStructure;
+        if (!financialAccounts.isEmpty()) {
+            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+        } else {
+            financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
+            financialAccountStructure.setDeletedDate(LocalDateTime.now());
+            financialAccountStructureRepository.save(financialAccountStructure);
+            return true;
+        }
     }
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {
