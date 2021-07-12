@@ -5,13 +5,15 @@ import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "centric_person_role", schema = "fnac")
-public class CentricPersonRole  extends AuditModel<Long> {
+public class CentricPersonRole extends AuditModel<Long> {
     private Long id;
     private PersonRoleType personRoleType;
     private CentricAccount centricAccount;
+    private LocalDateTime deletedDate;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "centric_person_role_generator", sequenceName = "sq_centric_person_role", allocationSize = 50)
@@ -42,5 +44,14 @@ public class CentricPersonRole  extends AuditModel<Long> {
 
     public void setCentricAccount(CentricAccount centricAccount) {
         this.centricAccount = centricAccount;
+    }
+
+    @Column(name = "DELETED_DATE")
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
     }
 }

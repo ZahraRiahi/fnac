@@ -15,6 +15,7 @@ import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,19 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .name(e.getName())
                 .code(e.getCode()).build()).collect(Collectors.toList());
 
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean deleteCentricAccountById(Long centricAccountId) {
+        List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
+        CentricAccount centricAccount;
+        if (!centricPersonRoles.isEmpty()) {
+            centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+        }
+        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
+        centricAccount.setDeletedDate(LocalDateTime.now());
+        return true;
     }
 //    @Override
 //    @Transactional(rollbackOn = Throwable.class)

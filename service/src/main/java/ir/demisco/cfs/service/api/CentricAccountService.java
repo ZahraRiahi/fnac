@@ -18,6 +18,8 @@ public interface CentricAccountService {
 
     List<CentricAccountNewResponse> getCentricAccountByOrganIdAndPersonId(CentricAccountPersonRequest centricAccountPersonRequest);
 
+    Boolean deleteCentricAccountById(Long centricAccount);
+
 //    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
 
 }
