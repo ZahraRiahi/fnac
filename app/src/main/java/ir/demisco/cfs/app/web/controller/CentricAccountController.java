@@ -49,5 +49,12 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndPersonId(centricAccountPersonRequest));
     }
 
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable("id") Long centricAccountId) {
+        boolean result;
+        result = centricAccountService.deleteCentricAccountById(centricAccountId);
+        return ResponseEntity.ok(result);
+
+    }
 }
 
