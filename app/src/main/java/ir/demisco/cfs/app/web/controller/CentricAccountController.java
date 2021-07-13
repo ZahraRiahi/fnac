@@ -54,7 +54,6 @@ public class CentricAccountController {
         boolean result;
         result = centricAccountService.deleteCentricAccountById(centricAccountId);
         return ResponseEntity.ok(result);
-
     }
 }
 
