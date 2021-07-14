@@ -8,6 +8,7 @@ import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
 import ir.demisco.cfs.service.repository.OrganizationRepository;
 import ir.demisco.cloud.core.middle.exception.RuleException;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,7 +42,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Transactional(rollbackOn = Throwable.class)
     public Long save(FinancialCodingTypeDto financialCodingTypeDto) {
         FinancialCodingType financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeDto.getId() == null ? 0L : financialCodingTypeDto.getId()).orElse(new FinancialCodingType());
-        financialCodingType.setOrganization(organizationRepository.getOne(2L));
+        financialCodingType.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialCodingType.setDescription(financialCodingTypeDto.getDescription());
         return financialCodingTypeRepository.save(financialCodingType).getId();
     }
@@ -50,7 +51,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Transactional(rollbackOn = Throwable.class)
     public FinancialCodingTypeDto update(FinancialCodingTypeDto financialCodingTypeDto) {
         FinancialCodingType financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی کدیتگ حساب الزامی میباشد."));
-        financialCodingType.setOrganization(organizationRepository.getOne(1L));
+        financialCodingType.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialCodingType.setDescription(financialCodingTypeDto.getDescription());
         financialCodingType = financialCodingTypeRepository.save(financialCodingType);
         return convertFinancialPeriodToDto(financialCodingType);
