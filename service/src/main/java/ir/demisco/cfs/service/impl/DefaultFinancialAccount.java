@@ -28,6 +28,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Override
     @Transactional
     public DataSourceResult getFinancialAccount(DataSourceRequest dataSourceRequest) {
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         return gridFilterService.filter(dataSourceRequest, financialAccountListGridProvider);
     }
 

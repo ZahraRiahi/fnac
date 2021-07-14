@@ -1,5 +1,7 @@
 package ir.demisco.cfs.model.dto.response;
 
+import java.time.LocalDateTime;
+
 public class FinancialAccountDto {
     private Long id;
     private Long organizationId;
@@ -12,6 +14,7 @@ public class FinancialAccountDto {
     private Long accountRelationTypeId;
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
+    private LocalDateTime deletedDate;
 
     public Long getId() {
         return id;
@@ -100,7 +103,13 @@ public class FinancialAccountDto {
     public void setFinancialAccountParentId(Long financialAccountParentId) {
         this.financialAccountParentId = financialAccountParentId;
     }
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
 
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
+    }
     public static FinancialAccountDto.Builder builder() {
         return new FinancialAccountDto.Builder();
     }
@@ -170,7 +179,10 @@ public class FinancialAccountDto {
             financialAccountDto.setFinancialAccountParentId(financialAccountParentId);
             return this;
         }
-
+        public FinancialAccountDto.Builder deletedDate(LocalDateTime deletedDate) {
+            financialAccountDto.setDeletedDate(deletedDate);
+            return this;
+        }
         public FinancialAccountDto build() {
             return financialAccountDto;
         }
