@@ -12,6 +12,7 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
@@ -60,13 +61,14 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
-    public Long save(FinancialAccountStructureDto financialAccountStructureDto) {
+    public Long save(FinancialAccountStructureDto financialAccountStructureDto) throws RuleException {
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence());
+//        Long organizationId = SecurityHelper.getCurrentUser().getOrganizationId();
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 2L);
         if (financialAccountStructureCount > 0) {
-            throw new RuleException("ساختار حساب با این sequence وجود دارد.");
+            throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
         FinancialAccountStructure financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
         financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
@@ -84,9 +86,9 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence());
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 2L);
         if (financialAccountStructureCount > 0) {
-            throw new RuleException("ساختار حساب با این sequence وجود دارد.");
+            throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
         financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
