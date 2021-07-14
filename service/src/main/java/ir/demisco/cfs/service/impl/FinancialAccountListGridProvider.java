@@ -6,6 +6,7 @@ import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +31,8 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
                 filterContext.getPath("accountNatureType.description"),
                 filterContext.getPath("accountRelationType.id"),
                 filterContext.getPath("accountRelationType.description"),
-                filterContext.getPath("financialAccountParent.id")
-
+                filterContext.getPath("financialAccountParent.id"),
+                filterContext.getPath("deletedDate")
         );
     }
 
@@ -53,6 +54,7 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
                     .accountRelationTypeId((Long) array[8])
                     .accountRelationTypeDescription((String) array[9])
                     .financialAccountParentId((Long) array[10])
+                    .deletedDate((LocalDateTime) array[11])
                     .build();
         }).collect(Collectors.toList());
     }
