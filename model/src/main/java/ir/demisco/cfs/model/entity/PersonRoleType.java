@@ -5,12 +5,14 @@ import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "person_role_type", schema = "fnac")
 public class PersonRoleType extends AuditModel<Long> {
     private Long id;
     private String description;
+    private LocalDateTime deletedDate;
 
     @Id
     public Long getId() {
@@ -28,5 +30,14 @@ public class PersonRoleType extends AuditModel<Long> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "DELETED_DATE")
+    public LocalDateTime getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(LocalDateTime deletedDate) {
+        this.deletedDate = deletedDate;
     }
 }
