@@ -1,6 +1,5 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.response.CentricAccountTypeResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountDescriptionDto;
 import ir.demisco.cfs.service.api.FinancialAccountDescriptionService;
 import org.springframework.http.ResponseEntity;
