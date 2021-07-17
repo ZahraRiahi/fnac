@@ -46,6 +46,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Transactional
     public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         return gridFilterService.filter(dataSourceRequest, financialPeriodListGridProvider);
     }
 
