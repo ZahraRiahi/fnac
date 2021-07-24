@@ -2,17 +2,19 @@ package ir.demisco.cfs.model.entity;
 
 import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.*;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "account_nature_type", schema = "fnac")
-public class AccountNatureType extends AuditModel<Long> {
-
+@Table(name = "financial_account_type", schema = "fnac")
+public class FinancialAccountType extends AuditModel<Long> {
     private Long id;
+    private String code;
     private String description;
+    private Boolean uniqueUsedFlag;
     private LocalDateTime DeletedDate;
 
     @Id
@@ -24,6 +26,15 @@ public class AccountNatureType extends AuditModel<Long> {
         this.id = id;
     }
 
+    @Column(name = "CODE")
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Column(name = "DESCRIPTION")
     public String getDescription() {
         return description;
@@ -31,6 +42,15 @@ public class AccountNatureType extends AuditModel<Long> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "UNIQUE_USED_FLAG")
+    public Boolean getUniqueUsedFlag() {
+        return uniqueUsedFlag;
+    }
+
+    public void setUniqueUsedFlag(Boolean uniqueUsedFlag) {
+        this.uniqueUsedFlag = uniqueUsedFlag;
     }
 
     @Column(name = "DELETED_DATE")

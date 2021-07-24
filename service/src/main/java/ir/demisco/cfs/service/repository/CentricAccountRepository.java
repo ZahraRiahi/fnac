@@ -23,4 +23,14 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "where ca.organization.id=:organizationId  and ca.person.id=:personId and cat.code='10' and ca.deletedDate is null")
     Long findByCountCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
 
+
+    @Query(value = "select artd.id,cnac.id,cnac.name,cnac.code,acrt.id,artd.sequence " +
+            " from  CentricAccount cnac left outer join cnac.accountDefaultValues acdv  " +
+            " left outer join acdv.accountRelationTypeDetail artd " +
+            " left outer join artd.accountRelationType acrt " +
+            " where acdv.financialAccount.id=:financialAccountId and acdv.deletedDate is null and artd.deletedDate is null and acrt.deletedDate is null" +
+            " and cnac.deletedDate is null ")
+    List<Object[]> findByCentricAccountListObject(Long financialAccountId);
+
+
 }
