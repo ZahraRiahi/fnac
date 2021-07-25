@@ -2,6 +2,7 @@ package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
+import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -26,7 +27,7 @@ public class FinancialAccountController {
 
     @PostMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(1L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
 
     @PostMapping("/Get/{financialAccountId}")
@@ -34,5 +35,16 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId));
 
     }
+
+//    @PostMapping("/save")
+//    public ResponseEntity<FinancialCodingTypeDto> saveFinancialCodingType(@RequestBody FinancialCodingTypeDto financialCodingTypeDto) {
+//        if (financialCodingTypeDto.getId() == null) {
+//            Long aLong = financialCodingTypeService.save(financialCodingTypeDto);
+//            financialCodingTypeDto.setId(aLong);
+//            return ResponseEntity.ok(financialCodingTypeDto);
+//        } else {
+//            return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
+//        }
+//    }
 
 }
