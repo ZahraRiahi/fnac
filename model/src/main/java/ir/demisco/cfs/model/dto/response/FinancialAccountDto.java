@@ -15,6 +15,7 @@ public class FinancialAccountDto {
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
     private LocalDateTime deletedDate;
+    private Boolean hasChild;
 
     public Long getId() {
         return id;
@@ -112,6 +113,15 @@ public class FinancialAccountDto {
     }
     public static FinancialAccountDto.Builder builder() {
         return new FinancialAccountDto.Builder();
+    }
+
+
+    public Boolean getHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(Boolean hasChild) {
+        this.hasChild = hasChild;
     }
 
     public static final class Builder {

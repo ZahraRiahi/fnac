@@ -1,9 +1,11 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.FinancialAccount;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
@@ -16,5 +18,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
     List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
 
+//    @Query(value = "select * from FinancialAccount",nativeQuery = true)
+//    Page<FinancialAccount> test(Long id,Pageable pageable);
 
 }
