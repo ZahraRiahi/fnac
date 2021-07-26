@@ -67,7 +67,8 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
         Join<Object, Object> accountAdjustment = root.join("accountAdjustment", JoinType.LEFT);
         criteriaBuilder.equal(financialAccountParent.get("id"), root.get("id"));
         criteriaBuilder.equal(accountAdjustment.get("id"), root.get("id"));
-
+//        criteriaBuilder.add(
+//                        criteriaBuilder.selectCase().when(employee.get("contract").isNull(), employeeCreationDate).otherwise(contractStartDate));
         return null;
     }
 
