@@ -24,12 +24,12 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
     }
 
-    @GetMapping("/Get")
+    @PostMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
 
-    @PostMapping("/Get/{financialAccountId}")
+    @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId));
 
