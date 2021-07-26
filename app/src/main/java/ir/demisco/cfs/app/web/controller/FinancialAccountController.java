@@ -2,7 +2,6 @@ package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
-import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;

@@ -29,6 +29,7 @@ public class FinancialAccount {
     private Boolean exchangeFlag;
     private FinancialAccount accountAdjustment;
     private LocalDateTime deletedDate;
+    private Boolean hasChild;
 
     @Id
     public Long getId() {
@@ -205,5 +206,14 @@ public class FinancialAccount {
 
     public void setDeletedDate(LocalDateTime deletedDate) {
         this.deletedDate = deletedDate;
+    }
+
+    @Transient
+    public Boolean getHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(Boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }
