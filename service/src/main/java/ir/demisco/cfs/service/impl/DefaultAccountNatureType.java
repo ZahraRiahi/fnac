@@ -19,7 +19,7 @@ public class DefaultAccountNatureType implements AccountNatureTypeService {
     @Override
     public List<AccountNatureTypeDto> getAccountNatureType() {
         return accountNatureTypeRepository.findByAccountNatureType().stream().map(e -> AccountNatureTypeDto.builder()
-//                .id(e.getId())
+                .id(e.getId())
                 .description(e.getDescription())
                 .build()
         ).collect(Collectors.toList());
