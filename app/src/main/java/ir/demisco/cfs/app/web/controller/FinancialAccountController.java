@@ -24,7 +24,7 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
     }
 
-    @PostMapping("/Get")
+    @GetMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
