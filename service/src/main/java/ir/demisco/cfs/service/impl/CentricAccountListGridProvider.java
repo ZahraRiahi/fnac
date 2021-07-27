@@ -65,22 +65,20 @@ public class CentricAccountListGridProvider implements GridDataProvider {
     @Override
     public Predicate getCustomRestriction(FilterContext filterContext) {
         DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
-        String name;
-        boolean isName = false;
-        boolean nameEqualNull = false;
         for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
-            if ("name".equals(filter.getField())) {
-                isName = true;
-                name = (String) filter.getValue();
-                if (name == null || name.equals("")) {
-                    nameEqualNull = true;
-                    filter.setDisable(true);
-                }
+            switch (filter.getField()) {
+                case "centricAccountType.id":
+                case "organization.id":
+                    if (filter.getValue() == null) {
+                        filter.setDisable(true);
+                    }
+                    break;
+                case "name":
+                    if (filter.getValue() == null || filter.getValue() == "") {
+                        filter.setDisable(true);
+                    }
+                    break;
             }
-        }
-        if (isName && nameEqualNull) {
-            dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                    .create("name", null, DataSourceRequest.Operators.EQUALS));
         }
         return null;
     }
