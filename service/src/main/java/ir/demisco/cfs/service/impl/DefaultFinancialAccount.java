@@ -8,11 +8,6 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
-import ir.demisco.cloud.core.security.util.SecurityHelper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,44 +35,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.moneyTypeRepository = moneyTypeRepository;
     }
 
-//    @Override
+    //    @Override
 //    @Transactional
     public DataSourceResult getFinancialAccount(DataSourceRequest dataSourceRequest) {
-        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-
-        Long id=null;
-       for(DataSourceRequest.FilterDescriptor item:filters){
-            if(item.getField().equals("id")){
-                id= (Long) item.getValue();
-            }
-        }
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by("id"));
-//        Page<FinancialAccount> list = financialAccountRepository.test(id,pageable);
-//        List<FinancialAccount> test = (List<FinancialAccount>) list.get();
-//        List<FinancialAccountDto> dto = test.stream().map(item -> {
-//            return FinancialAccountDto.builder()
-//                    .id(item.getId())
-//                    .description(item.getDescription())
-//                    .build();
-//        }).collect(Collectors.toList());
-
-//        DataSourceResult dataSourceResult = new DataSourceResult();
-//        dataSourceResult.setData(dto);
-//        dataSourceResult.setTotal(list.getTotalElements());
-//        return dataSourceResult;
-        return null;
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountNatureType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountRelationType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountParent.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountAdjustment.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        DataSourceResult t = gridFilterService.filter(dataSourceRequest, financialAccountListGridProvider);
-//        List<FinancialAccountDto> data = (List<FinancialAccountDto>) t.getData();
-//        for (FinancialAccountDto dto : data) {
-//            dto.setHasChild(methode(SecurityHelper.getCurrentUser().getOrganizationId()));
-//        }
-//        return t;
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountNatureType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountRelationType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountParent.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountAdjustment.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        return gridFilterService.filter(dataSourceRequest, financialAccountListGridProvider);
     }
 
     @Override
