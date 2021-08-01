@@ -2,6 +2,7 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.response.FinancialAccountDto;
 import ir.demisco.cfs.model.entity.FinancialAccount;
+import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
@@ -67,8 +68,27 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
         Join<Object, Object> accountAdjustment = root.join("accountAdjustment", JoinType.LEFT);
         criteriaBuilder.equal(financialAccountParent.get("id"), root.get("id"));
         criteriaBuilder.equal(accountAdjustment.get("id"), root.get("id"));
-//        criteriaBuilder.add(
-//                        criteriaBuilder.selectCase().when(employee.get("contract").isNull(), employeeCreationDate).otherwise(contractStartDate));
+
+        DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
+        for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
+            switch (filter.getField()) {
+                case "organization.id":
+                case "centricAccountType.id":
+                case "financialAccountStructure.financialCodingType.id":
+                case "accountNatureType.id":
+                case "accountRelationType.id":
+                case "financialAccountStructure.id":
+                    if (filter.getValue() == null) {
+                        filter.setDisable(true);
+                    }
+                    break;
+                case "description":
+                    if (filter.getValue() == null || filter.getValue() == "") {
+                        filter.setDisable(true);
+                    }
+                    break;
+            }
+        }
         return null;
     }
 
