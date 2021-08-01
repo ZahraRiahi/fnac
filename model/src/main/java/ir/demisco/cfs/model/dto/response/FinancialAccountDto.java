@@ -193,6 +193,10 @@ public class FinancialAccountDto {
             financialAccountDto.setDeletedDate(deletedDate);
             return this;
         }
+        public Builder hasChild(Boolean hasChild) {
+            financialAccountDto.setHasChild(hasChild);
+            return this;
+        }
         public FinancialAccountDto build() {
             return financialAccountDto;
         }
