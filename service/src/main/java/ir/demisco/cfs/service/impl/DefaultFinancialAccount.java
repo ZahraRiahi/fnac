@@ -9,6 +9,7 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,8 +48,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.test(param.getOrganizationId(),param.getFinancialCodingTypeId(),param.getDescription(),paramMap.get("financialAccountParent"),param.getFinancialAccountParentId()
+        Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(),param.getFinancialCodingTypeId(),param.getDescription(),paramMap.get("financialAccountParent"),param.getFinancialAccountParentId()
         , paramMap.get("accountNatureType"),param.getAccountNatureTypeId(),paramMap.get("financialAccountStructure"),param.getFinancialAccountStructureId(),paramMap.get("accountRelationType"),param.getAccountRelationTypeId()
         ,pageable);
         List<FinancialAccountDto> financialAccountDtos = list.stream().map(item ->
@@ -79,9 +81,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Map<String, Object> map = new HashMap<>();
         for (DataSourceRequest.FilterDescriptor item : filters) {
             switch (item.getField()) {
-                case "organization.id":
-                    financialAccountParameter.setOrganizationId(Long.parseLong(item.getValue().toString()));
-                    break;
                 case "financialAccountStructure.financialCodingType.id":
                     financialAccountParameter.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
                     break;
@@ -130,7 +129,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     }
                     break;
                 case "description":
-                    financialAccountParameter.setDescription(item.getValue().toString());
+                    if(item.getValue() != null){
+                        financialAccountParameter.setDescription(item.getValue().toString());
+                    }
             }
         }
         return financialAccountParameter;
