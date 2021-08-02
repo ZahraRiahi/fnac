@@ -53,7 +53,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   and fiac_adjustment.deleted_date is null" +
             " where fiac.organization_id = :organizationId" +
             "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
-            "   and fiac.description like :description" +
+            "   and (:description is null or fiac.description like :description )" +
             "   and fiac.deleted_date is null" +
             "   and (:financialAccountParent is null or" +
             "       fiac.financial_account_parent_id =:financialAccountParentId)" +
@@ -64,7 +64,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "  and (:accountRelationType is null or " +
             "fiac.account_relation_type_id = :accountRelationTypeId)"
             , nativeQuery = true)
-    Page<Object[]> test(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
+    Page<Object[]> financialAccountList(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
                         Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
                         Object accountRelationType, Long accountRelationTypeId
             , Pageable pageable);
