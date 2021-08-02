@@ -55,8 +55,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
             "   and (:description is null or fiac.description like :description )" +
             "   and fiac.deleted_date is null" +
-            "   and (:financialAccountParent is null or" +
-            "       fiac.financial_account_parent_id =:financialAccountParentId)" +
+            "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
+            "   or (:financialAccountParent is not null  and " +
+            "       fiac.financial_account_parent_id =:financialAccountParentId))" +
             "   and (:accountNatureType is null or " +
             "       fiac.account_nature_type_id = :accountNatureTypeId)" +
             "   and (:financialAccountStructure is null or " +
@@ -65,8 +66,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "fiac.account_relation_type_id = :accountRelationTypeId)"
             , nativeQuery = true)
     Page<Object[]> financialAccountList(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
-                        Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
-                        Object accountRelationType, Long accountRelationTypeId
+                                        Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
+                                        Object accountRelationType, Long accountRelationTypeId
             , Pageable pageable);
 
 }
