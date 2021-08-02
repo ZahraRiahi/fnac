@@ -14,12 +14,14 @@ public class AccountRelatedDescription extends AuditModel<Long> {
     private FinancialAccount financialAccount;
     private LocalDateTime deletedDate;
 
-    @Override
     @Id
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FINANCIAL_ACCOUNT_DES_ID")

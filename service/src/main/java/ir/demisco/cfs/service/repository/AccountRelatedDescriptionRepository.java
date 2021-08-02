@@ -2,6 +2,7 @@ package ir.demisco.cfs.service.repository;
 
 
 import ir.demisco.cfs.model.entity.AccountRelatedDescription;
+import ir.demisco.cfs.model.entity.CentricPersonRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +14,5 @@ public interface AccountRelatedDescriptionRepository extends JpaRepository<Accou
             " where acrd.financialAccount.id=:financialAccountId" +
             " and acrd.deletedDate is null and fnad.deletedDate is null ")
     List<Object[]> findByAccountRelatedDescriptionListObject(Long financialAccountId);
+
 }
