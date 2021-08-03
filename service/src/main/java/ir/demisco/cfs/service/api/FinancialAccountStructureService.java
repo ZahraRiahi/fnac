@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.api;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -17,4 +18,7 @@ public interface FinancialAccountStructureService {
     FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto);
 
     Boolean deleteFinancialAccountStructureById(Long financialAccountStructure);
+
+    Long getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure(FinancialAccountStructureRequest financialAccountStructureRequest);
+
 }

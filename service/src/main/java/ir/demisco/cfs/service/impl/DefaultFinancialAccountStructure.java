@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.impl;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.model.entity.FinancialAccount;
@@ -12,7 +13,6 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
-import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
@@ -113,6 +113,18 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureRepository.save(financialAccountStructure);
             return true;
         }
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Long getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure(FinancialAccountStructureRequest financialAccountStructureRequest) {
+        String financialAccountStructure = null;
+        if (financialAccountStructureRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        }else {
+            financialAccountStructureRequest.setFinancialAccountStructureId(0L);
+        }
+        return financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructure(financialAccountStructureRequest.getFinancialCodingTypeId(), financialAccountStructureRequest.getFinancialAccountStructureId(), financialAccountStructure);
     }
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {
