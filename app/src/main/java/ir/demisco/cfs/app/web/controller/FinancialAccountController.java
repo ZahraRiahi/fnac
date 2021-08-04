@@ -1,5 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
 import ir.demisco.cfs.service.api.FinancialAccountService;
@@ -35,15 +37,17 @@ public class FinancialAccountController {
 
     }
 
-//    @PostMapping("/save")
-//    public ResponseEntity<FinancialCodingTypeDto> saveFinancialCodingType(@RequestBody FinancialCodingTypeDto financialCodingTypeDto) {
-//        if (financialCodingTypeDto.getId() == null) {
-//            Long aLong = financialCodingTypeService.save(financialCodingTypeDto);
-//            financialCodingTypeDto.setId(aLong);
-//            return ResponseEntity.ok(financialCodingTypeDto);
-//        } else {
-//            return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
-//        }
-//    }
+
+    @PostMapping("/save")
+    public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody FinancialAccountRequest financialAccountRequest) {
+        if (financialAccountRequest.getId() == null) {
+            FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
+            return ResponseEntity.ok(financialAccountOutPutDto);
+        } else {
+            return null;
+//            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
+        }
+    }
+
 
 }
