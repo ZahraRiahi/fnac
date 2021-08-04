@@ -21,6 +21,7 @@ public class FinancialAccountRequest {
     private Boolean convertFlag;
     private Boolean exchangeFlag;
     private Long accountAdjustmentId;
+    private Long financialCodingTypeId;
     private List<Long> financialAccountTypeId;
     private List<AccountDefaultValueRequest> accountDefaultValueOutPutModel;
     private List<Long> financialAccountDescription;
@@ -168,6 +169,14 @@ public class FinancialAccountRequest {
 
     public void setAccountAdjustmentId(Long accountAdjustmentId) {
         this.accountAdjustmentId = accountAdjustmentId;
+    }
+
+    public Long getFinancialCodingTypeId() {
+        return financialCodingTypeId;
+    }
+
+    public void setFinancialCodingTypeId(Long financialCodingTypeId) {
+        this.financialCodingTypeId = financialCodingTypeId;
     }
 
     public List<Long> getFinancialAccountTypeId() {
