@@ -21,11 +21,7 @@ public class DefaultFinancialAccountRelation implements FinancialAccountRelation
 
     @Override
     @Transactional
-    public DataSourceResult getFinancialAccountRelationTypeDetailByFinancialCodingTypeId(Long accountRelationTypeId, DataSourceRequest dataSourceRequest) {
-        Asserts.notNull(accountRelationTypeId, "accountRelationTypeId is null");
-        dataSourceRequest.getFilter().setLogic("and");
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest
-                .FilterDescriptor.create("accountRelationType.id", accountRelationTypeId, DataSourceRequest.Operators.EQUALS));
+    public DataSourceResult getFinancialAccountRelationTypeDetailByFinancialCodingTypeId(DataSourceRequest dataSourceRequest) {
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountRelationType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));

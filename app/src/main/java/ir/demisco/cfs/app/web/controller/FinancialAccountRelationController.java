@@ -15,8 +15,8 @@ public class FinancialAccountRelationController {
         this.financialAccountRelationService = financialAccountRelationService;
     }
 
-    @PostMapping("/list/{id}")
-    public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest, @PathVariable("id") Long accountRelationTypeId) {
-        return ResponseEntity.ok(financialAccountRelationService.getFinancialAccountRelationTypeDetailByFinancialCodingTypeId(accountRelationTypeId, dataSourceRequest));
+    @PostMapping("/list")
+    public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(financialAccountRelationService.getFinancialAccountRelationTypeDetailByFinancialCodingTypeId(dataSourceRequest));
     }
 }
