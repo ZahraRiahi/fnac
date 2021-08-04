@@ -53,7 +53,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   and fiac_adjustment.deleted_date is null" +
             " where fiac.organization_id = :organizationId" +
             "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
-            "   and (:description is null or fiac.description like :description )" +
+            "   and (:description is null or fiac.description like %:description% )" +
             "   and fiac.deleted_date is null" +
             "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
             "   or (:financialAccountParent is not null  and " +
