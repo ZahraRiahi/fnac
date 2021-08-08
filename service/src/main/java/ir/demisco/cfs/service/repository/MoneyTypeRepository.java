@@ -14,4 +14,23 @@ public interface MoneyTypeRepository extends JpaRepository<MoneyType, Long> {
     List<Object[]> findByMonetTypeListObject(Long financialAccountId);
 
 
+    @Query(value = "select mnty.id," +
+            " mnty.description," +
+            " case" +
+            " when :financialAccountId is null or not exists" +
+            " (select 1" +
+            " from fnac.account_money_type acmt" +
+            " where mnty.id = acmt.money_type_id" +
+            " and acmt.financial_account_id = :financialAccountId" +
+            " and acmt.deleted_date is null) then" +
+            " 0" +
+            " else" +
+            " 1" +
+            " end flg_exists" +
+            " from fncr.money_type mnty" +
+            " where mnty.deleted_date is null "
+            , nativeQuery = true)
+    List<Object[]> findByMoneyTypeAndFinancialAccountId(Long financialAccountId);
+
+
 }
