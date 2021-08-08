@@ -14,8 +14,9 @@ public class AccountRelatedType extends AuditModel<Long> {
     private LocalDateTime DeletedDate;
 
 
-    @Override
     @Id
+    @SequenceGenerator(schema = "fnac", name = "account_related_type_generator", sequenceName = "sq_account_related_type", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_related_type_generator")
     public Long getId() {
         return super.getId();
     }
@@ -29,6 +30,7 @@ public class AccountRelatedType extends AuditModel<Long> {
     public void setFinancialAccount(FinancialAccount financialAccount) {
         this.financialAccount = financialAccount;
     }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FINANCIAL_ACCOUNT_TYPE_ID")
     public FinancialAccountType getFinancialAccountType() {
@@ -38,6 +40,7 @@ public class AccountRelatedType extends AuditModel<Long> {
     public void setFinancialAccountType(FinancialAccountType financialAccountType) {
         this.financialAccountType = financialAccountType;
     }
+
     @Column(name = "DELETED_DATE")
     public LocalDateTime getDeletedDate() {
         return DeletedDate;
