@@ -4,6 +4,6 @@ import ir.demisco.cfs.model.dto.response.MoneyTypeDto;
 
 import java.util.List;
 
-public interface MoneyTypeService {
-    List<MoneyTypeDto> getMoneyType(Long financialAccountId);
+public interface AccountMoneyTypeService  {
+    List<MoneyTypeDto> getAccountMoneyType(Long financialAccountId);
 }
