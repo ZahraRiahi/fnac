@@ -2,10 +2,7 @@ package ir.demisco.cfs.model.entity;
 
 import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +18,10 @@ public class MoneyType extends AuditModel<Long> {
     private Long isBaseFlag;
     private LocalDateTime DeletedDate;
 
+
     @Id
+    @SequenceGenerator(schema = "fncr", name = "money_type_generator", sequenceName = "sq_money_type_type", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "money_type_generator")
     public Long getId() {
         return id;
     }
