@@ -25,7 +25,7 @@ public interface MoneyTypeRepository extends JpaRepository<MoneyType, Long> {
             " and acmt.deleted_date is null) then" +
             " 0" +
             " else" +
-            " 1" +
+            " 1 " +
             " end flg_exists" +
             " from fncr.money_type mnty" +
             " where mnty.deleted_date is null "
