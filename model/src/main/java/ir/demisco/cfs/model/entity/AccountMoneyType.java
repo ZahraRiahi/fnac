@@ -14,7 +14,10 @@ public class AccountMoneyType extends AuditModel<Long> {
     private FinancialAccount financialAccount;
     private LocalDateTime DeletedDate;
 
+
     @Id
+    @SequenceGenerator(schema = "fnac", name = "account_money_type_generator", sequenceName = "sq_account_money_type", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_money_type_generator")
     public Long getId() {
         return id;
     }

@@ -15,6 +15,8 @@ public class AccountDefaultValue extends AuditModel<Long> {
     private LocalDateTime deletedDate;
 
     @Id
+    @SequenceGenerator(schema = "fnac", name = "account_default_value_generator", sequenceName = "sq_account_default_value", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_default_value_generator")
     public Long getId() {
         return id;
     }
