@@ -7,12 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountRelatedDescriptionRepository extends JpaRepository<AccountRelatedDescription, Long> {
-    @Query(value = "select fnad.id,fnad.description " +
-            " from  AccountRelatedDescription acrd join acrd.financialAccountDescription fnad " +
-            " where acrd.financialAccount.id=:financialAccountId" +
-            " and acrd.deletedDate is null and fnad.deletedDate is null ")
-    List<Object[]> findByAccountRelatedDescriptionListObject(Long financialAccountId);
+//    @Query(value = "select fnad.id,fnad.description " +
+//            " from  AccountRelatedDescription acrd join acrd.financialAccountDescription fnad " +
+//            " where acrd.financialAccount.id=:financialAccountId" +
+//            " and acrd.deletedDate is null and fnad.deletedDate is null ")
+//    List<Object[]> findByAccountRelatedDescriptionListObject(Long financialAccountId);
+
+
+//    Optional<AccountRelatedDescription> getAccountRelatedDescriptionByFinancialAccountDescriptionId(Long financialAccountDescriptionId);
 
 }
