@@ -14,6 +14,9 @@ public class CentricAccountDto {
     private Long personId;
     private String personName;
     private Boolean activeFlag;
+    private Long parentCentricAccountId;
+    private String parentCentricAccountCode;
+    private String parentCentricAccountName;
     private LocalDateTime deletedDate;
 
     public Long getId() {
@@ -112,6 +115,30 @@ public class CentricAccountDto {
         this.deletedDate = deletedDate;
     }
 
+    public Long getParentCentricAccountId() {
+        return parentCentricAccountId;
+    }
+
+    public void setParentCentricAccountId(Long parentCentricAccountId) {
+        this.parentCentricAccountId = parentCentricAccountId;
+    }
+
+    public String getParentCentricAccountCode() {
+        return parentCentricAccountCode;
+    }
+
+    public void setParentCentricAccountCode(String parentCentricAccountCode) {
+        this.parentCentricAccountCode = parentCentricAccountCode;
+    }
+
+    public String getParentCentricAccountName() {
+        return parentCentricAccountName;
+    }
+
+    public void setParentCentricAccountName(String parentCentricAccountName) {
+        this.parentCentricAccountName = parentCentricAccountName;
+    }
+
     public static CentricAccountDto.Builder builder() {
         return new CentricAccountDto.Builder();
     }
@@ -123,7 +150,7 @@ public class CentricAccountDto {
             centricAccountDto = new CentricAccountDto();
         }
 
-        public static Builder centricAccountDto() {
+        public static Builder aCentricAccountDto() {
             return new Builder();
         }
 
@@ -182,7 +209,22 @@ public class CentricAccountDto {
             return this;
         }
 
-        public CentricAccountDto.Builder deletedDate(LocalDateTime deletedDate) {
+        public Builder parentCentricAccountId(Long parentCentricAccountId) {
+            centricAccountDto.setParentCentricAccountId(parentCentricAccountId);
+            return this;
+        }
+
+        public Builder parentCentricAccountCode(String parentCentricAccountCode) {
+            centricAccountDto.setParentCentricAccountCode(parentCentricAccountCode);
+            return this;
+        }
+
+        public Builder parentCentricAccountName(String parentCentricAccountName) {
+            centricAccountDto.setParentCentricAccountName(parentCentricAccountName);
+            return this;
+        }
+
+        public Builder deletedDate(LocalDateTime deletedDate) {
             centricAccountDto.setDeletedDate(deletedDate);
             return this;
         }
@@ -191,4 +233,5 @@ public class CentricAccountDto {
             return centricAccountDto;
         }
     }
+
 }

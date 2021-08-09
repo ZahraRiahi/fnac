@@ -6,9 +6,7 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +33,9 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                 filterContext.getPath("person.id"),
                 filterContext.getPath("person.personName"),
                 filterContext.getPath("activeFlag"),
+                filterContext.getPath("parentCentricAccount.id"),
+                filterContext.getPath("parentCentricAccount.code"),
+                filterContext.getPath("parentCentricAccount.name"),
                 filterContext.getPath("deletedDate")
         );
     }
@@ -57,13 +58,20 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                     .personId((Long) array[8])
                     .personName((String) array[9])
                     .activeFlag((Boolean) array[10])
-                    .deletedDate((LocalDateTime) array[11])
+                    .parentCentricAccountId((Long) array[11])
+                    .parentCentricAccountCode((String) array[12])
+                    .parentCentricAccountName((String) array[13])
+                    .deletedDate((LocalDateTime) array[14])
                     .build();
         }).collect(Collectors.toList());
     }
 
     @Override
     public Predicate getCustomRestriction(FilterContext filterContext) {
+        CriteriaBuilder criteriaBuilder = filterContext.getCriteriaBuilder();
+        Root<Object> root = filterContext.getRoot();
+        Join<Object, Object> centricAccountParent = root.join("parentCentricAccount", JoinType.LEFT);
+        criteriaBuilder.equal(centricAccountParent.get("id"), root.get("id"));
         DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
         for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
             switch (filter.getField()) {
