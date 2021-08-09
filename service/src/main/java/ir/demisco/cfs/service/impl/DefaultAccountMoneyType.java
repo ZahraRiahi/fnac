@@ -2,7 +2,6 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.AccountMoneyTypeRequest;
 import ir.demisco.cfs.model.dto.response.AccountMoneyTypeDto;
-import ir.demisco.cfs.model.dto.response.MoneyTypeDto;
 import ir.demisco.cfs.service.api.AccountMoneyTypeService;
 import ir.demisco.cfs.service.repository.MoneyTypeRepository;
 import org.springframework.stereotype.Service;
@@ -29,13 +28,14 @@ public class DefaultAccountMoneyType implements AccountMoneyTypeService {
 //    }
 
     @Override
+    @Transactional
     public List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest) {
-        Object financialAccount ;
+        Object financialAccount;
         if (accountMoneyTypeRequest.getFinancialAccountId() != null) {
-            financialAccount ="financialAccount";
+            financialAccount = "financialAccount";
         } else {
             accountMoneyTypeRequest.setFinancialAccountId(0L);
-            financialAccount = null ;
+            financialAccount = null;
         }
         List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMoneyTypeAndFinancialAccountId(financialAccount, accountMoneyTypeRequest.getFinancialAccountId());
 
