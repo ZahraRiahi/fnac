@@ -29,7 +29,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialAccountRepository financialAccountRepository;
     private final FinancialAccountTypeRepository financialAccountTypeRepository;
     private final CentricAccountRepository centricAccountRepository;
-    private final AccountRelatedDescriptionRepository accountRelatedDescriptionRepository;
+    //    private final AccountRelatedDescriptionRepository accountRelatedDescriptionRepository;
     private final MoneyTypeRepository moneyTypeRepository;
     private final OrganizationRepository organizationRepository;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
@@ -40,14 +40,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountMoneyTypeRepository accountMoneyTypeRepository;
     private final AccountDefaultValueRepository accountDefaultValueRepository;
     private final AccountRelationTypeDetailRepository accountRelationTypeDetailRepository;
-    private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
+//    private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, FinancialAccountDescriptionRepository financialAccountDescriptionRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
         this.centricAccountRepository = centricAccountRepository;
-        this.accountRelatedDescriptionRepository = accountRelatedDescriptionRepository;
+//        this.accountRelatedDescriptionRepository = accountRelatedDescriptionRepository;
         this.moneyTypeRepository = moneyTypeRepository;
         this.organizationRepository = organizationRepository;
         this.financialAccountStructureRepository = financialAccountStructureRepository;
@@ -58,7 +58,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountMoneyTypeRepository = accountMoneyTypeRepository;
         this.accountDefaultValueRepository = accountDefaultValueRepository;
         this.accountRelationTypeDetailRepository = accountRelationTypeDetailRepository;
-        this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
+//        this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
     }
 
     @Override
@@ -334,5 +334,15 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 //        });
 //    }
 
+    @Override
+    @Transactional
+    public List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId) {
+        List<FinancialAccount> financialAccount = financialAccountRepository.findByFinancialAccountAdjustmentByOrganizationId(OrganizationId);
+        return financialAccount.stream().map(e -> FinancialAccountAdjustmentResponse.builder().id(e.getId())
+                .description(e.getDescription())
+                .code(e.getCode())
+                .fullDescription(e.getFullDescription())
+                .build()).collect(Collectors.toList());
+    }
 }
 
