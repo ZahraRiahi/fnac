@@ -25,6 +25,7 @@ public class CentricAccount extends AuditModel<Long> {
     private List<CentricPersonRole> centricPersonRoleList;
     private LocalDateTime deletedDate;
     private List<AccountDefaultValue> accountDefaultValues;
+    private CentricAccount parentCentricAccount;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "centric_account_generator", sequenceName = "sq_centric_account", allocationSize = 50)
@@ -130,12 +131,22 @@ public class CentricAccount extends AuditModel<Long> {
         this.deletedDate = deletedDate;
     }
 
-    @OneToMany(mappedBy = "centricAccount",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "centricAccount", fetch = FetchType.LAZY)
     public List<AccountDefaultValue> getAccountDefaultValues() {
         return accountDefaultValues;
     }
 
     public void setAccountDefaultValues(List<AccountDefaultValue> accountDefaultValues) {
         this.accountDefaultValues = accountDefaultValues;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_CENTRIC_ACCOUNT_ID")
+    public CentricAccount getParentCentricAccount() {
+        return parentCentricAccount;
+    }
+
+    public void setParentCentricAccount(CentricAccount parentCentricAccount) {
+        this.parentCentricAccount = parentCentricAccount;
     }
 }
