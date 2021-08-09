@@ -17,12 +17,13 @@ public interface MoneyTypeRepository extends JpaRepository<MoneyType, Long> {
     @Query(value = "select mnty.id," +
             " mnty.description," +
             " case" +
-            " when :financialAccountId is null or not exists" +
+            "  when :financialAccount is null or  not exists " +
             " (select 1" +
             " from fnac.account_money_type acmt" +
             " where mnty.id = acmt.money_type_id" +
-            " and acmt.financial_account_id = :financialAccountId" +
-            " and acmt.deleted_date is null) then" +
+            " and (:financialAccount is null or " +
+            "  acmt.financial_account_id = :financialAccountId) " +
+            " and acmt.deleted_date is null) then " +
             " 0" +
             " else" +
             " 1 " +
@@ -30,7 +31,6 @@ public interface MoneyTypeRepository extends JpaRepository<MoneyType, Long> {
             " from fncr.money_type mnty" +
             " where mnty.deleted_date is null "
             , nativeQuery = true)
-    List<Object[]> findByMoneyTypeAndFinancialAccountId(Long financialAccountId);
-
+    List<Object[]> findByMoneyTypeAndFinancialAccountId(Object financialAccount, Long financialAccountId);
 
 }
