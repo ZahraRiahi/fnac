@@ -70,4 +70,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
                                         Object accountRelationType, Long accountRelationTypeId
             , Pageable pageable);
 
+    @Query(value = " select fiac from  FinancialAccount fiac " +
+            " where fiac.organization.id=:organizationId and fiac.deletedDate is null")
+    List<FinancialAccount> findByFinancialAccountAdjustmentByOrganizationId(Long organizationId);
+
 }

@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.api;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
@@ -18,5 +19,7 @@ public interface FinancialAccountService {
 
     FinancialAccountOutPutDto save(FinancialAccountRequest financialAccountRequest);
 
+
+    List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
 
 }
