@@ -1,6 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
@@ -47,6 +48,11 @@ public class FinancialAccountController {
             return null;
 //            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
         }
+    }
+
+    @PostMapping("/GetAdjustment")
+    public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(100L));
     }
 
 
