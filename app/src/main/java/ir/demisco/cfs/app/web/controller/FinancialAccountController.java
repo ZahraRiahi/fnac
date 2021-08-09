@@ -50,7 +50,7 @@ public class FinancialAccountController {
         }
     }
 
-    @PostMapping("/GetAdjustment")
+    @GetMapping("/GetAdjustment")
     public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(100L));
     }
