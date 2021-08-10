@@ -6,10 +6,9 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +29,14 @@ public class PersonListProvider implements GridDataProvider {
     }
 
     @Override
+    public List<Order> getCustomSort(FilterContext filterContext) {
+        return Collections.singletonList(filterContext.getCriteriaBuilder().asc(filterContext.getPath("personName")));
+    }
+
+    @Override
     public Predicate getCustomRestriction(FilterContext filterContext) {
         DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
+
         dataSourceRequest.getFilter().setLogic("or");
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
                 .create("disableDate", LocalDateTime.now(), DataSourceRequest.Operators.GREATER_THAN_EQUAL));
@@ -42,7 +47,6 @@ public class PersonListProvider implements GridDataProvider {
 
     @Override
     public List<Object> mapToDto(List<Object> resultList) {
-
         return resultList.stream().map(object -> {
             Object[] array = (Object[]) object;
             return PersonDto.builder()
