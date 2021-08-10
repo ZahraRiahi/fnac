@@ -22,6 +22,6 @@ public class DefaultPerson implements PersonService {
     @Override
     @Transactional
     public DataSourceResult getPersonByIdAndName(DataSourceRequest dataSourceRequest) {
-        return gridFilterService.filter(dataSourceRequest, personListProvider);
+       return gridFilterService.filter(dataSourceRequest, personListProvider);
     }
 }
