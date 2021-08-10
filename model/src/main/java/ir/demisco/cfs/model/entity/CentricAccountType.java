@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "centric_account_type", schema = "fnac")
@@ -22,7 +23,7 @@ public class CentricAccountType extends AuditModel<Long> {
     private Long documentRelatedFlag;
     private Long parrentFlag;
     private LocalDateTime deletedDate;
-
+//    private List<AccountRelationTypeDetail> accountRelationTypeDetails;
     @Id
     public Long getId() {
         return id;
@@ -41,7 +42,7 @@ public class CentricAccountType extends AuditModel<Long> {
         this.code = code;
     }
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }
@@ -131,4 +132,12 @@ public class CentricAccountType extends AuditModel<Long> {
         this.deletedDate = deletedDate;
     }
 
+//    @OneToMany(mappedBy = "centricAccountType")
+//    public List<AccountRelationTypeDetail> getAccountRelationTypeDetails() {
+//        return accountRelationTypeDetails;
+//    }
+//
+//    public void setAccountRelationTypeDetails(List<AccountRelationTypeDetail> accountRelationTypeDetails) {
+//        this.accountRelationTypeDetails = accountRelationTypeDetails;
+//    }
 }

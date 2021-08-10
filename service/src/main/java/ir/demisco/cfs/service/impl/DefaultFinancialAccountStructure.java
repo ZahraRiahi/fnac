@@ -66,7 +66,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
 //        Long organizationId = SecurityHelper.getCurrentUser().getOrganizationId();
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 2L);
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 1L);
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
