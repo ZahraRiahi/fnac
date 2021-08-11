@@ -30,18 +30,25 @@ public class PersonListProvider implements GridDataProvider {
 
     @Override
     public List<Order> getCustomSort(FilterContext filterContext) {
-        return Collections.singletonList(filterContext.getCriteriaBuilder().asc(filterContext.getPath("personName")));
+        return Collections.singletonList(filterContext.getCriteriaBuilder().asc(filterContext.getCriteriaBuilder().trim(filterContext.getPath("personName"))));
     }
 
     @Override
     public Predicate getCustomRestriction(FilterContext filterContext) {
         DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
-
-        dataSourceRequest.getFilter().setLogic("or");
+        dataSourceRequest.getFilter().setLogic("and");
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("disableDate", LocalDateTime.now(), DataSourceRequest.Operators.GREATER_THAN_EQUAL));
+                .create("disableDate", LocalDateTime.now(), DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
                 .create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
+
+        for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
+            if ("personName".equals(filter.getField())) {
+                if (filter.getValue() == null || filter.getValue() == "") {
+                    filter.setDisable(true);
+                }
+            }
+        }
         return null;
     }
 
