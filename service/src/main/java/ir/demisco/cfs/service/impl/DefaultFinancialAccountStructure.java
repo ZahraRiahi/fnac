@@ -13,6 +13,7 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
 //        Long organizationId = SecurityHelper.getCurrentUser().getOrganizationId();
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 1L);
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
@@ -86,7 +87,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), 2L);
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
