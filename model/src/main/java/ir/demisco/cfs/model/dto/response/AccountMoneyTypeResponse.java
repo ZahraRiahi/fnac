@@ -2,7 +2,6 @@ package ir.demisco.cfs.model.dto.response;
 
 public class AccountMoneyTypeResponse {
     private Long id;
-    private Long moneyTypeId;
     private String moneyTypeDescription;
     private Long flgExists;
 
@@ -12,14 +11,6 @@ public class AccountMoneyTypeResponse {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getMoneyTypeId() {
-        return moneyTypeId;
-    }
-
-    public void setMoneyTypeId(Long moneyTypeId) {
-        this.moneyTypeId = moneyTypeId;
     }
 
     public String getMoneyTypeDescription() {
@@ -53,11 +44,6 @@ public class AccountMoneyTypeResponse {
 
         public Builder id(Long id) {
             accountMoneyTypeResponse.setId(id);
-            return this;
-        }
-
-        public Builder moneyTypeId(Long moneyTypeId) {
-            accountMoneyTypeResponse.setMoneyTypeId(moneyTypeId);
             return this;
         }
 
