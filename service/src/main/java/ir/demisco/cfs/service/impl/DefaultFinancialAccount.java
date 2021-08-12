@@ -29,7 +29,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialAccountRepository financialAccountRepository;
     private final FinancialAccountTypeRepository financialAccountTypeRepository;
     private final CentricAccountRepository centricAccountRepository;
-    //    private final AccountRelatedDescriptionRepository accountRelatedDescriptionRepository;
+    private final AccountRelatedDescriptionRepository accountRelatedDescriptionRepository;
     private final MoneyTypeRepository moneyTypeRepository;
     private final OrganizationRepository organizationRepository;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
@@ -42,12 +42,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountRelationTypeDetailRepository accountRelationTypeDetailRepository;
 //    private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
         this.centricAccountRepository = centricAccountRepository;
-//        this.accountRelatedDescriptionRepository = accountRelatedDescriptionRepository;
+        this.accountRelatedDescriptionRepository = accountRelatedDescriptionRepository;
         this.moneyTypeRepository = moneyTypeRepository;
         this.organizationRepository = organizationRepository;
         this.financialAccountStructureRepository = financialAccountStructureRepository;
@@ -194,16 +194,17 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .accountAdjustmentDescription(financialAccount.getAccountAdjustment().getDescription()).build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
-//        financialAccountOutPutResponse.setAccountRelatedDescriptionOutPutModel(accountRelatedDescriptionResponses(financialAccountId));
+        financialAccountOutPutResponse.setAccountRelatedDescriptionOutPutModel(accountRelatedDescriptionResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountMoneyTypeOutPutModel(accountMoneyTypeResponses(financialAccountId));
         return financialAccountOutPutResponse;
     }
 
     private List<AccountRelatedTypeResponse> accountRelatedTypeResponses(Long financialAccountId) {
-        List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccountTypeListObject(financialAccountId);
+        List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccountId);
         return typeListObject.stream().map(objects -> AccountRelatedTypeResponse.builder().financialAccountTypeId(Long.parseLong(objects[0].toString()))
-                .financialAccountTypeDescription(objects[1].toString())
-                .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
+                .financialAccountTypeCode(objects[1].toString())
+                .financialAccountTypeDescription(objects[2].toString())
+                .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
     }
 
 
@@ -218,22 +219,23 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .accountRelationTypeDescription(objects[4].toString())
                         .accountRelationTypeId(Long.parseLong(objects[5].toString()))
                         .sequence(Long.parseLong(objects[6].toString()))
+                        .centricAccountTypeId(Long.parseLong(objects[7].toString()))
+                        .centricAccountTypeDescription(objects[8].toString())
                         .build()).collect(Collectors.toList());
     }
 
-//    private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionResponses(Long financialAccountId) {
-//        List<Object[]> accountRelatedDescriptionListObject = accountRelatedDescriptionRepository.findByAccountRelatedDescriptionListObject(financialAccountId);
-//        return accountRelatedDescriptionListObject.stream().map(objects -> AccountRelatedDescriptionResponse.builder().financialAccountDescriptionId(Long.parseLong(objects[0].toString()))
-//                .financialAccountDescriptionDescription(objects[1].toString())
-//                .build()).collect(Collectors.toList());
-//    }
+    private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionResponses(Long financialAccountId) {
+        List<Object[]> accountRelatedDescriptionListObject = accountRelatedDescriptionRepository.findByAccountRelatedDescriptionListObject(financialAccountId);
+        return accountRelatedDescriptionListObject.stream().map(objects -> AccountRelatedDescriptionResponse.builder().financialAccountDescriptionId(Long.parseLong(objects[0].toString()))
+                .financialAccountDescriptionDescription(objects[1].toString())
+                .build()).collect(Collectors.toList());
+    }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
         List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId);
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
-                .moneyTypeId(Long.parseLong(objects[1].toString()))
-                .moneyTypeDescription(objects[2].toString())
-                .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
+                .moneyTypeDescription(objects[1].toString())
+                .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
     }
 
     @Override
