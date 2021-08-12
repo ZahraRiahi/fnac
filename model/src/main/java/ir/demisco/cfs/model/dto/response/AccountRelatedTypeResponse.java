@@ -3,6 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class AccountRelatedTypeResponse {
     private Long financialAccountTypeId;
     private String financialAccountTypeDescription;
+    private String financialAccountTypeCode;
     private Long flgExists;
 
     public Long getFinancialAccountTypeId() {
@@ -19,6 +20,14 @@ public class AccountRelatedTypeResponse {
 
     public void setFinancialAccountTypeDescription(String financialAccountTypeDescription) {
         this.financialAccountTypeDescription = financialAccountTypeDescription;
+    }
+
+    public String getFinancialAccountTypeCode() {
+        return financialAccountTypeCode;
+    }
+
+    public void setFinancialAccountTypeCode(String financialAccountTypeCode) {
+        this.financialAccountTypeCode = financialAccountTypeCode;
     }
 
     public Long getFlgExists() {
@@ -51,6 +60,11 @@ public class AccountRelatedTypeResponse {
 
         public Builder financialAccountTypeDescription(String financialAccountTypeDescription) {
             accountRelatedTypeResponse.setFinancialAccountTypeDescription(financialAccountTypeDescription);
+            return this;
+        }
+
+        public Builder financialAccountTypeCode(String financialAccountTypeCode) {
+            accountRelatedTypeResponse.setFinancialAccountTypeCode(financialAccountTypeCode);
             return this;
         }
 
