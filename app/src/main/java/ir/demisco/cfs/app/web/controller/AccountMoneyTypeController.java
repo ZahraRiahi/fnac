@@ -20,6 +20,6 @@ public class AccountMoneyTypeController {
 
     @PostMapping("/Get")
     public ResponseEntity<List<AccountMoneyTypeDto>> responseEntity(@RequestBody AccountMoneyTypeRequest accountMoneyTypeRequest) {
-        return ResponseEntity.ok(accountMoneyTypeService.getAccountMoneyType(accountMoneyTypeRequest));
+        return ResponseEntity.ok(accountMoneyTypeService.getAccountMoneyType(accountMoneyTypeRequest, 100L));
     }
 }
