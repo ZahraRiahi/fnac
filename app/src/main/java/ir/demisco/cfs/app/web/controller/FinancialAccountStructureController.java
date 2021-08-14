@@ -25,7 +25,7 @@ public class FinancialAccountStructureController {
         return ResponseEntity.ok(financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeId(financialCodingTypeId, dataSourceRequest));
     }
 
-    @PostMapping("/Get/{financialCodingTypeId}")
+    @GetMapping("/Get/{financialCodingTypeId}")
     public ResponseEntity<List<FinancialAccountStructureResponse>> responseEntity(@PathVariable Long financialCodingTypeId) {
         return ResponseEntity.ok(financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeIdLov(financialCodingTypeId));
     }
