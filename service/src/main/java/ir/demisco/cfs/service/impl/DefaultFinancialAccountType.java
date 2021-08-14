@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.impl;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountTypeRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountTypeDto;
 import ir.demisco.cfs.service.api.FinancialAccountTypeService;
 import ir.demisco.cfs.service.repository.AccountRelatedTypeRepository;
@@ -18,15 +19,23 @@ public class DefaultFinancialAccountType implements FinancialAccountTypeService 
         this.financialAccountTypeRepository = financialAccountTypeRepository;
     }
 
-
     @Override
-    @Transactional
-    public List<FinancialAccountTypeDto> getFinancialAccountType(Long financialAccountId) {
-        List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccountId);
-        return typeListObject.stream().map(objects -> FinancialAccountTypeDto.builder().id(Long.parseLong(objects[0].toString()))
-                .code(objects[1].toString())
-                .description(objects[2].toString())
-                .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
+    @Transactional(rollbackOn = Throwable.class)
+    public List<FinancialAccountTypeDto> getFinancialAccountByFinancialAccountId(FinancialAccountTypeRequest financialAccountTypeRequest) {
+        Object financialAccount;
+        if (financialAccountTypeRequest.getFinancialAccountId() != null) {
+            financialAccount = "financialAccount";
+        } else {
+            financialAccountTypeRequest.setFinancialAccountId(0L);
+            financialAccount = null;
+        }
+        List<Object[]> financialAccountTypeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccount, financialAccountTypeRequest.getFinancialAccountId());
+        return financialAccountTypeListObject.stream().map(objects -> FinancialAccountTypeDto.builder().id(Long.parseLong(objects[0].toString()))
+                .description(objects[1].toString())
+                .flgExists(Long.parseLong(objects[2].toString()))
+                .build()).collect(Collectors.toList());
+
     }
 
 }
+
