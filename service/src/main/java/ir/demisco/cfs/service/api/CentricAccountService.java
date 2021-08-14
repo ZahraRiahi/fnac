@@ -1,6 +1,5 @@
 package ir.demisco.cfs.service.api;
 
-import ir.demisco.cfs.model.dto.request.CentricAccountPersonRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
@@ -16,9 +15,9 @@ public interface CentricAccountService {
 
     CentricAccountDto save(CentricAccountRequest centricAccountRequest);
 
-    List<CentricAccountNewResponse> getCentricAccountByOrganIdAndPersonId(CentricAccountPersonRequest centricAccountPersonRequest);
-
     Boolean deleteCentricAccountById(Long centricAccount);
+
+    Boolean getCentricAccountByOrganIdAndPersonId(Long personId,Long organizationId);
 
 //    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
 
