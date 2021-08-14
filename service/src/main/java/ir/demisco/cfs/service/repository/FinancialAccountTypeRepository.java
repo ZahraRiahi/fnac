@@ -22,6 +22,7 @@ public interface FinancialAccountTypeRepository extends JpaRepository<FinancialA
             " from fnac.account_related_type acrt " +
             " where (:financialAccount is null or " +
             " acrt.financial_account_id = :financialAccountId)" +
+            " and acrt.financial_account_type_id = fnat.id" +
             " and acrt.deleted_date is null) then " +
             " 0 " +
             " else " +
