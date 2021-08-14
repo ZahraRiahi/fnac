@@ -1,10 +1,7 @@
 package ir.demisco.cfs.service.api;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
-import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
-import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
+import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 
@@ -15,7 +12,7 @@ public interface FinancialAccountService {
 
     List<FinancialAccountResponse> getFinancialAccountLov(Long OrganizationId);
 
-    FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId);
+    FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId);
 
     FinancialAccountOutPutDto save(FinancialAccountRequest financialAccountRequest);
 
