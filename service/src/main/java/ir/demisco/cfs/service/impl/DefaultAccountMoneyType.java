@@ -29,7 +29,7 @@ public class DefaultAccountMoneyType implements AccountMoneyTypeService {
 
     @Override
     @Transactional
-    public List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest) {
+    public List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest,Long organizationId) {
         Object financialAccount;
         if (accountMoneyTypeRequest.getFinancialAccountId() != null) {
             financialAccount = "financialAccount";
@@ -37,7 +37,7 @@ public class DefaultAccountMoneyType implements AccountMoneyTypeService {
             accountMoneyTypeRequest.setFinancialAccountId(0L);
             financialAccount = null;
         }
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMoneyTypeAndFinancialAccountId(financialAccount, accountMoneyTypeRequest.getFinancialAccountId());
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMoneyTypeAndFinancialAccountId(financialAccount, accountMoneyTypeRequest.getFinancialAccountId(),100L);
 
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeDto.builder().id(Long.parseLong(objects[0].toString()))
                 .description(objects[1].toString())
