@@ -6,5 +6,5 @@ import ir.demisco.cfs.model.dto.response.AccountMoneyTypeDto;
 import java.util.List;
 
 public interface AccountMoneyTypeService {
-    List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest);
+    List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest,Long organizationId);
 }
