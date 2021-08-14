@@ -1,10 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
-import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
-import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountResponse;
+import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -34,10 +31,9 @@ public class FinancialAccountController {
 
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,100L));
 
     }
-
 
     @PostMapping("/save")
     public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody FinancialAccountRequest financialAccountRequest) {
