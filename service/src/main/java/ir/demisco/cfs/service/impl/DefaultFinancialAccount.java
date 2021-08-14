@@ -200,7 +200,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountRelatedTypeResponse> accountRelatedTypeResponses(Long financialAccountId) {
-        List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccountId);
+        List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccount(financialAccountId);
         return typeListObject.stream().map(objects -> AccountRelatedTypeResponse.builder().financialAccountTypeId(Long.parseLong(objects[0].toString()))
                 .financialAccountTypeCode(objects[1].toString())
                 .financialAccountTypeDescription(objects[2].toString())
