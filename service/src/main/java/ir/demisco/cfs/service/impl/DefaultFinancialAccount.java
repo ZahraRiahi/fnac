@@ -168,7 +168,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     @Override
     @Transactional
-    public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId) {
+    public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId,Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
         FinancialAccountOutPutResponse financialAccountOutPutResponse = FinancialAccountOutPutResponse.builder().id(financialAccountId)
                 .organizationId(financialAccount.getOrganization().getId())
@@ -232,7 +232,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId);
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId,100L);
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
                 .moneyTypeDescription(objects[1].toString())
                 .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
