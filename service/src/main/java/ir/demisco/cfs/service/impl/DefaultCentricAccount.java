@@ -99,26 +99,8 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getCentricAccountByOrganIdAndPersonId(Long personId, Long organizationId) {
         Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, 1L);
-        if (centricAccounts == 0) {
-            return false;
-        }
-        return true;
+        return centricAccounts == null;
     }
-//    @Override
-//    @Transactional(rollbackOn = Throwable.class)
-//    public CentricAccountDto update(CentricAccountRequest centricAccountRequest) {
-//        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی کد تمرکز الزامی میباشد."));
-//        if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-//            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-//            CentricPersonRole centricPersonRole = new CentricPersonRole();
-//            centricPersonRole.setCentricAccount(centricAccount);
-//            centricPersonRole.setPersonRoleType(personRoleTypeRepository.findById(centricAccountRequest.getPeraonRoleTypeId() == null ? 0L : centricAccountRequest.getPeraonRoleTypeId()).orElse(new PersonRoleType()));
-//            centricPersonRoleRepository.save(centricPersonRole);
-//        } else {
-//            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-//        }
-//        return convertCentricAccountToDto(centricAccount);
-//    }
 
     private CentricAccountDto convertCentricAccountToDto(CentricAccount centricAccount) {
         return CentricAccountDto.builder()
