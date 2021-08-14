@@ -3,7 +3,6 @@ package ir.demisco.cfs.app.web.controller;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
-import ir.demisco.cfs.model.dto.request.CentricAccountPersonRequest;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -43,10 +42,11 @@ public class CentricAccountController {
         }
     }
 
-
-    @PostMapping("/GetByPerson")
-    public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccount(@RequestBody CentricAccountPersonRequest centricAccountPersonRequest) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndPersonId(centricAccountPersonRequest));
+    @PostMapping("/GetByPerson/{id}")
+    public ResponseEntity<Boolean> GetByPerson(@PathVariable("id") Long personId) {
+        boolean result;
+        result = centricAccountService.getCentricAccountByOrganIdAndPersonId(personId, 100L);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/delete/{id}")

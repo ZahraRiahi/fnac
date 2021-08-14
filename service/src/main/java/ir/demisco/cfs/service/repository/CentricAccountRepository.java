@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
+import ir.demisco.cfs.model.entity.CentricPersonRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,9 +16,14 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
     List<CentricAccount> findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(Long organizationId, Long personRoleTypeId, Long personId);
 
-    @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
-            "where ca.organization.id=:organizationId  and ca.person.id=:personId and ca.deletedDate is null")
-    List<CentricAccount> findByCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
+//    @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
+//            "where ca.organization.id=:organizationId  and ca.person.id=:personId and ca.deletedDate is null")
+//    List<CentricAccount> findByCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
+
+
+    @Query("select 1  from  CentricAccount cnac where cnac.person.id=:personId and cnac.organization.id=:organizationId and cnac.deletedDate is null ")
+    Long findByCentricAccountAndOrganizationAndPerson(Long personId, Long organizationId);
+
 
     @Query("select count(ca.id) from CentricAccount ca join ca.centricAccountType cat " +
             "where ca.organization.id=:organizationId  and ca.person.id=:personId and cat.code='10' and ca.deletedDate is null")
