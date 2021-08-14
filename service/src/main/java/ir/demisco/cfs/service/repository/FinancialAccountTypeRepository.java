@@ -14,14 +14,14 @@ public interface FinancialAccountTypeRepository extends JpaRepository<FinancialA
 //    List<Object[]> findByFinancialAccountTypeListObject(Long financialAccountId);
 //    List<Object[]> findByFinancialAccountTypeListObject(Long financialAccountId);
 
-    @Query(value = "select fnat.id,fnat.code," +
+    @Query(value = "select fnat.code," +
             " fnat.description," +
             " case" +
             " when :financialAccountId is null or not exists " +
             " (select 1 " +
             " from fnac.account_related_type acrt " +
-            " where acrt.financial_account_type_id = fnat.id " +
-            " and acrt.financial_account_id = :financialAccountId " +
+            " where (:financialAccount is null or " +
+            " acrt.financial_account_id = :financialAccountId)" +
             " and acrt.deleted_date is null) then " +
             " 0 " +
             " else " +
@@ -30,7 +30,7 @@ public interface FinancialAccountTypeRepository extends JpaRepository<FinancialA
             " from fnac.financial_account_type fnat " +
             " where fnat.deleted_date is null "
             , nativeQuery = true)
-    List<Object[]> findByFinancialAccountAndFinancialAccountId(Long financialAccountId);
+    List<Object[]> findByFinancialAccountAndFinancialAccountId(Object financialAccount, Long financialAccountId);
 
 }
 
