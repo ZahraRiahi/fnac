@@ -1,7 +1,6 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
-import ir.demisco.cfs.model.entity.CentricPersonRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,12 +15,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
     List<CentricAccount> findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(Long organizationId, Long personRoleTypeId, Long personId);
 
-//    @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
-//            "where ca.organization.id=:organizationId  and ca.person.id=:personId and ca.deletedDate is null")
-//    List<CentricAccount> findByCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
-
-
-    @Query("select 1  from  CentricAccount cnac where cnac.person.id=:personId and cnac.organization.id=:organizationId and cnac.deletedDate is null ")
+    @Query("select coalesce(1,0)  from  CentricAccount cnac where cnac.person.id=:personId and cnac.organization.id=:organizationId and cnac.deletedDate is null ")
     Long findByCentricAccountAndOrganizationAndPerson(Long personId, Long organizationId);
 
 
@@ -29,16 +23,6 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "where ca.organization.id=:organizationId  and ca.person.id=:personId and cat.code='10' and ca.deletedDate is null")
     Long findByCountCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
 
-
-    //    @Query(value = "select artd.id,cnac.id,cnac.name,cnac.code,acrt.description,acrt.id,coalesce(artd.sequence,0),cnat.id " +
-//            " from  CentricAccount cnac left outer join cnac.accountDefaultValues acdv  " +
-//            " left outer join acdv.accountRelationTypeDetail artd " +
-//            " left outer join artd.accountRelationType acrt " +
-//            " where acdv.financialAccount.id=:financialAccountId " +
-//            " and (:financialAccountId is null or " +
-//            " acdv.financialAccount.id = :financialAccountId) " +
-//            " and acdv.deletedDate is null and artd.deletedDate is null and acrt.deletedDate is null " +
-//            " and cnac.deletedDate is null ")
     @Query(value = " select acdv.account_relation_typ_detail_id ," +
             " acdv.centric_account_id," +
             " cnac.name, " +
