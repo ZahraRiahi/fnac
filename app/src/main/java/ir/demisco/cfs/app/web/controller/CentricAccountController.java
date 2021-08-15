@@ -6,6 +6,7 @@ import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,10 +43,10 @@ public class CentricAccountController {
         }
     }
 
-    @PostMapping("/GetByPerson/{id}")
+    @GetMapping("/GetByPerson/{id}")
     public ResponseEntity<Boolean> GetByPerson(@PathVariable("id") Long personId) {
         boolean result;
-        result = centricAccountService.getCentricAccountByOrganIdAndPersonId(personId, 100L);
+        result = centricAccountService.getCentricAccountByOrganIdAndPersonId(personId, SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
     }
 
