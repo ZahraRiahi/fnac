@@ -28,7 +28,7 @@ public class CentricAccountController {
 
     @PostMapping("/Get/{id}")
     public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@PathVariable("id") Long centricAccountTypeId) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, 1L));
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, 100L));
 
     }
 
