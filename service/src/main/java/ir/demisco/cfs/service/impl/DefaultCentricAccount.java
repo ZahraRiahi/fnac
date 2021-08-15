@@ -11,6 +11,7 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -98,7 +99,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getCentricAccountByOrganIdAndPersonId(Long personId, Long organizationId) {
-        Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, 1L);
+        Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, SecurityHelper.getCurrentUser().getOrganizationId());
         return centricAccounts == null;
     }
 
