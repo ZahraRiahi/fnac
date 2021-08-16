@@ -232,7 +232,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId,100L);
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId());
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
                 .moneyTypeDescription(objects[1].toString())
                 .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
@@ -256,7 +256,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private FinancialAccount saveFinancialAccount(FinancialAccount financialAccount, FinancialAccountRequest financialAccountRequest) {
-        financialAccount.setOrganization(organizationRepository.getOne(100L));
+        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
         financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
         financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
