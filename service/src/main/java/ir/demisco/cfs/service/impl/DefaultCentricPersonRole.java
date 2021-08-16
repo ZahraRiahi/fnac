@@ -7,6 +7,7 @@ import ir.demisco.cfs.service.api.CentricPersonRoleService;
 import ir.demisco.cfs.service.repository.CentricAccountRepository;
 import ir.demisco.cfs.service.repository.CentricPersonRoleRepository;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class DefaultCentricPersonRole implements CentricPersonRoleService {
 
     @Override
     public List<CentricPersonRoleResponce> getCentricPersonRoleByOrganAndPersonRoleTypeAndPersonId(CentricPersonRoleRequest centricPersonRoleRequest) {
-        List<CentricAccount> centricAccounts = centricAccountRepository.findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(1L, centricPersonRoleRequest.getPersonRoleTypeId(), centricPersonRoleRequest.getPersonId());
+        List<CentricAccount> centricAccounts = centricAccountRepository.findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(SecurityHelper.getCurrentUser().getOrganizationId(), centricPersonRoleRequest.getPersonRoleTypeId(), centricPersonRoleRequest.getPersonId());
         return centricAccounts.stream().map(e -> CentricPersonRoleResponce.builder().id(e.getId())
                 .name(e.getName())
                 .code(e.getCode()).build()).collect(Collectors.toList());
