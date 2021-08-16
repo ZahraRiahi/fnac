@@ -13,4 +13,7 @@ public interface AccountDefaultValueRepository extends JpaRepository<AccountDefa
 
     @Query("select count(adv.id)  from AccountDefaultValue adv where adv.financialAccount.id=:financialAccountId and adv.accountRelationTypeDetail.id in (:accountRelationTypeDetailIdList) ")
     Long findByFinancialAccountIdAndAccountRelationTypeDetailIdList(Long financialAccountId,List<Long> accountRelationTypeDetailIdList);
+
+
+    AccountDefaultValue findByIdAndAccountRelationTypeDetailId(Long id,Long accountRelationTypeDetailId);
 }
