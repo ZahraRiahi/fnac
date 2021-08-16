@@ -65,8 +65,12 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
         List<AccountDefaultValueOutPutResponse> accountDefaultValueDtos = new ArrayList<>();
         accountDefaultValueUpdateRequest.getAccountDefaultValueUpdateDtos().forEach(e -> {
             AccountDefaultValue accountDefaultValue = accountDefaultValueRepository.findByIdAndAccountRelationTypeDetailId(e.getId(), e.getAccountRelationTypeDetailId());
-            accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
-            accountDefaultValue =  accountDefaultValueRepository.save(accountDefaultValue);
+            if (accountDefaultValueUpdateRequest.getCentricAccountId() == null) {
+                accountDefaultValue.setCentricAccount(null);
+            } else {
+                accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
+            }
+            accountDefaultValue = accountDefaultValueRepository.save(accountDefaultValue);
             accountDefaultValueDtos.add(convertAccountDefaultValueToUpdateDto(accountDefaultValue));
         });
 
@@ -77,9 +81,9 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     private AccountDefaultValueOutPutResponse convertAccountDefaultValueToUpdateDto(AccountDefaultValue accountDefaultValue) {
         return AccountDefaultValueOutPutResponse.builder()
                 .accountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId())
-                .centricAccountId(accountDefaultValue.getCentricAccount().getId())
-                .centricAccountName(accountDefaultValue.getCentricAccount().getName())
-                .centricAccountCode(accountDefaultValue.getCentricAccount().getCode())
+                .centricAccountId(accountDefaultValue.getCentricAccount() == null ? 0L : accountDefaultValue.getCentricAccount().getId())
+                .centricAccountName(accountDefaultValue.getCentricAccount() == null ? "" : accountDefaultValue.getCentricAccount().getName())
+                .centricAccountCode(accountDefaultValue.getCentricAccount() == null ? "" : accountDefaultValue.getCentricAccount().getCode())
                 .accountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription())
                 .accountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId())
                 .build();
