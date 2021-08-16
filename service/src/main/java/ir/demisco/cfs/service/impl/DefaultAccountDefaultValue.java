@@ -77,9 +77,11 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     private AccountDefaultValueOutPutResponse convertAccountDefaultValueToUpdateDto(AccountDefaultValue accountDefaultValue) {
         return AccountDefaultValueOutPutResponse.builder()
                 .accountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId())
+                .centricAccountId(accountDefaultValue.getCentricAccount().getId())
+                .centricAccountName(accountDefaultValue.getCentricAccount().getName())
+                .centricAccountCode(accountDefaultValue.getCentricAccount().getCode())
                 .accountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription())
                 .accountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId())
-//                .sequence(accountDefaultValue.getAccountRelationTypeDetail().getSequence())
                 .build();
     }
 }
