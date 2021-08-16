@@ -5,6 +5,7 @@ import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +27,12 @@ public class FinancialAccountController {
 
     @PostMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId()));
     }
 
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,100L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId()));
 
     }
 
@@ -48,7 +49,7 @@ public class FinancialAccountController {
 
     @GetMapping("/GetAdjustment")
     public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(100L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
     }
 
 
