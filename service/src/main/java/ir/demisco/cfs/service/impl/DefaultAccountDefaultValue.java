@@ -1,12 +1,12 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.AccountDefaultValueDtoRequest;
+import ir.demisco.cfs.model.dto.request.AccountDefaultValueUpdateRequest;
 import ir.demisco.cfs.model.dto.response.AccountDefaultValueDto;
+import ir.demisco.cfs.model.dto.response.AccountDefaultValueOutPutResponse;
 import ir.demisco.cfs.model.entity.AccountDefaultValue;
 import ir.demisco.cfs.service.api.AccountDefaultValueService;
-import ir.demisco.cfs.service.repository.AccountDefaultValueRepository;
-import ir.demisco.cfs.service.repository.AccountRelationTypeDetailRepository;
-import ir.demisco.cfs.service.repository.FinancialAccountRepository;
+import ir.demisco.cfs.service.repository.*;
 import ir.demisco.cloud.core.middle.exception.RuleException;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,15 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     private final AccountDefaultValueRepository accountDefaultValueRepository;
     private final AccountRelationTypeDetailRepository accountRelationTypeDetailRepository;
     private final FinancialAccountRepository financialAccountRepository;
+    private final CentricAccountRepository centricAccountRepository;
+    private final AccountRelationTypeRepository accountRelationTypeRepository;
 
-    public DefaultAccountDefaultValue(AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, FinancialAccountRepository financialAccountRepository) {
+    public DefaultAccountDefaultValue(AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, AccountRelationTypeRepository accountRelationTypeRepository) {
         this.accountDefaultValueRepository = accountDefaultValueRepository;
         this.accountRelationTypeDetailRepository = accountRelationTypeDetailRepository;
         this.financialAccountRepository = financialAccountRepository;
+        this.centricAccountRepository = centricAccountRepository;
+        this.accountRelationTypeRepository = accountRelationTypeRepository;
     }
 
     @Override
@@ -49,13 +53,33 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     private AccountDefaultValueDto convertAccountDefaultValueToDto(AccountDefaultValue accountDefaultValue) {
         return AccountDefaultValueDto.builder()
                 .accountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId())
-//                .centricAccountId(accountDefaultValue.getCentricAccount().getId())
-//                .centricAccountName(accountDefaultValue.getCentricAccount().getName())
-//                .centricAccountCode(accountDefaultValue.getCentricAccount().getCode())
                 .accountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription())
                 .accountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId())
                 .sequence(accountDefaultValue.getAccountRelationTypeDetail().getSequence())
                 .build();
     }
 
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public List<AccountDefaultValueOutPutResponse> updateAccountDefaultValueById(AccountDefaultValueUpdateRequest accountDefaultValueUpdateRequest) {
+        List<AccountDefaultValueOutPutResponse> accountDefaultValueDtos = new ArrayList<>();
+        accountDefaultValueUpdateRequest.getAccountDefaultValueUpdateDtos().forEach(e -> {
+            AccountDefaultValue accountDefaultValue = accountDefaultValueRepository.findByIdAndAccountRelationTypeDetailId(e.getId(), e.getAccountRelationTypeDetailId());
+            accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
+            accountDefaultValue =  accountDefaultValueRepository.save(accountDefaultValue);
+            accountDefaultValueDtos.add(convertAccountDefaultValueToUpdateDto(accountDefaultValue));
+        });
+
+        return accountDefaultValueDtos;
+    }
+
+
+    private AccountDefaultValueOutPutResponse convertAccountDefaultValueToUpdateDto(AccountDefaultValue accountDefaultValue) {
+        return AccountDefaultValueOutPutResponse.builder()
+                .accountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId())
+                .accountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription())
+                .accountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId())
+//                .sequence(accountDefaultValue.getAccountRelationTypeDetail().getSequence())
+                .build();
+    }
 }
