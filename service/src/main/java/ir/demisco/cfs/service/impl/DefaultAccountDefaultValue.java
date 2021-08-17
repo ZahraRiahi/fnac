@@ -8,6 +8,7 @@ import ir.demisco.cfs.model.entity.AccountDefaultValue;
 import ir.demisco.cfs.service.api.AccountDefaultValueService;
 import ir.demisco.cfs.service.repository.*;
 import ir.demisco.cloud.core.middle.exception.RuleException;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -65,11 +66,13 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
         List<AccountDefaultValueOutPutResponse> accountDefaultValueDtos = new ArrayList<>();
         accountDefaultValueUpdateRequest.getAccountDefaultValueUpdateDtos().forEach(e -> {
             AccountDefaultValue accountDefaultValue = accountDefaultValueRepository.findByIdAndAccountRelationTypeDetailId(e.getId(), e.getAccountRelationTypeDetailId());
-            if (accountDefaultValueUpdateRequest.getCentricAccountId() == null) {
+
+            if (e.getCentricAccountId() == null) {
                 accountDefaultValue.setCentricAccount(null);
             } else {
                 accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
             }
+
             accountDefaultValue = accountDefaultValueRepository.save(accountDefaultValue);
             accountDefaultValueDtos.add(convertAccountDefaultValueToUpdateDto(accountDefaultValue));
         });
