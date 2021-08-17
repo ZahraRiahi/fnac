@@ -16,4 +16,8 @@ public interface AccountDefaultValueRepository extends JpaRepository<AccountDefa
 
 
     AccountDefaultValue findByIdAndAccountRelationTypeDetailId(Long id,Long accountRelationTypeDetailId);
+
+
+    @Query("select coalesce(COUNT(acd.id),0) from AccountDefaultValue acd join acd.financialAccount fa  join acd.accountRelationTypeDetail artd where fa.id=:financialAccountId and artd.id=:accountRelationTypeDetailId  and acd.deletedDate is null")
+    Long getCountByAccountDefaultValuefinancialAccountAndAccountRelationTypeDetail(Long financialAccountId, Long accountRelationTypeDetailId);
 }
