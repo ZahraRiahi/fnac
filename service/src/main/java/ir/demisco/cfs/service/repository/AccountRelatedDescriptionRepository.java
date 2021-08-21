@@ -19,9 +19,9 @@ public interface AccountRelatedDescriptionRepository extends JpaRepository<Accou
 
     @Query(value = "select 1" +
             " from fnac.account_related_description " +
-            " where financial_account_des_id = :financialAccountDesId "
+            " where financial_account_des_id = :financialAccountDesId and  financial_account_id = :financialAccountId"
             , nativeQuery = true)
-    Long getAccountRelatedDescriptionByFinancialAccountDescriptionId(Long financialAccountDesId);
+    Long getAccountRelatedDescriptionByFinancialAccountDescriptionId(Long financialAccountDesId,Long financialAccountId);
 
     AccountRelatedDescription findByFinancialAccountDescriptionId(Long financialAccountDescriptionId);
 
