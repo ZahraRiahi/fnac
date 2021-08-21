@@ -1,11 +1,10 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
+import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
 import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api-accountRelatedDescription")
@@ -24,6 +23,11 @@ public class AccountRelatedDescriptionController {
 
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<AccountRelatedDescriptionDto> saveCentricAccount(@RequestBody AccountRelatedDescriptionRequest accountRelatedDescriptionRequest) {
+        AccountRelatedDescriptionDto accountRelatedDescriptionDto = accountRelatedDescriptionService.save(accountRelatedDescriptionRequest);
+        return ResponseEntity.ok(accountRelatedDescriptionDto);
 
+    }
 
 }
