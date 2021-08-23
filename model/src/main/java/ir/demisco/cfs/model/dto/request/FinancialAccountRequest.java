@@ -1,11 +1,13 @@
 package ir.demisco.cfs.model.dto.request;
 
+import ir.demisco.cfs.model.entity.AccountRelatedDescription;
+
 import java.util.List;
 
 public class FinancialAccountRequest {
     private Long id;
     private Long organizationId;
-    private long financialAccountStructureId;
+    private Long financialAccountStructureId;
     private String fullDescription;
     private String Description;
     private String code;
@@ -24,7 +26,7 @@ public class FinancialAccountRequest {
     private Long financialCodingTypeId;
     private List<Long> financialAccountTypeId;
     private List<AccountDefaultValueRequest> accountDefaultValueOutPutModel;
-    private List<Long> financialAccountDescription;
+    private List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel;
     private List<Long> moneyTypeId;
 
     public Long getId() {
@@ -43,11 +45,11 @@ public class FinancialAccountRequest {
         this.organizationId = organizationId;
     }
 
-    public long getFinancialAccountStructureId() {
+    public Long getFinancialAccountStructureId() {
         return financialAccountStructureId;
     }
 
-    public void setFinancialAccountStructureId(long financialAccountStructureId) {
+    public void setFinancialAccountStructureId(Long financialAccountStructureId) {
         this.financialAccountStructureId = financialAccountStructureId;
     }
 
@@ -195,12 +197,12 @@ public class FinancialAccountRequest {
         this.accountDefaultValueOutPutModel = accountDefaultValueOutPutModel;
     }
 
-    public List<Long> getFinancialAccountDescription() {
-        return financialAccountDescription;
+    public List<AccountRelatedDescriptionRequest> getAccountRelatedDescriptionOutPutModel() {
+        return accountRelatedDescriptionOutPutModel;
     }
 
-    public void setFinancialAccountDescription(List<Long> financialAccountDescription) {
-        this.financialAccountDescription = financialAccountDescription;
+    public void setAccountRelatedDescriptionOutPutModel(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel) {
+        this.accountRelatedDescriptionOutPutModel = accountRelatedDescriptionOutPutModel;
     }
 
     public List<Long> getMoneyTypeId() {

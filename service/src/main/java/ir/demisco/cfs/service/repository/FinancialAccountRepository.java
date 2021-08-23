@@ -74,4 +74,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " where fiac.organization.id=:organizationId and fiac.deletedDate is null")
     List<FinancialAccount> findByFinancialAccountAdjustmentByOrganizationId(Long organizationId);
 
+
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code")
+    Long getCountByFinancialAccountAndCode(String code);
 }
