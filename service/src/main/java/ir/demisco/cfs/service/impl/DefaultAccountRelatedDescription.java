@@ -2,7 +2,6 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
 import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
-import ir.demisco.cfs.model.dto.response.FinancialAccountDescriptionDto;
 import ir.demisco.cfs.model.entity.*;
 import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
 import ir.demisco.cfs.service.repository.AccountRelatedDescriptionRepository;
