@@ -246,23 +246,17 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccountOutPutDto financialAccountOutPutDto = new FinancialAccountOutPutDto();
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
         financialAccount = saveFinancialAccount(financialAccount, financialAccountRequest);
-
         convertFinancialAccountDto(financialAccountOutPutDto, financialAccount);
-
         saveAccountStructureLevel(financialAccountRequest, financialAccount);
-        FinancialAccount finalFinancialAccount = financialAccount;
-        financialAccountRequest.getFinancialAccountTypeId().forEach(aLong -> {
-            AccountRelatedType accountRelatedType = new AccountRelatedType();
-            accountRelatedType.setFinancialAccount(finalFinancialAccount);
-            accountRelatedType.setFinancialAccountType(financialAccountTypeRepository.getOne(aLong));
-            accountRelatedTypeRepository.save(accountRelatedType);
-        });
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
                 (financialAccountRequest.getAccountDefaultValueOutPutModel(), financialAccount));
+
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel(saveAccountRelatedDescriptionValue
                 (financialAccountRequest.getAccountRelatedDescriptionOutPutModel(), financialAccount));
+
         financialAccountOutPutDto.setAccountMoneyTypeOutPut(saveAccountMoneyType
                 (financialAccountRequest.getMoneyTypeId(), financialAccount));
+
         financialAccountOutPutDto.setAccountRelatedTypeOutPutModel(saveAccountRelatedType
                 (financialAccountRequest.getFinancialAccountTypeId(), financialAccount));
         return financialAccountOutPutDto;
@@ -285,42 +279,50 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setDescription(financialAccountRequest.getDescription());
         financialAccount.setActiveFlag(financialAccountRequest.getActiveFlag());
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
-        financialAccount.setAccountNatureType(accountNatureTypeRepository.findById(financialAccountRequest.getAccountNatureTypeId()).orElseThrow(() -> new RuleException("")));
+        if (financialAccountRequest.getAccountNatureTypeId() != null) {
+            financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));
+        }
         financialAccount.setRelatedToOthersFlag(financialAccountRequest.getRelatedToOthersFlag());
         financialAccount.setPermanentFlag(financialAccountRequest.getPermanentFlag());
-        financialAccount.setAccountRelationType(accountRelationTypeRepository.findById(financialAccountRequest.getAccountRelationTypeId()).orElseThrow(() -> new RuleException("")));
-        financialAccount.setFinancialAccountParent(financialAccountRepository.findById(financialAccountRequest.getFinancialAccountParentId()).orElseThrow(() -> new RuleException("")));
+        if (financialAccountRequest.getAccountRelationTypeId() != null) {
+            financialAccount.setAccountRelationType(accountRelationTypeRepository.getOne(financialAccountRequest.getAccountRelationTypeId()));
+        }
+        if (financialAccountRequest.getFinancialAccountParentId() != null) {
+            financialAccount.setFinancialAccountParent(financialAccountRepository.getOne(financialAccountRequest.getFinancialAccountParentId()));
+        }
         financialAccount.setRelatedToFundType(financialAccountRequest.getRelatedToFundType());
         financialAccount.setReferenceFlag(financialAccountRequest.getReferenceFlag());
         financialAccount.setConvertFlag(financialAccountRequest.getConvertFlag());
         financialAccount.setExchangeFlag(financialAccountRequest.getExchangeFlag());
-        financialAccount.setAccountAdjustment(financialAccountRepository.findById(financialAccountRequest.getAccountAdjustmentId()).orElseThrow(() -> new RuleException("")));
+        if (financialAccountRequest.getAccountAdjustmentId() != null) {
+            financialAccount.setAccountAdjustment(financialAccountRepository.getOne(financialAccountRequest.getAccountAdjustmentId()));
+        }
         return financialAccountRepository.save(financialAccount);
     }
 
     private void convertFinancialAccountDto(FinancialAccountOutPutDto financialAccountOutPutDto, FinancialAccount financialAccount) {
         financialAccountOutPutDto.setId(financialAccount.getId());
         financialAccountOutPutDto.setOrganizationId(financialAccount.getOrganization().getId());
-        financialAccountOutPutDto.setFinancialAccountStructureId(financialAccount.getFinancialAccountStructure().getId());
+        financialAccountOutPutDto.setFinancialAccountStructureId(financialAccount.getFinancialAccountStructure() == null ? 0 : financialAccount.getFinancialAccountStructure().getId());
         financialAccountOutPutDto.setFullDescription(financialAccount.getFullDescription());
         financialAccountOutPutDto.setDescription(financialAccount.getDescription());
         financialAccountOutPutDto.setCode(financialAccount.getCode());
         financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
         financialAccountOutPutDto.setLatinDescription(financialAccount.getLatinDescription());
-        financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType().getId());
-        financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription());
+        financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType() == null ? 0 : financialAccount.getAccountNatureType().getId());
+        financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType() == null ? " " : financialAccount.getAccountNatureType().getDescription());
         financialAccountOutPutDto.setRelatedToOthersFlag(financialAccount.getRelatedToOthersFlag());
         financialAccountOutPutDto.setPermanentFlag(financialAccount.getPermanentFlag());
-        financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType().getId());
-        financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType().getDescription());
-        financialAccountOutPutDto.setFinancialAccountParentId(financialAccount.getFinancialAccountParent().getId());
-        financialAccountOutPutDto.setFinancialAccountParentDescription(financialAccount.getFinancialAccountParent().getDescription());
+        financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType() == null ? 0 : financialAccount.getAccountRelationType().getId());
+        financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType() == null ? " " : financialAccount.getAccountRelationType().getDescription());
+        financialAccountOutPutDto.setFinancialAccountParentId(financialAccount.getFinancialAccountParent() == null ? 0 : financialAccount.getFinancialAccountParent().getId());
+        financialAccountOutPutDto.setFinancialAccountParentDescription(financialAccount.getFinancialAccountParent() == null ? " " : financialAccount.getFinancialAccountParent().getDescription());
         financialAccountOutPutDto.setRelatedToFundType(financialAccount.getRelatedToFundType());
         financialAccountOutPutDto.setReferenceFlag(financialAccount.getReferenceFlag());
         financialAccountOutPutDto.setConvertFlag(financialAccount.getConvertFlag());
         financialAccountOutPutDto.setExchangeFlag(financialAccount.getExchangeFlag());
-        financialAccountOutPutDto.setAccountAdjustmentId(financialAccount.getAccountAdjustment().getId());
-        financialAccountOutPutDto.setAccountAdjustmentDescription(financialAccount.getAccountAdjustment().getDescription());
+        financialAccountOutPutDto.setAccountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId());
+        financialAccountOutPutDto.setAccountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? " " : financialAccount.getAccountAdjustment().getDescription());
     }
 
 
@@ -391,7 +393,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount financialAccount) {
-        String financialAccountStructure = null;
+        Object financialAccountStructure = null;
         if (financialAccountRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
         } else {
