@@ -2,7 +2,6 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
 import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
-import ir.demisco.cfs.model.dto.response.FinancialAccountDescriptionDto;
 import ir.demisco.cfs.model.entity.*;
 import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
 import ir.demisco.cfs.service.repository.AccountRelatedDescriptionRepository;
@@ -54,16 +53,17 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
             return convertAccountRelatedDescriptionDto(accountRelatedDescription);
 
         } else if (accountRelatedDescriptionRequest.getFinancialAccountDesId() != null) {
-            Long accountRelatedDescriptionCount = accountRelatedDescriptionRepository.getAccountRelatedDescriptionByFinancialAccountDescriptionId(accountRelatedDescriptionRequest.getFinancialAccountDesId());
+            Long accountRelatedDescriptionCount = accountRelatedDescriptionRepository.getAccountRelatedDescriptionByFinancialAccountDescriptionId(accountRelatedDescriptionRequest.getFinancialAccountDesId(), accountRelatedDescriptionRequest.getFinancialAccountId());
             if (accountRelatedDescriptionCount == null) {
                 AccountRelatedDescription accountRelatedDescription = new AccountRelatedDescription();
                 accountRelatedDescription.setFinancialAccountDescription(financialAccountDescriptionRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountDesId()));
-                if (accountRelatedDescriptionRequest.getFinancialAccountId() != null) {
-                    accountRelatedDescription.setFinancialAccount(financialAccountRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountId()));
-                }
+                accountRelatedDescription.setFinancialAccount(financialAccountRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountId()));
+//                if (accountRelatedDescriptionRequest.getFinancialAccountId() != null) {
+//                    accountRelatedDescription.setFinancialAccount(financialAccountRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountId()));
+//                }
                 accountRelatedDescription = accountRelatedDescriptionRepository.save(accountRelatedDescription);
                 return convertAccountRelatedDescriptionDto(accountRelatedDescription);
-            }else {
+            } else {
                 FinancialAccountDescription financialAccountDescription = financialAccountDescriptionRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountDesId());
                 financialAccountDescription.setDescription(accountRelatedDescriptionRequest.getDescription());
                 financialAccountDescription = financialAccountDescriptionRepository.save(financialAccountDescription);
@@ -82,7 +82,7 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
 
 
     private AccountRelatedDescriptionDto convertAccountRelatedDescriptionDto(AccountRelatedDescription accountRelatedDescription) {
-        return AccountRelatedDescriptionDto.builder().financialAccountId(accountRelatedDescription.getFinancialAccount() == null ? 0L : accountRelatedDescription.getFinancialAccount().getId())
+        return AccountRelatedDescriptionDto.builder().financialAccountId(accountRelatedDescription.getFinancialAccount().getId())
                 .financialAccountDescriptionId(accountRelatedDescription.getId())
                 .financialAccountDescription(accountRelatedDescription.getFinancialAccountDescription().getDescription())
                 .build();

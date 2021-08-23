@@ -2,10 +2,12 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.FinancialAccountParameter;
 import ir.demisco.cfs.model.dto.request.AccountDefaultValueRequest;
+import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.model.entity.*;
+import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.*;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +43,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountMoneyTypeRepository accountMoneyTypeRepository;
     private final AccountDefaultValueRepository accountDefaultValueRepository;
     private final AccountRelationTypeDetailRepository accountRelationTypeDetailRepository;
-//    private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
+    private final AccountStructureLevelRepository accountStructureLevelRepository;
+    private final AccountRelatedDescriptionService accountRelatedDescriptionService;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -58,7 +62,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountMoneyTypeRepository = accountMoneyTypeRepository;
         this.accountDefaultValueRepository = accountDefaultValueRepository;
         this.accountRelationTypeDetailRepository = accountRelationTypeDetailRepository;
-//        this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
+        this.accountStructureLevelRepository = accountStructureLevelRepository;
+        this.accountRelatedDescriptionService = accountRelatedDescriptionService;
     }
 
     @Override
@@ -168,7 +173,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     @Override
     @Transactional
-    public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId,Long organizationId) {
+    public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
         FinancialAccountOutPutResponse financialAccountOutPutResponse = FinancialAccountOutPutResponse.builder().id(financialAccountId)
                 .organizationId(financialAccount.getOrganization().getId())
@@ -218,9 +223,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .centricAccountCode(objects[3].toString())
                         .accountRelationTypeDescription(objects[4].toString())
                         .accountRelationTypeId(Long.parseLong(objects[5].toString()))
-                        .sequence(Long.parseLong(objects[6].toString()))
-                        .centricAccountTypeId(Long.parseLong(objects[7].toString()))
-                        .centricAccountTypeDescription(objects[8].toString())
                         .build()).collect(Collectors.toList());
     }
 
@@ -232,7 +234,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId());
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
                 .moneyTypeDescription(objects[1].toString())
                 .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
@@ -241,22 +243,37 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountOutPutDto save(FinancialAccountRequest financialAccountRequest) {
+        FinancialAccountOutPutDto financialAccountOutPutDto = new FinancialAccountOutPutDto();
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
-
         financialAccount = saveFinancialAccount(financialAccount, financialAccountRequest);
-//        saveAccountRelatedType(financialAccountRequest.getFinancialAccountTypeIdList(), financialAccount);
-//        saveAccountMoneyType(financialAccountRequest.getMoneyTypeIdList(), financialAccount);
-        Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(financialAccountRequest.getAccountDefaultValueOutPutModel().get(0).getId(), financialAccount.getId());
-        if (countAccountDefaultValue > 0) {
-            throw new RuleException("خطا");
-        }
-        saveAccountDefaultValue(financialAccountRequest.getAccountDefaultValueOutPutModel(), financialAccount);
-//        saveAccountRelatedDescriptionValue(financialAccountRequest.getAccountRelatedDescriptionOutPutModel(),financialAccount);
-        return null;
+
+        convertFinancialAccountDto(financialAccountOutPutDto, financialAccount);
+
+        saveAccountStructureLevel(financialAccountRequest, financialAccount);
+        FinancialAccount finalFinancialAccount = financialAccount;
+        financialAccountRequest.getFinancialAccountTypeId().forEach(aLong -> {
+            AccountRelatedType accountRelatedType = new AccountRelatedType();
+            accountRelatedType.setFinancialAccount(finalFinancialAccount);
+            accountRelatedType.setFinancialAccountType(financialAccountTypeRepository.getOne(aLong));
+            accountRelatedTypeRepository.save(accountRelatedType);
+        });
+        financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
+                (financialAccountRequest.getAccountDefaultValueOutPutModel(), financialAccount));
+        financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel(saveAccountRelatedDescriptionValue
+                (financialAccountRequest.getAccountRelatedDescriptionOutPutModel(), financialAccount));
+        financialAccountOutPutDto.setAccountMoneyTypeOutPut(saveAccountMoneyType
+                (financialAccountRequest.getMoneyTypeId(), financialAccount));
+        financialAccountOutPutDto.setAccountRelatedTypeOutPutModel(saveAccountRelatedType
+                (financialAccountRequest.getFinancialAccountTypeId(), financialAccount));
+        return financialAccountOutPutDto;
     }
 
     private FinancialAccount saveFinancialAccount(FinancialAccount financialAccount, FinancialAccountRequest financialAccountRequest) {
-        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        Long financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
+        if (financialAccountCodeCount > 0) {
+            throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
+        }
+        financialAccount.setOrganization(organizationRepository.getOne(100L));
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
         financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
         financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
@@ -281,60 +298,119 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountRepository.save(financialAccount);
     }
 
-    private void saveAccountRelatedType(List<Long> financialAccountTypeId, FinancialAccount financialAccount) {
-        financialAccountTypeId.forEach(aLong -> {
-            AccountRelatedType accountRelatedType = new AccountRelatedType();
-            accountRelatedType.setFinancialAccount(financialAccount);
-            accountRelatedType.setFinancialAccountType(financialAccountTypeRepository.getOne(aLong));
-            accountRelatedTypeRepository.save(accountRelatedType);
-        });
+    private void convertFinancialAccountDto(FinancialAccountOutPutDto financialAccountOutPutDto, FinancialAccount financialAccount) {
+        financialAccountOutPutDto.setId(financialAccount.getId());
+        financialAccountOutPutDto.setOrganizationId(financialAccount.getOrganization().getId());
+        financialAccountOutPutDto.setFinancialAccountStructureId(financialAccount.getFinancialAccountStructure().getId());
+        financialAccountOutPutDto.setFullDescription(financialAccount.getFullDescription());
+        financialAccountOutPutDto.setDescription(financialAccount.getDescription());
+        financialAccountOutPutDto.setCode(financialAccount.getCode());
+        financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
+        financialAccountOutPutDto.setLatinDescription(financialAccount.getLatinDescription());
+        financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType().getId());
+        financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription());
+        financialAccountOutPutDto.setRelatedToOthersFlag(financialAccount.getRelatedToOthersFlag());
+        financialAccountOutPutDto.setPermanentFlag(financialAccount.getPermanentFlag());
+        financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType().getId());
+        financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType().getDescription());
+        financialAccountOutPutDto.setFinancialAccountParentId(financialAccount.getFinancialAccountParent().getId());
+        financialAccountOutPutDto.setFinancialAccountParentDescription(financialAccount.getFinancialAccountParent().getDescription());
+        financialAccountOutPutDto.setRelatedToFundType(financialAccount.getRelatedToFundType());
+        financialAccountOutPutDto.setReferenceFlag(financialAccount.getReferenceFlag());
+        financialAccountOutPutDto.setConvertFlag(financialAccount.getConvertFlag());
+        financialAccountOutPutDto.setExchangeFlag(financialAccount.getExchangeFlag());
+        financialAccountOutPutDto.setAccountAdjustmentId(financialAccount.getAccountAdjustment().getId());
+        financialAccountOutPutDto.setAccountAdjustmentDescription(financialAccount.getAccountAdjustment().getDescription());
     }
 
-    private void saveAccountMoneyType(List<Long> moneyTypeId, FinancialAccount financialAccount) {
-        moneyTypeId.forEach(aLong -> {
-            AccountMoneyType accountMoneyType = new AccountMoneyType();
-            accountMoneyType.setFinancialAccount(financialAccount);
-            accountMoneyType.setMoneyType(moneyTypeRepository.getOne(aLong));
-            accountMoneyTypeRepository.save(accountMoneyType);
-        });
-    }
 
-    private void saveAccountDefaultValue(List<AccountDefaultValueRequest> accountDefaultValueOutPutModel, FinancialAccount financialAccount) {
+    private List<AccountDefaultValueResponse> saveAccountDefaultValue(List<AccountDefaultValueRequest> accountDefaultValueOutPutModel, FinancialAccount financialAccount) {
+        Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(accountDefaultValueOutPutModel.get(0).getAccountRelationTypeDetailId(), financialAccount.getId(), accountDefaultValueOutPutModel.get(0).getCentricAccountId());
+        if (countAccountDefaultValue > 0) {
+            throw new RuleException("خطا");
+        }
+
+        List<AccountDefaultValueResponse> accountDefaultValueDtos = new ArrayList<>();
         accountDefaultValueOutPutModel.forEach(e -> {
             AccountDefaultValue accountDefaultValue = new AccountDefaultValue();
             accountDefaultValue.setFinancialAccount(financialAccount);
             accountDefaultValue.setAccountRelationTypeDetail(accountRelationTypeDetailRepository.getOne(e.getAccountRelationTypeDetailId()));
             accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
-            accountDefaultValueRepository.save(accountDefaultValue);
+            accountDefaultValue = accountDefaultValueRepository.save(accountDefaultValue);
+            AccountDefaultValueResponse accountDefaultValueResponse = new AccountDefaultValueResponse();
+            accountDefaultValueResponse.setAccountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId());
+            accountDefaultValueResponse.setCentricAccountId(accountDefaultValue.getCentricAccount().getId());
+            accountDefaultValueResponse.setCentricAccountName(accountDefaultValue.getCentricAccount().getName());
+            accountDefaultValueResponse.setCentricAccountCode(accountDefaultValue.getCentricAccount().getCode());
+            accountDefaultValueResponse.setAccountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription());
+            accountDefaultValueResponse.setAccountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId());
+            accountDefaultValueDtos.add(accountDefaultValueResponse);
+        });
+        return accountDefaultValueDtos;
+    }
+
+    private List<AccountRelatedDescriptionDto> saveAccountRelatedDescriptionValue(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, FinancialAccount financialAccount) {
+        List<AccountRelatedDescriptionDto> accountRelatedDescriptionDtos = new ArrayList<>();
+        accountRelatedDescriptionOutPutModel.forEach(e -> {
+            e.setFinancialAccountId(financialAccount.getId());
+            AccountRelatedDescriptionDto accountRelatedDescriptionDto = accountRelatedDescriptionService.save(e);
+            accountRelatedDescriptionDtos.add(accountRelatedDescriptionDto);
+        });
+        return accountRelatedDescriptionDtos;
+    }
+
+    private List<AccountMoneyTypeDtoResponse> saveAccountMoneyType(List<Long> accountMoneyTypeOutPut, FinancialAccount financialAccount) {
+        List<AccountMoneyTypeDtoResponse> accountMoneyTypeDtoResponses = new ArrayList<>();
+        accountMoneyTypeOutPut.forEach(e -> {
+            AccountMoneyType accountMoneyType = new AccountMoneyType();
+            accountMoneyType.setFinancialAccount(financialAccount);
+            accountMoneyType.setMoneyType(moneyTypeRepository.getOne(e));
+            accountMoneyType = accountMoneyTypeRepository.save(accountMoneyType);
+            AccountMoneyTypeDtoResponse accountMoneyTypeDtoResponse = new AccountMoneyTypeDtoResponse();
+            accountMoneyTypeDtoResponse.setId(accountMoneyType.getId());
+            accountMoneyTypeDtoResponse.setMoneyTypeId(accountMoneyType.getMoneyType().getId());
+            accountMoneyTypeDtoResponse.setMoneyTypeDescription(accountMoneyType.getMoneyType().getDescription());
+            accountMoneyTypeDtoResponses.add(accountMoneyTypeDtoResponse);
+        });
+        return accountMoneyTypeDtoResponses;
+    }
+
+    private List<AccountRelatedTypeDtoResponse> saveAccountRelatedType(List<Long> accountRelatedTypeOutPutModel, FinancialAccount financialAccount) {
+        List<AccountRelatedTypeDtoResponse> accountRelatedTypeDtoResponses = new ArrayList<>();
+        accountRelatedTypeOutPutModel.forEach(e -> {
+            AccountRelatedType accountRelatedType = new AccountRelatedType();
+            accountRelatedType.setFinancialAccount(financialAccount);
+            accountRelatedType.setFinancialAccountType(financialAccountTypeRepository.getOne(e));
+            accountRelatedType = accountRelatedTypeRepository.save(accountRelatedType);
+            AccountRelatedTypeDtoResponse accountRelatedTypeDtoResponse = new AccountRelatedTypeDtoResponse();
+            accountRelatedTypeDtoResponse.setFinancialAccountTypeId(accountRelatedType.getFinancialAccountType().getId());
+            accountRelatedTypeDtoResponse.setFinancialAccountTypeDescription(accountRelatedType.getFinancialAccountType().getDescription());
+            accountRelatedTypeDtoResponses.add(accountRelatedTypeDtoResponse);
+        });
+        return accountRelatedTypeDtoResponses;
+    }
+
+    private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount financialAccount) {
+        String financialAccountStructure = null;
+        if (financialAccountRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountRequest.setFinancialAccountStructureId(0L);
+        }
+        List<Object[]> financialAccountStructureListObject =
+                accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccountRequest.getFinancialCodingTypeId()
+                        , financialAccountRequest.getCode(),
+                        financialAccountRequest.getFinancialAccountStructureId(),
+                        financialAccountStructure);
+        financialAccountStructureListObject.forEach(e -> {
+            AccountStructureLevel accountStructureLevel = new AccountStructureLevel();
+            accountStructureLevel.setFinancialAccount(financialAccount);
+            accountStructureLevel.setFinancialAccountStructure(financialAccountStructureRepository.getOne(Long.parseLong(e[2].toString())));
+            accountStructureLevel.setStructureLevel(Long.parseLong(e[0].toString()));
+            accountStructureLevel.setStructureLevelCode(e[1].toString());
+            accountStructureLevelRepository.save(accountStructureLevel);
         });
     }
-//
-//    private void saveAccountRelatedDescriptionValue(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, FinancialAccount financialAccount) {
-//        AtomicReference<FinancialAccountDescription> financialAccountDescription = new AtomicReference<>() ;
-//
-//        accountRelatedDescriptionOutPutModel.forEach(e -> {
-//            if(e.getFinancialAccountDesId() == null){
-//                financialAccountDescription.get().setDescription(e.getDescription());
-//                financialAccountDescriptionRepository.save(financialAccountDescription.get());
-//
-//                AccountRelatedDescription accountRelatedDescription = new AccountRelatedDescription();
-//                accountRelatedDescription.setFinancialAccount(financialAccount);
-//                accountRelatedDescription.getFinancialAccountDescription(financialAccountDescription.get() == null
-//                        ? financialAccountDescriptionRepository.getOne(e.getFinancialAccountDesId()):financialAccountDescription.get());
-//                accountRelatedDescriptionRepository.save(accountRelatedDescription);
-//            }else if (e.getFinancialAccountDesId() != null) {
-//                Optional<AccountRelatedDescription> accountRelatedDescription = accountRelatedDescriptionRepository.getAccountRelatedDescriptionByFinancialAccountDescriptionId(e.getFinancialAccountDesId());
-//                if(!accountRelatedDescription.isPresent()){
-//                    AccountRelatedDescription accountRelatedDescription1 = new AccountRelatedDescription();
-//                    accountRelatedDescription1.setFinancialAccount(financialAccount);
-//                    accountRelatedDescription1.getFinancialAccountDescription(financialAccountDescriptionRepository.getOne(e.getFinancialAccountDesId()));
-//                    accountRelatedDescriptionRepository.save(accountRelatedDescription1);
-//                }
-//            }else {
-////                financialAccountDescriptionRepository.
-//            }
-//        });
-//    }
 
     @Override
     @Transactional

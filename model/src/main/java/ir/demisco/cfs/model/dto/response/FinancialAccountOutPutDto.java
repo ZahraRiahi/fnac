@@ -1,7 +1,5 @@
 package ir.demisco.cfs.model.dto.response;
 
-import ir.demisco.cfs.model.dto.request.AccountDefaultValueRequest;
-
 import java.util.List;
 
 public class FinancialAccountOutPutDto {
@@ -27,8 +25,10 @@ public class FinancialAccountOutPutDto {
     private Boolean exchangeFlag;
     private Long accountAdjustmentId;
     private String accountAdjustmentDescription;
-    private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
-    private List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel;
+    private List<AccountRelatedTypeDtoResponse> accountRelatedTypeOutPutModel;
+    private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
+    private List<AccountRelatedDescriptionDto> accountRelatedDescriptionOutputModel;
+    private List<AccountMoneyTypeDtoResponse> accountMoneyTypeOutPut;
 
     public Long getId() {
         return id;
@@ -206,24 +206,40 @@ public class FinancialAccountOutPutDto {
         this.accountAdjustmentDescription = accountAdjustmentDescription;
     }
 
-    public List<AccountRelatedTypeResponse> getAccountRelatedTypeOutPutModel() {
+    public List<AccountRelatedTypeDtoResponse> getAccountRelatedTypeOutPutModel() {
         return accountRelatedTypeOutPutModel;
     }
 
-    public void setAccountRelatedTypeOutPutModel(List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel) {
+    public void setAccountRelatedTypeOutPutModel(List<AccountRelatedTypeDtoResponse> accountRelatedTypeOutPutModel) {
         this.accountRelatedTypeOutPutModel = accountRelatedTypeOutPutModel;
     }
 
-    public List<AccountMoneyTypeResponse> getAccountMoneyTypeOutPutModel() {
-        return accountMoneyTypeOutPutModel;
+    public List<AccountDefaultValueResponse> getAccountDefaultValueOutPutModel() {
+        return accountDefaultValueOutPutModel;
     }
 
-    public void setAccountMoneyTypeOutPutModel(List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel) {
-        this.accountMoneyTypeOutPutModel = accountMoneyTypeOutPutModel;
+    public void setAccountDefaultValueOutPutModel(List<AccountDefaultValueResponse> accountDefaultValueOutPutModel) {
+        this.accountDefaultValueOutPutModel = accountDefaultValueOutPutModel;
+    }
+
+    public List<AccountMoneyTypeDtoResponse> getAccountMoneyTypeOutPut() {
+        return accountMoneyTypeOutPut;
+    }
+
+    public void setAccountMoneyTypeOutPut(List<AccountMoneyTypeDtoResponse> accountMoneyTypeOutPut) {
+        this.accountMoneyTypeOutPut = accountMoneyTypeOutPut;
     }
 
     public static FinancialAccountOutPutDto.Builder builder() {
         return new FinancialAccountOutPutDto.Builder();
+    }
+
+    public List<AccountRelatedDescriptionDto> getAccountRelatedDescriptionOutputModel() {
+        return accountRelatedDescriptionOutputModel;
+    }
+
+    public void setAccountRelatedDescriptionOutputModel(List<AccountRelatedDescriptionDto> accountRelatedDescriptionOutputModel) {
+        this.accountRelatedDescriptionOutputModel = accountRelatedDescriptionOutputModel;
     }
 
     public static final class Builder {
@@ -347,13 +363,13 @@ public class FinancialAccountOutPutDto {
             return this;
         }
 
-        public Builder accountRelatedTypeOutPutModel(List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel) {
+        public Builder accountRelatedTypeOutPutModel(List<AccountRelatedTypeDtoResponse> accountRelatedTypeOutPutModel) {
             financialAccountOutPutDto.setAccountRelatedTypeOutPutModel(accountRelatedTypeOutPutModel);
             return this;
         }
 
-        public Builder accountMoneyTypeOutPutModel(List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel) {
-            financialAccountOutPutDto.setAccountMoneyTypeOutPutModel(accountMoneyTypeOutPutModel);
+        public Builder accountDefaultValueOutPutModel(List<AccountDefaultValueResponse> accountDefaultValueOutPutModel) {
+            financialAccountOutPutDto.setAccountDefaultValueOutPutModel(accountDefaultValueOutPutModel);
             return this;
         }
 
