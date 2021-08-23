@@ -54,6 +54,6 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                             where fnas_inner2.id = :financialAccountStructureId" +
             "                               and fnas_inner2.deleted_date is null)))))"
             , nativeQuery = true)
-    List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, String financialAccountStructure);
+    List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
 
 }
