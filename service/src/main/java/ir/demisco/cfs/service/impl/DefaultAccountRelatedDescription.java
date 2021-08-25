@@ -58,9 +58,6 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
                 AccountRelatedDescription accountRelatedDescription = new AccountRelatedDescription();
                 accountRelatedDescription.setFinancialAccountDescription(financialAccountDescriptionRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountDesId()));
                 accountRelatedDescription.setFinancialAccount(financialAccountRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountId()));
-//                if (accountRelatedDescriptionRequest.getFinancialAccountId() != null) {
-//                    accountRelatedDescription.setFinancialAccount(financialAccountRepository.getOne(accountRelatedDescriptionRequest.getFinancialAccountId()));
-//                }
                 accountRelatedDescription = accountRelatedDescriptionRepository.save(accountRelatedDescription);
                 return convertAccountRelatedDescriptionDto(accountRelatedDescription);
             } else {
@@ -81,7 +78,7 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
     }
 
 
-    private AccountRelatedDescriptionDto convertAccountRelatedDescriptionDto(AccountRelatedDescription accountRelatedDescription) {
+    public AccountRelatedDescriptionDto convertAccountRelatedDescriptionDto(AccountRelatedDescription accountRelatedDescription) {
         return AccountRelatedDescriptionDto.builder().financialAccountId(accountRelatedDescription.getFinancialAccount().getId())
                 .financialAccountDescriptionId(accountRelatedDescription.getId())
                 .financialAccountDescription(accountRelatedDescription.getFinancialAccountDescription().getDescription())

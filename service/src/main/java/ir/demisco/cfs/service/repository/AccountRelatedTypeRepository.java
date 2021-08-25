@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.AccountRelatedType;
+import ir.demisco.cfs.model.entity.AccountStructureLevel;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.model.entity.FinancialAccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,5 @@ public interface AccountRelatedTypeRepository extends JpaRepository<AccountRelat
 //    List<Object[]> findByFinancialAccountTypeListObject();
 //}
 
-
+    List<AccountRelatedType> findByFinancialAccountId(Long financialAccountId);
 }
