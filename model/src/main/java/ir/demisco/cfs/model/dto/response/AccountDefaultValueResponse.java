@@ -7,9 +7,6 @@ public class AccountDefaultValueResponse {
     private String centricAccountCode;
     private String accountRelationTypeDescription;
     private Long accountRelationTypeId;
-//    private Long sequence;
-//    private Long centricAccountTypeId;
-//    private String centricAccountTypeDescription;
 
     public Long getAccountRelationTypeDetailId() {
         return accountRelationTypeDetailId;

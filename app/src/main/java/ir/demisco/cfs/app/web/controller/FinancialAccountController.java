@@ -42,8 +42,7 @@ public class FinancialAccountController {
             FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
             return ResponseEntity.ok(financialAccountOutPutDto);
         } else {
-            return null;
-//            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
+            return ResponseEntity.ok(financialAccountService.update(financialAccountRequest));
         }
     }
 
