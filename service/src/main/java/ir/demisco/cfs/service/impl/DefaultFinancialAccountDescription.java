@@ -1,7 +1,5 @@
 package ir.demisco.cfs.service.impl;
 
-
-import ir.demisco.cfs.model.dto.response.AccountNatureTypeDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountDescriptionDto;
 import ir.demisco.cfs.service.api.FinancialAccountDescriptionService;
 import ir.demisco.cfs.service.repository.FinancialAccountDescriptionRepozitory;

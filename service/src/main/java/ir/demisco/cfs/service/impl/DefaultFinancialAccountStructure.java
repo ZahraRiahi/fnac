@@ -31,7 +31,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     private final FinancialCodingTypeRepository financialCodingTypeRepository;
     private final FinancialAccountRepository financialAccountRepository;
 
-    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialCodingTypeRepository financialCodingTypeRepository, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
+    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
         this.gridFilterService = gridFilterService;
         this.financialAccountStructureListGridProvider = financialAccountStructureListGridProvider;
         this.financialAccountStructureRepository = financialAccountStructureRepository;

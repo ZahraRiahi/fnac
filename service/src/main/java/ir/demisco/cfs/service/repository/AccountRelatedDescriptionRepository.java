@@ -1,14 +1,10 @@
 package ir.demisco.cfs.service.repository;
 
 
-import ir.demisco.cfs.model.entity.AccountDefaultValue;
 import ir.demisco.cfs.model.entity.AccountRelatedDescription;
-import ir.demisco.cfs.model.entity.CentricPersonRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountRelatedDescriptionRepository extends JpaRepository<AccountRelatedDescription, Long> {
     @Query(value = "select fnad.id,fnad.description " +
