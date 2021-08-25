@@ -77,4 +77,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
     @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code")
     Long getCountByFinancialAccountAndCode(String code);
+
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)")
+    Long getCountByFinancialAccountAndCode(String code, Long financialAccountId);
 }

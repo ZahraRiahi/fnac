@@ -54,6 +54,31 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                             where fnas_inner2.id = :financialAccountStructureId" +
             "                               and fnas_inner2.deleted_date is null)))))"
             , nativeQuery = true)
-    List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, String financialAccountStructure);
+    List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
 
+
+    @Query(value = " select 1 " +
+            "          from fnac.financial_account t1 " +
+            "         where t1.id = :financialAccountId " +
+            "           and (t1.code != :financialAccountCode or t1.financial_account_structure_id !=(select fnas.id " +
+            "            from fnac.financial_account_structure fnas " +
+            "           where fnas.financial_coding_type_id = :financialCodingTypeId " +
+            "             and fnas.deleted_date is null " +
+            "             and fnas.sequence =" +
+            "                 (select min(fnas_inner1.sequence)" +
+            "                    from fnac.financial_account_structure fnas_inner1 " +
+            "                   where fnas_inner1.financial_coding_type_id = " +
+            "                         :financialCodingTypeId " +
+            "                     and fnas_inner1.deleted_date is null" +
+            "                     and (:financialAccountStructure is null or" +
+            "                         (fnas_inner1.sequence >" +
+            "                         (select fnas_inner2.sequence" +
+            "                              from fnac.financial_account_structure fnas_inner2" +
+            "                             where fnas_inner2.id = :financialAccountStructureId" +
+            "                               and fnas_inner2.deleted_date is null)))))) "
+            , nativeQuery = true)
+    Long getAccountStructureLevelByFinancialAccountAndFinancialCodingAndFinancialAccountStructure(Long financialAccountId,Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
+
+
+    List<AccountStructureLevel> findByFinancialAccountId(Long financialAccountId);
 }

@@ -16,6 +16,8 @@ public interface FinancialAccountService {
 
     FinancialAccountOutPutDto save(FinancialAccountRequest financialAccountRequest);
 
+    FinancialAccountOutPutDto update(FinancialAccountRequest financialAccountRequest);
+
     List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
 
 }

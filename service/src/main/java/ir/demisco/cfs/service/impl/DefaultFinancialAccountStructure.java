@@ -31,7 +31,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     private final FinancialCodingTypeRepository financialCodingTypeRepository;
     private final FinancialAccountRepository financialAccountRepository;
 
-    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialCodingTypeRepository financialCodingTypeRepository, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
+    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
         this.gridFilterService = gridFilterService;
         this.financialAccountStructureListGridProvider = financialAccountStructureListGridProvider;
         this.financialAccountStructureRepository = financialAccountStructureRepository;
@@ -66,7 +66,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-//        Long organizationId = SecurityHelper.getCurrentUser().getOrganizationId();
         Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
