@@ -7,11 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PersonRoleTypeRepository extends JpaRepository<PersonRoleType, Long> {
-    @Query(value = "select distinct  prt.id,prt.description,case when cpr.id is null then 0 else 1 end as flg_exists from  PersonRoleType prt left outer join CentricPersonRole cpr on prt.id=cpr.personRoleType.id" +
-            " where prt.deletedDate is null ")
-    List<Object[]> findByPersonRoleTypeListObject();
-
-
     @Query(value = "select prty.id," +
             " prty.description," +
             " case" +
@@ -30,9 +25,6 @@ public interface PersonRoleTypeRepository extends JpaRepository<PersonRoleType, 
             " where prty.deleted_date is null "
             , nativeQuery = true)
     List<Object[]> findByPersonRoleTypeListObject(Object centricAccount, Long centricAccountId);
-
-
-
 
 
 }

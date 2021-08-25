@@ -3,7 +3,6 @@ package ir.demisco.cfs.service.impl;
 import ir.demisco.cfs.model.dto.request.FinancialAccountTypeRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountTypeDto;
 import ir.demisco.cfs.service.api.FinancialAccountTypeService;
-import ir.demisco.cfs.service.repository.AccountRelatedTypeRepository;
 import ir.demisco.cfs.service.repository.FinancialAccountTypeRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 public class DefaultFinancialAccountType implements FinancialAccountTypeService {
     private final FinancialAccountTypeRepository financialAccountTypeRepository;
 
-    public DefaultFinancialAccountType(FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedTypeRepository accountRelatedTypeRepository, FinancialAccountTypeRepository financialAccountTypeRepository1) {
+    public DefaultFinancialAccountType(FinancialAccountTypeRepository financialAccountTypeRepository) {
         this.financialAccountTypeRepository = financialAccountTypeRepository;
     }
 

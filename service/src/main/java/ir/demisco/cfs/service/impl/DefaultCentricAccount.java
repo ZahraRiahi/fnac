@@ -31,7 +31,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final CentricPersonRoleRepository centricPersonRoleRepository;
     private final CentricAccountTypeRepository centricAccountTypeRepository;
 
-    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, CentricAccountTypeRepository centricAccountTypeRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, CentricAccountTypeRepository centricAccountTypeRepository1, CentricPersonRoleRepository centricPersonRoleRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2) {
+    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository,  PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2) {
         this.gridFilterService = gridFilterService;
         this.financialPeriodListGridProvider = financialPeriodListGridProvider;
         this.centricAccountRepository = centricAccountRepository;

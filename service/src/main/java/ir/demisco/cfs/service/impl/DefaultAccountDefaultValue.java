@@ -20,14 +20,12 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     private final AccountRelationTypeDetailRepository accountRelationTypeDetailRepository;
     private final FinancialAccountRepository financialAccountRepository;
     private final CentricAccountRepository centricAccountRepository;
-    private final AccountRelationTypeRepository accountRelationTypeRepository;
 
-    public DefaultAccountDefaultValue(AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, AccountRelationTypeRepository accountRelationTypeRepository) {
+    public DefaultAccountDefaultValue(AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository) {
         this.accountDefaultValueRepository = accountDefaultValueRepository;
         this.accountRelationTypeDetailRepository = accountRelationTypeDetailRepository;
         this.financialAccountRepository = financialAccountRepository;
         this.centricAccountRepository = centricAccountRepository;
-        this.accountRelationTypeRepository = accountRelationTypeRepository;
     }
 
     @Override
