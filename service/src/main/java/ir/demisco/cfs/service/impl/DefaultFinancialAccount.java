@@ -100,7 +100,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         dataSourceResult.setData(financialAccountDtos);
         dataSourceResult.setTotal(list.getTotalElements());
         return dataSourceResult;
-
     }
 
     private FinancialAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
