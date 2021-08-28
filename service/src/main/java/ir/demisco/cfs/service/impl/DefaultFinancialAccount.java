@@ -93,6 +93,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .accountRelationTypeId(Long.parseLong(item[7].toString()))
                         .accountNatureTypeDescription(item[9].toString())
                         .financialAccountParentId(Long.parseLong(item[8] == null ? "0" : item[8].toString()))
+                        .financialAccountStructureId(Long.parseLong(item[12].toString()))
                         .hasChild(Integer.parseInt(item[11].toString()) == 1)
                         .build()).collect(Collectors.toList());
 
@@ -456,7 +457,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel
                 (updateAccountDefaultValue(financialAccountRequest.getAccountDefaultValueOutPutModel()));
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel
-                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionOutPutModel(),financialAccount.getId()));
+                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionOutPutModel(), financialAccount.getId()));
         return financialAccountOutPutDto;
     }
 
@@ -510,7 +511,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return accountDefaultValueResponses;
     }
 
-    private List<AccountRelatedDescriptionDto> updateAccountRelatedDescription(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel,Long financialAccountId) {
+    private List<AccountRelatedDescriptionDto> updateAccountRelatedDescription(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, Long financialAccountId) {
         List<AccountRelatedDescriptionDto> accountRelatedDescriptionDtos = new ArrayList<>();
         financialAccountDescriptionRepository.findByFinancialAccountDescriptionListId
                 (accountRelatedDescriptionOutPutModel
@@ -522,7 +523,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                             financialAccountDescription.setDescription(accountRelatedDescriptionRequest.getDescription());
                             AccountRelatedDescription accountRelatedDescription = accountRelatedDescriptionRepository
                                     .findByFinancialAccountIdAndFinancialAccountDescriptionIdAndDeletedDateIsNull
-                                    (financialAccountId,financialAccountDescription.getId());
+                                            (financialAccountId, financialAccountDescription.getId());
                             accountRelatedDescriptionDtos.add(accountRelatedDescriptionService.convertAccountRelatedDescriptionDto(accountRelatedDescription));
                         })
                 );
