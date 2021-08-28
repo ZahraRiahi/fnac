@@ -26,7 +26,7 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
     }
 
-    @PostMapping("/Get/{id}")
+    @GetMapping("/Get/{id}")
     public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@PathVariable("id") Long centricAccountTypeId) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, SecurityHelper.getCurrentUser().getOrganizationId()));
 
