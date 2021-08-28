@@ -34,7 +34,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "        fiac_inner.financial_account_parent_id=fiac.id" +
             "      and fiac_inner.deleted_date is null" +
             "    and fiac_inner.organization_id = :organizationId" +
-            ")) then 1 else 0 end haschild" +
+            ")) then 1 else 0 end haschild," +
+            " fiac.financial_account_structure_id " +
             "  from fnac.financial_account fiac" +
             " inner join fnac.account_nature_type acnt" +
             "    on fiac.account_nature_type_id = acnt.id" +

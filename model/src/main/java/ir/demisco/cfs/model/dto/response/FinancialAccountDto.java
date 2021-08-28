@@ -15,6 +15,7 @@ public class FinancialAccountDto {
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
     private LocalDateTime deletedDate;
+    private Long financialAccountStructureId;
     private Boolean hasChild;
 
     public Long getId() {
@@ -104,6 +105,7 @@ public class FinancialAccountDto {
     public void setFinancialAccountParentId(Long financialAccountParentId) {
         this.financialAccountParentId = financialAccountParentId;
     }
+
     public LocalDateTime getDeletedDate() {
         return deletedDate;
     }
@@ -111,10 +113,18 @@ public class FinancialAccountDto {
     public void setDeletedDate(LocalDateTime deletedDate) {
         this.deletedDate = deletedDate;
     }
+
     public static FinancialAccountDto.Builder builder() {
         return new FinancialAccountDto.Builder();
     }
 
+    public Long getFinancialAccountStructureId() {
+        return financialAccountStructureId;
+    }
+
+    public void setFinancialAccountStructureId(Long financialAccountStructureId) {
+        this.financialAccountStructureId = financialAccountStructureId;
+    }
 
     public Boolean getHasChild() {
         return hasChild;
@@ -189,14 +199,22 @@ public class FinancialAccountDto {
             financialAccountDto.setFinancialAccountParentId(financialAccountParentId);
             return this;
         }
+
         public FinancialAccountDto.Builder deletedDate(LocalDateTime deletedDate) {
             financialAccountDto.setDeletedDate(deletedDate);
             return this;
         }
+
+        public Builder financialAccountStructureId(Long financialAccountStructureId) {
+            financialAccountDto.setFinancialAccountStructureId(financialAccountStructureId);
+            return this;
+        }
+
         public Builder hasChild(Boolean hasChild) {
             financialAccountDto.setHasChild(hasChild);
             return this;
         }
+
         public FinancialAccountDto build() {
             return financialAccountDto;
         }
