@@ -35,6 +35,5 @@ public class DefaultFinancialAccountType implements FinancialAccountTypeService 
                 .build()).collect(Collectors.toList());
 
     }
-
 }
 
