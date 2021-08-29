@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface FinancialAccountTypeRepository extends JpaRepository<FinancialAccountType, Long> {
 
-    @Query(value = "select fnat.code," +
+    @Query(value = "select fnat.id," +
             " fnat.description," +
+            " fnat.code," +
             " case" +
             " when :financialAccount is null or not exists " +
             " (select 1 " +

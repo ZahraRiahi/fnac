@@ -30,7 +30,8 @@ public class DefaultFinancialAccountType implements FinancialAccountTypeService 
         List<Object[]> financialAccountTypeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccount, financialAccountTypeRequest.getFinancialAccountId());
         return financialAccountTypeListObject.stream().map(objects -> FinancialAccountTypeDto.builder().id(Long.parseLong(objects[0].toString()))
                 .description(objects[1].toString())
-                .flgExists(Long.parseLong(objects[2].toString()))
+                .code(objects[2].toString())
+                .flgExists(Long.parseLong(objects[3].toString()))
                 .build()).collect(Collectors.toList());
 
     }
