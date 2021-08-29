@@ -21,5 +21,4 @@ public class FinancialAccountTypeController {
     public ResponseEntity<List<FinancialAccountTypeDto>> responseEntity(@RequestBody FinancialAccountTypeRequest financialAccountTypeRequest) {
         return ResponseEntity.ok(financialAccountTypeService.getFinancialAccountByFinancialAccountId(financialAccountTypeRequest));
     }
-
 }
