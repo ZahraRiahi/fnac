@@ -7,7 +7,7 @@ public class FinancialAccountOutPutResponse {
     private long organizationId;
     private long financialAccountStructureId;
     private String fullDescription;
-    private String Description;
+    private String description;
     private String code;
     private Boolean activeFlag;
     private String latinDescription;
@@ -29,6 +29,9 @@ public class FinancialAccountOutPutResponse {
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
     private List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel;
+
+    public FinancialAccountOutPutResponse() {
+    }
 
     public Long getId() {
         return id;
@@ -63,12 +66,13 @@ public class FinancialAccountOutPutResponse {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
+
 
     public String getCode() {
         return code;
@@ -271,8 +275,8 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder Description(String Description) {
-            financialAccountOutPutResponse.setDescription(Description);
+        public Builder description(String description) {
+            financialAccountOutPutResponse.setDescription(description);
             return this;
         }
 

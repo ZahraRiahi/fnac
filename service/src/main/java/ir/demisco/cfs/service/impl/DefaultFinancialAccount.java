@@ -183,6 +183,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .financialAccountStructureId(financialAccount.getFinancialAccountStructure().getId())
                 .fullDescription(financialAccount.getFullDescription())
                 .code(financialAccount.getCode())
+                .description(financialAccount.getDescription())
                 .activeFlag(financialAccount.getActiveFlag())
                 .latinDescription(financialAccount.getLatinDescription())
                 .accountNatureTypeId(financialAccount.getAccountNatureType().getId())
