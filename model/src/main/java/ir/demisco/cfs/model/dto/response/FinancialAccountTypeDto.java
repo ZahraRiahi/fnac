@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class FinancialAccountTypeDto {
     private Long id;
     private String description;
+    private String code;
     private Long flgExists;
     private LocalDateTime DeletedDate;
 
@@ -24,6 +25,13 @@ public class FinancialAccountTypeDto {
         this.description = description;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public Long getFlgExists() {
         return flgExists;
@@ -63,6 +71,10 @@ public class FinancialAccountTypeDto {
 
         public Builder description(String description) {
             financialAccountTypeDto.setDescription(description);
+            return this;
+        }
+        public Builder code(String code) {
+            financialAccountTypeDto.setCode(code);
             return this;
         }
 
