@@ -21,12 +21,11 @@ public class DefaultFinancialAccountType implements FinancialAccountTypeService 
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public List<FinancialAccountTypeDto> getFinancialAccountByFinancialAccountId(FinancialAccountTypeRequest financialAccountTypeRequest) {
-        Object financialAccount;
+        Object financialAccount = null;
         if (financialAccountTypeRequest.getFinancialAccountId() != null) {
             financialAccount = "financialAccount";
         } else {
             financialAccountTypeRequest.setFinancialAccountId(0L);
-            financialAccount = null;
         }
         List<Object[]> financialAccountTypeListObject = financialAccountTypeRepository.findByFinancialAccountAndFinancialAccountId(financialAccount, financialAccountTypeRequest.getFinancialAccountId());
         return financialAccountTypeListObject.stream().map(objects -> FinancialAccountTypeDto.builder().id(Long.parseLong(objects[0].toString()))
