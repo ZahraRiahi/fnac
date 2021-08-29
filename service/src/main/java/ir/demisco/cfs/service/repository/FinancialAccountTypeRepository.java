@@ -11,7 +11,7 @@ public interface FinancialAccountTypeRepository extends JpaRepository<FinancialA
     @Query(value = "select fnat.code," +
             " fnat.description," +
             " case" +
-            " when :financialAccountId is null or not exists " +
+            " when :financialAccount is null or not exists " +
             " (select 1 " +
             " from fnac.account_related_type acrt " +
             " where (:financialAccount is null or " +
