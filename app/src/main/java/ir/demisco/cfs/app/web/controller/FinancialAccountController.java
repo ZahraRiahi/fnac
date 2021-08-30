@@ -22,7 +22,7 @@ public class FinancialAccountController {
 
     @PostMapping("/list")
     public ResponseEntity<DataSourceResult> financialAccountResponseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
+          return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
     }
 
     @PostMapping("/Get")
