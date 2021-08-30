@@ -339,17 +339,26 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
 
     private List<AccountDefaultValueResponse> saveAccountDefaultValue(List<AccountDefaultValueRequest> accountDefaultValueOutPutModel, FinancialAccount financialAccount) {
-        Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(accountDefaultValueOutPutModel.get(0).getAccountRelationTypeDetailId(), financialAccount.getId(), accountDefaultValueOutPutModel.get(0).getCentricAccountId());
-        if (countAccountDefaultValue > 0) {
-            throw new RuleException("خطا");
-        }
-
         List<AccountDefaultValueResponse> accountDefaultValueDtos = new ArrayList<>();
         accountDefaultValueOutPutModel.forEach(e -> {
+            Object centricAccount = null;
+            Long centricAccountId;
+            if (e.getCentricAccountId() != null) {
+                centricAccount = "centricAccount";
+                centricAccountId = e.getCentricAccountId();
+            } else {
+                centricAccountId = 0L;
+            }
+            Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(e.getAccountRelationTypeDetailId(), financialAccount.getId(), centricAccountId, centricAccount);
+            if (countAccountDefaultValue > 0) {
+                throw new RuleException("برای این نوع حساب و نوع جزئیات وابستگی رکوردی قبلا درج شده است");
+            }
             AccountDefaultValue accountDefaultValue = new AccountDefaultValue();
             accountDefaultValue.setFinancialAccount(financialAccount);
             accountDefaultValue.setAccountRelationTypeDetail(accountRelationTypeDetailRepository.getOne(e.getAccountRelationTypeDetailId()));
-            accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
+            if (e.getCentricAccountId() != null) {
+                accountDefaultValue.setCentricAccount(centricAccountRepository.getOne(e.getCentricAccountId()));
+            }
             accountDefaultValue = accountDefaultValueRepository.save(accountDefaultValue);
             accountDefaultValueDtos.add(convertAccountDefaultValueResponse(accountDefaultValue));
         });
@@ -359,9 +368,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private AccountDefaultValueResponse convertAccountDefaultValueResponse(AccountDefaultValue accountDefaultValue) {
         AccountDefaultValueResponse accountDefaultValueResponse = new AccountDefaultValueResponse();
         accountDefaultValueResponse.setAccountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId());
-        accountDefaultValueResponse.setCentricAccountId(accountDefaultValue.getCentricAccount().getId());
-        accountDefaultValueResponse.setCentricAccountName(accountDefaultValue.getCentricAccount().getName());
-        accountDefaultValueResponse.setCentricAccountCode(accountDefaultValue.getCentricAccount().getCode());
+        accountDefaultValueResponse.setCentricAccountId(accountDefaultValue.getCentricAccount() == null ? 0L : accountDefaultValue.getCentricAccount().getId());
+        accountDefaultValueResponse.setCentricAccountName(accountDefaultValue.getCentricAccount() == null ? "" : accountDefaultValue.getCentricAccount().getName());
+        accountDefaultValueResponse.setCentricAccountCode(accountDefaultValue.getCentricAccount() == null ? "" : accountDefaultValue.getCentricAccount().getCode());
         accountDefaultValueResponse.setAccountRelationTypeDescription(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getDescription());
         accountDefaultValueResponse.setAccountRelationTypeId(accountDefaultValue.getAccountRelationTypeDetail().getAccountRelationType().getId());
         return accountDefaultValueResponse;
