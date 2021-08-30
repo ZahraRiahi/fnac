@@ -25,8 +25,8 @@ public class FinancialAccountRequest {
     private Long accountAdjustmentId;
     private Long financialCodingTypeId;
     private List<Long> financialAccountTypeId;
-    private List<AccountDefaultValueRequest> accountDefaultValueOutPutModel;
-    private List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel;
+    private List<AccountDefaultValueRequest> accountDefaultValueInPutModel;
+    private List<AccountRelatedDescriptionRequest> accountRelatedDescriptionInPutModel;
     private List<Long> moneyTypeId;
 
     public Long getId() {
@@ -189,20 +189,20 @@ public class FinancialAccountRequest {
         this.financialAccountTypeId = financialAccountTypeId;
     }
 
-    public List<AccountDefaultValueRequest> getAccountDefaultValueOutPutModel() {
-        return accountDefaultValueOutPutModel;
+    public List<AccountDefaultValueRequest> getAccountDefaultValueInPutModel() {
+        return accountDefaultValueInPutModel;
     }
 
-    public void setAccountDefaultValueOutPutModel(List<AccountDefaultValueRequest> accountDefaultValueOutPutModel) {
-        this.accountDefaultValueOutPutModel = accountDefaultValueOutPutModel;
+    public void setAccountDefaultValueInPutModel(List<AccountDefaultValueRequest> accountDefaultValueInPutModel) {
+        this.accountDefaultValueInPutModel = accountDefaultValueInPutModel;
     }
 
-    public List<AccountRelatedDescriptionRequest> getAccountRelatedDescriptionOutPutModel() {
-        return accountRelatedDescriptionOutPutModel;
+    public List<AccountRelatedDescriptionRequest> getAccountRelatedDescriptionInPutModel() {
+        return accountRelatedDescriptionInPutModel;
     }
 
-    public void setAccountRelatedDescriptionOutPutModel(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel) {
-        this.accountRelatedDescriptionOutPutModel = accountRelatedDescriptionOutPutModel;
+    public void setAccountRelatedDescriptionInPutModel(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionInPutModel) {
+        this.accountRelatedDescriptionInPutModel = accountRelatedDescriptionInPutModel;
     }
 
     public List<Long> getMoneyTypeId() {
