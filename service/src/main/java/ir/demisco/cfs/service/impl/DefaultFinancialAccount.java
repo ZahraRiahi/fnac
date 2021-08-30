@@ -75,7 +75,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -87,13 +87,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .description(item[3].toString())
                         .code(item[2].toString())
                         .activeFlag(Integer.parseInt(item[4].toString()) == 1)
-                        .permanentFlag(Integer.parseInt(item[5].toString()) == 1)
-                        .accountNatureTypeId(Long.parseLong(item[6].toString()))
+                        .permanentFlag(item[6] == null ? null : Integer.parseInt(item[6].toString()) == 1)
+                        .accountNatureTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
                         .accountRelationTypeDescription(item[10].toString())
-                        .accountRelationTypeId(Long.parseLong(item[7].toString()))
+                        .accountRelationTypeId(item[7] == null ? null : Long.parseLong(item[7].toString()))
                         .accountNatureTypeDescription(item[9].toString())
-                        .financialAccountParentId(Long.parseLong(item[8] == null ? "0" : item[8].toString()))
-                        .financialAccountStructureId(Long.parseLong(item[12].toString()))
+                        .financialAccountParentId(item[8] == null ? null : Long.parseLong(item[8].toString()))
+                        .financialAccountStructureId(item[12] == null ? null : Long.parseLong(item[12].toString()))
                         .hasChild(Integer.parseInt(item[11].toString()) == 1)
                         .build()).collect(Collectors.toList());
 
