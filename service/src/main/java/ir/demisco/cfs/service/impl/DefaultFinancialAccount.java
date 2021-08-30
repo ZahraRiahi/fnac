@@ -252,10 +252,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
         saveAccountStructureLevel(financialAccountRequest, financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
-                (financialAccountRequest.getAccountDefaultValueOutPutModel(), financialAccount));
+                (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
 
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel(saveAccountRelatedDescriptionValue
-                (financialAccountRequest.getAccountRelatedDescriptionOutPutModel(), financialAccount));
+                (financialAccountRequest.getAccountRelatedDescriptionInPutModel(), financialAccount));
 
         financialAccountOutPutDto.setAccountMoneyTypeOutPut(saveAccountMoneyType
                 (financialAccountRequest.getMoneyTypeId(), financialAccount));
@@ -456,9 +456,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setAccountMoneyTypeOutPut(updateAccountMoneyType
                 (financialAccountRequest.getMoneyTypeId(), financialAccount));
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel
-                (updateAccountDefaultValue(financialAccountRequest.getAccountDefaultValueOutPutModel()));
+                (updateAccountDefaultValue(financialAccountRequest.getAccountDefaultValueInPutModel()));
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel
-                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionOutPutModel(), financialAccount.getId()));
+                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionInPutModel(), financialAccount.getId()));
         return financialAccountOutPutDto;
     }
 
