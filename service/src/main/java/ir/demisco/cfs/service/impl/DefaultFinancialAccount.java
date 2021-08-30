@@ -539,4 +539,19 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 );
         return accountRelatedDescriptionDtos;
     }
+
+//    @Override
+//    @Transactional(rollbackOn = Throwable.class)
+//    public boolean deleteFinancialAccountById(Long financialAccountId) {
+//        List<FinancialAccountStructure> financialAccountStructures = financialAccountStructureRepository.findByFinancialCodingTypeId(financialAccountId);
+//        FinancialCodingType financialCodingType;
+//        if (!financialAccountStructures.isEmpty()) {
+//            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+//        } else {
+//            financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
+//            financialCodingType.setDeletedDate(LocalDateTime.now());
+//            financialCodingTypeRepository.save(financialCodingType);
+//            return true;
+//        }
+//    }
 }

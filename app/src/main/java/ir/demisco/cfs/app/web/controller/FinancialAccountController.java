@@ -50,12 +50,12 @@ public class FinancialAccountController {
     public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
     }
-    @PostMapping("/delete/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialAccountId) {
-        boolean result;
-        result = financialAccountService.deleteFinancialAccountById(FinancialAccountId);
-        return ResponseEntity.ok(result);
-
-    }
+//    @PostMapping("/delete/{id}")
+//    public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialAccountId) {
+//        boolean result;
+//        result = financialAccountService.deleteFinancialAccountById(FinancialAccountId);
+//        return ResponseEntity.ok(result);
+//
+//    }
 
 }
