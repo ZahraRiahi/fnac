@@ -201,8 +201,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .convertFlag(financialAccount.getConvertFlag())
                 .exchangeFlag(financialAccount.getExchangeFlag())
                 .convertFlag(financialAccount.getConvertFlag())
-                .accountAdjustmentId(financialAccount.getAccountAdjustment().getId())
-                .accountAdjustmentDescription(financialAccount.getAccountAdjustment().getDescription()).build();
+                .accountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId())
+                .accountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? "" : financialAccount.getAccountAdjustment().getDescription()).build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountRelatedDescriptionOutPutModel(accountRelatedDescriptionResponses(financialAccountId));
