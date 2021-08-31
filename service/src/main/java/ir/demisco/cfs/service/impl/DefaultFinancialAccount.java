@@ -47,8 +47,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountStructureLevelRepository accountStructureLevelRepository;
     private final AccountRelatedDescriptionService accountRelatedDescriptionService;
     private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
+    private final FinancialDocumentItemRepository financialDocumentItemRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -67,6 +68,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountStructureLevelRepository = accountStructureLevelRepository;
         this.accountRelatedDescriptionService = accountRelatedDescriptionService;
         this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
+        this.financialDocumentItemRepository = financialDocumentItemRepository;
     }
 
     @Override
@@ -540,18 +542,27 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return accountRelatedDescriptionDtos;
     }
 
-//    @Override
-//    @Transactional(rollbackOn = Throwable.class)
-//    public boolean deleteFinancialAccountById(Long financialAccountId) {
-//        List<FinancialAccountStructure> financialAccountStructures = financialAccountStructureRepository.findByFinancialCodingTypeId(financialAccountId);
-//        FinancialCodingType financialCodingType;
-//        if (!financialAccountStructures.isEmpty()) {
-//            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
-//        } else {
-//            financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
-//            financialCodingType.setDeletedDate(LocalDateTime.now());
-//            financialCodingTypeRepository.save(financialCodingType);
-//            return true;
-//        }
-//    }
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean deleteFinancialAccountById(Long financialAccountId) {
+        Long financialAccountStructureCount = financialAccountRepository.findByFinancialAccountId(financialAccountId);
+        if (financialAccountStructureCount != null) {
+            Long financialDocumentItemCount = financialDocumentItemRepository.getFinancialDocumentItemByFinancialAccountId(financialAccountId);
+            if (financialDocumentItemCount > 0) {
+                throw new RuleException("خطا");
+            } else {
+                accountDefaultValueRepository.findByFinancialAccountId(financialAccountId).forEach(e ->
+                        e.setDeletedDate(LocalDateTime.now()));
+                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+
+                FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountId);
+                financialAccount.setDeletedDate(LocalDateTime.now());
+                return true;
+            }
+
+        }
+        return false;
+    }
 }
