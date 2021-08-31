@@ -561,7 +561,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 financialAccount.setDeletedDate(LocalDateTime.now());
                 return true;
             }
-
         }
         return false;
     }
