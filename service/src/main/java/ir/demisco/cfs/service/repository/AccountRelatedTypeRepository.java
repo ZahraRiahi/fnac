@@ -8,4 +8,5 @@ import java.util.List;
 public interface AccountRelatedTypeRepository extends JpaRepository<AccountRelatedType, Long> {
 
     List<AccountRelatedType> findByFinancialAccountId(Long financialAccountId);
+
 }

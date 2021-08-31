@@ -81,4 +81,19 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
     @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)")
     Long getCountByFinancialAccountAndCode(String code, Long financialAccountId);
+
+
+    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
+            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
+            " and fa.id=:financialAccountId and fa.deletedDate is null")
+    Long findByFinancialAccountId(Long financialAccountId);
+
+
+
+//    @Query("select count(adv.id) from FinancialAccount fa join adv.financialAccount fa " +
+//            " where fa.id=:financialAccountId  and adv.accountRelationTypeDetail.id=:accountRelationTypeDetailId " +
+//            " and (:centricAccount is null or " +
+//            " adv.centricAccount.id = :centricAccountId)" +
+//            " and adv.deletedDate is null")
+//    Long findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(Long accountRelationTypeDetailId, Long financialAccountId, Long centricAccountId, Object centricAccount);
 }
