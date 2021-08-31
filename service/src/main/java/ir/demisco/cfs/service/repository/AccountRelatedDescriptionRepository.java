@@ -1,9 +1,9 @@
 package ir.demisco.cfs.service.repository;
 
-
 import ir.demisco.cfs.model.entity.AccountRelatedDescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 
 public interface AccountRelatedDescriptionRepository extends JpaRepository<AccountRelatedDescription, Long> {
@@ -18,10 +18,12 @@ public interface AccountRelatedDescriptionRepository extends JpaRepository<Accou
             " from fnac.account_related_description " +
             " where financial_account_des_id = :financialAccountDesId and  financial_account_id = :financialAccountId"
             , nativeQuery = true)
-    Long getAccountRelatedDescriptionByFinancialAccountDescriptionId(Long financialAccountDesId,Long financialAccountId);
+    Long getAccountRelatedDescriptionByFinancialAccountDescriptionId(Long financialAccountDesId, Long financialAccountId);
 
     AccountRelatedDescription findByFinancialAccountDescriptionId(Long financialAccountDescriptionId);
 
-    AccountRelatedDescription findByFinancialAccountIdAndFinancialAccountDescriptionIdAndDeletedDateIsNull(Long financialAccountId,Long financialAccountDescriptionId);
+    AccountRelatedDescription findByFinancialAccountIdAndFinancialAccountDescriptionIdAndDeletedDateIsNull(Long financialAccountId, Long financialAccountDescriptionId);
+
+    List<AccountRelatedDescription> findByFinancialAccountId(Long financialAccountId);
 
 }
