@@ -20,7 +20,7 @@ public interface FinancialAccountService {
 
     List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
 
-//    boolean deleteFinancialAccountById(Long financialAccount);
+    Boolean deleteFinancialAccountById(Long financialAccount);
 
 
 }
