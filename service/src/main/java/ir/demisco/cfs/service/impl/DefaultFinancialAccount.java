@@ -549,7 +549,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountStructureCount != null) {
             Long financialDocumentItemCount = financialDocumentItemRepository.getFinancialDocumentItemByFinancialAccountId(financialAccountId);
             if (financialDocumentItemCount > 0) {
-                throw new RuleException("خطا");
+                throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
                 accountDefaultValueRepository.findByFinancialAccountId(financialAccountId).forEach(e ->
                         e.setDeletedDate(LocalDateTime.now()));
@@ -562,6 +562,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 return true;
             }
         }
-        return false;
+         throw new RuleException("حساب انتخاب شده آخرین سطح حساب نمی باشد و امکان حذف آن وجود ندارد");
     }
 }
