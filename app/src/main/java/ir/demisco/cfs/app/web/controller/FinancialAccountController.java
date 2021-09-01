@@ -51,7 +51,7 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialAccountId) {
         boolean result;
         result = financialAccountService.deleteFinancialAccountById(FinancialAccountId);
