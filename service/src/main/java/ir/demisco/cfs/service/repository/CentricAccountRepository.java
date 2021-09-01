@@ -33,7 +33,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " cnat.id as centricAccountTypeId, " +
             " cnat.description as centricAccountTypeDescription " +
             " from fnac.centric_account cnac " +
-            " left outer join fnac.account_default_value acdv " +
+            " right outer join fnac.account_default_value acdv " +
             " on cnac.id = acdv.centric_account_id " +
             " and acdv.deleted_date is null " +
             " left outer join fnac.account_relation_type_detail artd " +

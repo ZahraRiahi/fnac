@@ -224,11 +224,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return centricAccountListObject.stream().map(objects ->
                 AccountDefaultValueResponse.builder()
                         .accountRelationTypeDetailId(Long.parseLong(objects[0].toString()))
-                        .centricAccountId(Long.parseLong(objects[1].toString()))
-                        .centricAccountName(objects[2].toString())
-                        .centricAccountCode(objects[3].toString())
+                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
+                        .centricAccountName(objects[2] == null ? null : objects[2].toString())
+                        .centricAccountCode(objects[3] == null ? null : objects[3].toString())
                         .accountRelationTypeDescription(objects[4].toString())
                         .accountRelationTypeId(Long.parseLong(objects[5].toString()))
+                        .sequence(Long.parseLong(objects[6].toString()))
+                        .centricAccountTypeId(Long.parseLong(objects[7].toString()))
+                        .centricAccountTypeDescription(objects[8].toString())
                         .build()).collect(Collectors.toList());
     }
 

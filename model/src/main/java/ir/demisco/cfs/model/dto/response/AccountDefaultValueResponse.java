@@ -7,6 +7,10 @@ public class AccountDefaultValueResponse {
     private String centricAccountCode;
     private String accountRelationTypeDescription;
     private Long accountRelationTypeId;
+    private Long sequence;
+    private Long centricAccountTypeId;
+    private String centricAccountTypeDescription;
+
 
     public Long getAccountRelationTypeDetailId() {
         return accountRelationTypeDetailId;
@@ -56,29 +60,29 @@ public class AccountDefaultValueResponse {
         this.accountRelationTypeId = accountRelationTypeId;
     }
 
-//    public Long getSequence() {
-//        return sequence;
-//    }
-//
-//    public void setSequence(Long sequence) {
-//        this.sequence = sequence;
-//    }
-//
-//    public Long getCentricAccountTypeId() {
-//        return centricAccountTypeId;
-//    }
-//
-//    public void setCentricAccountTypeId(Long centricAccountTypeId) {
-//        this.centricAccountTypeId = centricAccountTypeId;
-//    }
-//
-//    public String getCentricAccountTypeDescription() {
-//        return centricAccountTypeDescription;
-//    }
-//
-//    public void setCentricAccountTypeDescription(String centricAccountTypeDescription) {
-//        this.centricAccountTypeDescription = centricAccountTypeDescription;
-//    }
+    public Long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
+    }
+
+    public Long getCentricAccountTypeId() {
+        return centricAccountTypeId;
+    }
+
+    public void setCentricAccountTypeId(Long centricAccountTypeId) {
+        this.centricAccountTypeId = centricAccountTypeId;
+    }
+
+    public String getCentricAccountTypeDescription() {
+        return centricAccountTypeDescription;
+    }
+
+    public void setCentricAccountTypeDescription(String centricAccountTypeDescription) {
+        this.centricAccountTypeDescription = centricAccountTypeDescription;
+    }
 
     public static AccountDefaultValueResponse.Builder builder() {
         return new AccountDefaultValueResponse.Builder();
@@ -125,20 +129,20 @@ public class AccountDefaultValueResponse {
             return this;
         }
 
-//        public Builder sequence(Long sequence) {
-//            accountDefaultValueResponse.setSequence(sequence);
-//            return this;
-//        }
-//
-//        public Builder centricAccountTypeId(Long centricAccountTypeId) {
-//            accountDefaultValueResponse.setCentricAccountTypeId(centricAccountTypeId);
-//            return this;
-//        }
-//
-//        public Builder centricAccountTypeDescription(String centricAccountTypeDescription) {
-//            accountDefaultValueResponse.setCentricAccountTypeDescription(centricAccountTypeDescription);
-//            return this;
-//        }
+        public Builder sequence(Long sequence) {
+            accountDefaultValueResponse.setSequence(sequence);
+            return this;
+        }
+
+        public Builder centricAccountTypeId(Long centricAccountTypeId) {
+            accountDefaultValueResponse.setCentricAccountTypeId(centricAccountTypeId);
+            return this;
+        }
+
+        public Builder centricAccountTypeDescription(String centricAccountTypeDescription) {
+            accountDefaultValueResponse.setCentricAccountTypeDescription(centricAccountTypeDescription);
+            return this;
+        }
 
         public AccountDefaultValueResponse build() {
             return accountDefaultValueResponse;
