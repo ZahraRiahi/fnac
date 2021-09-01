@@ -269,23 +269,40 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
-
         Long financialAccountCodeCount;
         if (financialAccountRequest.getId() == null) {
             financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
+            FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+            financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+            financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
+            Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
+                    (financialAccountStructureRequest);
+
+            if (financialAccountStructureId == null) {
+                throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
+            }
+            financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
+
         } else {
             financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccount.getId());
+            financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
         }
         if (financialAccountCodeCount > 0) {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
         financialAccount.setOrganization(organizationRepository.getOne(100L));
-        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
-        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
-        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
-        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
-                (financialAccountStructureRequest);
-        financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
+//        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+//        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+//        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
+//        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
+//                (financialAccountStructureRequest);
+//
+//        if (financialAccountStructureId == null) {
+//            throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
+//        }
+//
+//
+//        financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
@@ -562,6 +579,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 return true;
             }
         }
-         throw new RuleException("حساب انتخاب شده آخرین سطح حساب نمی باشد و امکان حذف آن وجود ندارد");
+        throw new RuleException("حساب انتخاب شده آخرین سطح حساب نمی باشد و امکان حذف آن وجود ندارد");
     }
 }
