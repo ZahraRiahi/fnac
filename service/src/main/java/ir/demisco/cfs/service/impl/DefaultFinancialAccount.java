@@ -489,7 +489,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel
                 (updateAccountDefaultValue(financialAccountRequest.getAccountDefaultValueInPutModel()));
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel
-                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionInPutModel(), financialAccount.getId()));
+                (updateAccountRelatedDescription(financialAccountRequest.getAccountRelatedDescriptionInPutModel(), financialAccount));
         return financialAccountOutPutDto;
     }
 
@@ -543,22 +543,33 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return accountDefaultValueResponses;
     }
 
-    private List<AccountRelatedDescriptionDto> updateAccountRelatedDescription(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, Long financialAccountId) {
+    private List<AccountRelatedDescriptionDto> updateAccountRelatedDescription(List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, FinancialAccount financialAccount) {
         List<AccountRelatedDescriptionDto> accountRelatedDescriptionDtos = new ArrayList<>();
-        financialAccountDescriptionRepository.findByFinancialAccountDescriptionListId
+        List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModelRequest = new ArrayList<>();
+        List<FinancialAccountDescription> financialAccountDescriptionList = financialAccountDescriptionRepository.findByFinancialAccountDescriptionListId
                 (accountRelatedDescriptionOutPutModel
                         .stream()
-                        .map(AccountRelatedDescriptionRequest::getFinancialAccountDesId).collect(Collectors.toList()))
-                .forEach(financialAccountDescription -> accountRelatedDescriptionOutPutModel.stream()
-                        .filter(e -> financialAccountDescription.getId().equals(e.getFinancialAccountDesId()))
-                        .forEach(accountRelatedDescriptionRequest -> {
-                            financialAccountDescription.setDescription(accountRelatedDescriptionRequest.getDescription());
+                        .map(AccountRelatedDescriptionRequest::getFinancialAccountDesId).collect(Collectors.toList()));
+        accountRelatedDescriptionOutPutModel.forEach(e -> {
+            if (e.getId() != null) {
+                financialAccountDescriptionList.stream().filter(f -> f.getId().equals(e.getFinancialAccountDesId()))
+                        .findAny()
+                        .ifPresent(financialAccountDescription -> {
+                            financialAccountDescription.setDescription(e.getDescription());
                             AccountRelatedDescription accountRelatedDescription = accountRelatedDescriptionRepository
                                     .findByFinancialAccountIdAndFinancialAccountDescriptionIdAndDeletedDateIsNull
-                                            (financialAccountId, financialAccountDescription.getId());
+                                            (financialAccount.getId(), financialAccountDescription.getId());
                             accountRelatedDescriptionDtos.add(accountRelatedDescriptionService.convertAccountRelatedDescriptionDto(accountRelatedDescription));
-                        })
-                );
+                        });
+            } else {
+                accountRelatedDescriptionOutPutModelRequest.add(e);
+            }
+        });
+        if (!accountRelatedDescriptionOutPutModelRequest.isEmpty()) {
+            accountRelatedDescriptionDtos.addAll(saveAccountRelatedDescriptionValue
+                    (accountRelatedDescriptionOutPutModelRequest, financialAccount));
+        }
+
         return accountRelatedDescriptionDtos;
     }
 
