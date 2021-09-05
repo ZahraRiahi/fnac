@@ -173,6 +173,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccount.stream().map(e -> FinancialAccountResponse.builder().id(e.getId())
                 .description(e.getDescription())
                 .code(e.getCode())
+                .referenceFlag(e.getReferenceFlag())
+                .exchangeFlag(e.getExchangeFlag())
+                .accountRelationTypeId(e.getAccountRelationType().getId())
                 .build()).collect(Collectors.toList());
     }
 

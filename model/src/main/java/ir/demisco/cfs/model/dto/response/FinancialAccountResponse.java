@@ -4,6 +4,9 @@ public class FinancialAccountResponse {
     private Long id;
     private String code;
     private String description;
+    private Boolean referenceFlag;
+    private Boolean exchangeFlag;
+    private Long accountRelationTypeId;
 
     public Long getId() {
         return id;
@@ -28,9 +31,35 @@ public class FinancialAccountResponse {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Boolean getReferenceFlag() {
+        return referenceFlag;
+    }
+
+    public void setReferenceFlag(Boolean referenceFlag) {
+        this.referenceFlag = referenceFlag;
+    }
+
+    public Boolean getExchangeFlag() {
+        return exchangeFlag;
+    }
+
+    public void setExchangeFlag(Boolean exchangeFlag) {
+        this.exchangeFlag = exchangeFlag;
+    }
+
+    public Long getAccountRelationTypeId() {
+        return accountRelationTypeId;
+    }
+
+    public void setAccountRelationTypeId(Long accountRelationTypeId) {
+        this.accountRelationTypeId = accountRelationTypeId;
+    }
+
     public static FinancialAccountResponse.Builder builder() {
         return new FinancialAccountResponse.Builder();
     }
+
     public static final class Builder {
         private FinancialAccountResponse financialAccountResponse;
 
@@ -54,6 +83,21 @@ public class FinancialAccountResponse {
 
         public Builder description(String description) {
             financialAccountResponse.setDescription(description);
+            return this;
+        }
+
+        public Builder referenceFlag(Boolean referenceFlag) {
+            financialAccountResponse.setReferenceFlag(referenceFlag);
+            return this;
+        }
+
+        public Builder exchangeFlag(Boolean exchangeFlag) {
+            financialAccountResponse.setExchangeFlag(exchangeFlag);
+            return this;
+        }
+
+        public Builder accountRelationTypeId(Long accountRelationTypeId) {
+            financialAccountResponse.setAccountRelationTypeId(accountRelationTypeId);
             return this;
         }
 
