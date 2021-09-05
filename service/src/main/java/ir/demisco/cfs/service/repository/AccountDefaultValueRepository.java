@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.AccountDefaultValue;
+import ir.demisco.cfs.model.entity.CentricPersonRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,10 +20,7 @@ public interface AccountDefaultValueRepository extends JpaRepository<AccountDefa
 
     AccountDefaultValue findByIdAndAccountRelationTypeDetailId(Long id, Long accountRelationTypeDetailId);
 
-    @Query("select adv  from AccountDefaultValue adv where  adv.id in (:accountDefaultValueIdList) ")
-    List<AccountDefaultValue> findAccountDefaultValueByFinancialAccount(List<Long> accountDefaultValueIdList);
-
-    List<AccountDefaultValue> findByFinancialAccountId(Long financialAccountId);
+    List<AccountDefaultValue> findByFinancialAccountIdAndDeletedDateIsNull(Long financialAccountId);
 
 
 }
