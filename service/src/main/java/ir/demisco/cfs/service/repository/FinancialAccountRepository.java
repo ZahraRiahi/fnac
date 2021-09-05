@@ -89,6 +89,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Long findByFinancialAccountId(Long financialAccountId);
 
 
+    @Query(value = " select 1 from  FinancialAccount fa join fa.accountRelationType art " +
+            " where  fa.accountRelationType.id=:accountRelationTypeId" +
+            " and fa.id=:financialAccountId ")
+    Long findByFinancialAccountByAccountRelationTypeId(Long accountRelationTypeId, Long financialAccountId);
+
 
 //    @Query("select count(adv.id) from FinancialAccount fa join adv.financialAccount fa " +
 //            " where fa.id=:financialAccountId  and adv.accountRelationTypeDetail.id=:accountRelationTypeDetailId " +
