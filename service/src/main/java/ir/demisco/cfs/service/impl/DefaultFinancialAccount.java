@@ -541,7 +541,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                             .filter(accountDefaultValueRequest ->
                                     e.getId().equals(accountDefaultValueRequest.getId()))
                             .forEach(accountDefaultValueRequest -> {
-                                e.setCentricAccount(centricAccountRepository.getOne(accountDefaultValueRequest.getCentricAccountId()));
+                                if(accountDefaultValueRequest.getCentricAccountId() != null){
+                                    e.setCentricAccount(centricAccountRepository.getOne(accountDefaultValueRequest.getCentricAccountId()));
+                                }else {
+                                    e.setCentricAccount(null);
+                                }
                                 accountDefaultValueResponses.add(convertAccountDefaultValueResponse(e));
                             })
                     );
