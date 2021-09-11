@@ -66,7 +66,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
@@ -86,10 +86,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
+        financialAccountStructure.setId(financialAccountStructureDto.getId());
         financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
         financialAccountStructure.setDigitCount(financialAccountStructureDto.getDigitCount());
@@ -121,7 +122,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         String financialAccountStructure = null;
         if (financialAccountStructureRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
-        }else {
+        } else {
             financialAccountStructureRequest.setFinancialAccountStructureId(0L);
         }
         return financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructure(financialAccountStructureRequest.getFinancialCodingTypeId(), financialAccountStructureRequest.getFinancialAccountStructureId(), financialAccountStructure);
@@ -133,7 +134,9 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 .digitCount(financialAccountStructure.getDigitCount())
                 .sumDigit(financialAccountStructure.getSumDigit())
                 .color(financialAccountStructure.getColor())
-                .financialCodingTypeId(financialAccountStructure.getFinancialCodingType().getId()).build();
+                .financialCodingTypeId(financialAccountStructure.getFinancialCodingType().getId())
+                .id(financialAccountStructure.getId())
+                .build();
 
     }
 }
