@@ -11,8 +11,10 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
     @Query("select fas from  FinancialAccountStructure fas where fas.financialCodingType.id=:financialCodingTypeId and fas.deletedDate is null")
     List<FinancialAccountStructure> findByFinancialCodingTypeId(Long financialCodingTypeId);
 
-    @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas join fas.financialCodingType fct where fas.sequence=:sequence and fct.id=:financialCodingTypeId  and fct.organization.id=:organizationId and fas.deletedDate is null")
-    Long getCountByFinancialAccountStructureSequenceAndId(Long sequence, Long financialCodingTypeId, Long organizationId);
+    @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas " +
+            " join fas.financialCodingType fct" +
+            " where fas.sequence=:sequence and fct.id=:financialCodingTypeId   and fas.deletedDate is null")
+    Long getCountByFinancialAccountStructureSequenceAndId(Long sequence, Long financialCodingTypeId);
 
     @Query(value = "select fnas.id" +
             " from fnac.financial_account_structure fnas" +
