@@ -48,14 +48,13 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                         :financialCodingTypeId" +
             "                     and fnas_inner1.deleted_date is null" +
             "                     and (:financialAccountStructure is null or" +
-            "                         (fnas_inner1.sequence >" +
+            "                         (fnas_inner1.sequence >=" +
             "                         (select fnas_inner2.sequence" +
             "                              from fnac.financial_account_structure fnas_inner2" +
             "                             where fnas_inner2.id = :financialAccountStructureId" +
             "                               and fnas_inner2.deleted_date is null)))))"
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
-
 
     @Query(value = " select 1 " +
             "          from fnac.financial_account t1 " +
@@ -71,13 +70,13 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                         :financialCodingTypeId " +
             "                     and fnas_inner1.deleted_date is null" +
             "                     and (:financialAccountStructure is null or" +
-            "                         (fnas_inner1.sequence >" +
+            "                         (fnas_inner1.sequence >=" +
             "                         (select fnas_inner2.sequence" +
             "                              from fnac.financial_account_structure fnas_inner2" +
             "                             where fnas_inner2.id = :financialAccountStructureId" +
             "                               and fnas_inner2.deleted_date is null)))))) "
             , nativeQuery = true)
-    Long getAccountStructureLevelByFinancialAccountAndFinancialCodingAndFinancialAccountStructure(Long financialAccountId,Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
+    Long getAccountStructureLevelByFinancialAccountAndFinancialCodingAndFinancialAccountStructure(Long financialAccountId, Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
 
 
     List<AccountStructureLevel> findByFinancialAccountId(Long financialAccountId);
