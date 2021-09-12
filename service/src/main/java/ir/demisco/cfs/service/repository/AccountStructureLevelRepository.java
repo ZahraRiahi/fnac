@@ -56,7 +56,6 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountStructureListObject(Long financialCodingTypeId, String financialAccountCode, Long financialAccountStructureId, Object financialAccountStructure);
 
-
     @Query(value = " select 1 " +
             "          from fnac.financial_account t1 " +
             "         where t1.id = :financialAccountId " +
