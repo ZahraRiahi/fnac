@@ -1,6 +1,7 @@
 package ir.demisco.cfs.model.dto.response;
 
 public class AccountDefaultValueResponse {
+    private Long id;
     private Long accountRelationTypeDetailId;
     private Long centricAccountId;
     private String centricAccountName;
@@ -11,6 +12,13 @@ public class AccountDefaultValueResponse {
     private Long centricAccountTypeId;
     private String centricAccountTypeDescription;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getAccountRelationTypeDetailId() {
         return accountRelationTypeDetailId;
@@ -97,6 +105,11 @@ public class AccountDefaultValueResponse {
 
         public static Builder accountDefaultValueResponse() {
             return new Builder();
+        }
+
+        public Builder id(Long id) {
+            accountDefaultValueResponse.setId(id);
+            return this;
         }
 
         public Builder accountRelationTypeDetailId(Long accountRelationTypeDetailId) {
