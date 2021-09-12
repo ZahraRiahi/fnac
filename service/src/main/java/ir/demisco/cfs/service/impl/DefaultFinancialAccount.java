@@ -226,15 +226,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> centricAccountListObject = centricAccountRepository.findByCentricAccountListObject(financialAccountId);
         return centricAccountListObject.stream().map(objects ->
                 AccountDefaultValueResponse.builder()
-                        .accountRelationTypeDetailId(Long.parseLong(objects[0].toString()))
-                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
-                        .centricAccountName(objects[2] == null ? null : objects[2].toString())
-                        .centricAccountCode(objects[3] == null ? null : objects[3].toString())
-                        .accountRelationTypeDescription(objects[4].toString())
-                        .accountRelationTypeId(Long.parseLong(objects[5].toString()))
-                        .sequence(Long.parseLong(objects[6].toString()))
-                        .centricAccountTypeId(Long.parseLong(objects[7].toString()))
-                        .centricAccountTypeDescription(objects[8].toString())
+                        .id(Long.parseLong(objects[0].toString()))
+                        .accountRelationTypeDetailId(Long.parseLong(objects[1].toString()))
+                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[2].toString()))
+                        .centricAccountName(objects[2] == null ? null : objects[3].toString())
+                        .centricAccountCode(objects[3] == null ? null : objects[4].toString())
+                        .accountRelationTypeDescription(objects[5].toString())
+                        .accountRelationTypeId(Long.parseLong(objects[6].toString()))
+                        .sequence(Long.parseLong(objects[7].toString()))
+                        .centricAccountTypeId(Long.parseLong(objects[8].toString()))
+                        .centricAccountTypeDescription(objects[9].toString())
                         .build()).collect(Collectors.toList());
     }
 
@@ -541,9 +542,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                             .filter(accountDefaultValueRequest ->
                                     e.getId().equals(accountDefaultValueRequest.getId()))
                             .forEach(accountDefaultValueRequest -> {
-                                if(accountDefaultValueRequest.getCentricAccountId() != null){
+                                if (accountDefaultValueRequest.getCentricAccountId() != null) {
                                     e.setCentricAccount(centricAccountRepository.getOne(accountDefaultValueRequest.getCentricAccountId()));
-                                }else {
+                                } else {
                                     e.setCentricAccount(null);
                                 }
                                 accountDefaultValueResponses.add(convertAccountDefaultValueResponse(e));
