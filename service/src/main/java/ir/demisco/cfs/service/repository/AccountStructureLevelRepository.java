@@ -48,7 +48,7 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                         :financialCodingTypeId" +
             "                     and fnas_inner1.deleted_date is null" +
             "                     and (:financialAccountStructure is null or" +
-            "                         (fnas_inner1.sequence >=" +
+            "                         (fnas_inner1.sequence >= " +
             "                         (select fnas_inner2.sequence" +
             "                              from fnac.financial_account_structure fnas_inner2" +
             "                             where fnas_inner2.id = :financialAccountStructureId" +
@@ -70,7 +70,7 @@ public interface AccountStructureLevelRepository extends JpaRepository<AccountSt
             "                         :financialCodingTypeId " +
             "                     and fnas_inner1.deleted_date is null" +
             "                     and (:financialAccountStructure is null or" +
-            "                         (fnas_inner1.sequence >=" +
+            "                         (fnas_inner1.sequence >= " +
             "                         (select fnas_inner2.sequence" +
             "                              from fnac.financial_account_structure fnas_inner2" +
             "                             where fnas_inner2.id = :financialAccountStructureId" +

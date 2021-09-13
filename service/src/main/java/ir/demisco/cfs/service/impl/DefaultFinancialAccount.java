@@ -452,7 +452,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccountRequest.getFinancialCodingTypeId()
                         , financialAccountRequest.getCode(),
-                        financialAccountRequest.getFinancialAccountStructureId(),
+                        financialAccount.getFinancialAccountStructure().getId(),
                         financialAccountStructure);
 
         financialAccountStructureListObject.forEach(e -> {
