@@ -228,7 +228,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 AccountDefaultValueResponse.builder()
                         .id(Long.parseLong(objects[0].toString()))
                         .accountRelationTypeDetailId(Long.parseLong(objects[1].toString()))
-                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[2].toString()))
+                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
                         .centricAccountName(objects[2] == null ? null : objects[3].toString())
                         .centricAccountCode(objects[3] == null ? null : objects[4].toString())
                         .accountRelationTypeDescription(objects[5].toString())
@@ -392,6 +392,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private AccountDefaultValueResponse convertAccountDefaultValueResponse(AccountDefaultValue accountDefaultValue) {
         AccountDefaultValueResponse accountDefaultValueResponse = new AccountDefaultValueResponse();
+        accountDefaultValueResponse.setId(accountDefaultValue.getId());
         accountDefaultValueResponse.setAccountRelationTypeDetailId(accountDefaultValue.getAccountRelationTypeDetail().getId());
         accountDefaultValueResponse.setCentricAccountId(accountDefaultValue.getCentricAccount() == null ? 0L : accountDefaultValue.getCentricAccount().getId());
         accountDefaultValueResponse.setCentricAccountName(accountDefaultValue.getCentricAccount() == null ? "" : accountDefaultValue.getCentricAccount().getName());
