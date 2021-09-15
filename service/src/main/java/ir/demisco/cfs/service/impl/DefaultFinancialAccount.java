@@ -88,17 +88,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .organizationId(Long.parseLong(item[1].toString()))
                         .description(item[3].toString())
                         .code(item[2].toString())
-                        .activeFlag(Integer.parseInt(item[4].toString()) == 1)
-                        .permanentFlag(item[6] == null ? null : Integer.parseInt(item[6].toString()) == 1)
-                        .accountNatureTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .accountRelationTypeDescription(item[10].toString())
-                        .accountRelationTypeId(item[7] == null ? null : Long.parseLong(item[7].toString()))
-                        .accountNatureTypeDescription(item[9].toString())
-                        .financialAccountParentId(item[8] == null ? null : Long.parseLong(item[8].toString()))
-                        .financialAccountStructureId(item[12] == null ? null : Long.parseLong(item[12].toString()))
-                        .hasChild(Integer.parseInt(item[11].toString()) == 1)
+//                        .activeFlag(Integer.parseInt(item[4].toString()) == 1)
+                        .permanentFlag(item[5] == null ? null : Integer.parseInt(item[5].toString()) == 1)
+                        .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .accountRelationTypeDescription(item[9].toString())
+                        .accountRelationTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
+                        .accountNatureTypeDescription(item[8].toString())
+                        .financialAccountParentId(item[7] == null ? null : Long.parseLong(item[7].toString()))
+                        .financialAccountStructureId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+                        .hasChild(Integer.parseInt(item[10].toString()) == 1)
                         .build()).collect(Collectors.toList());
-
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
         dataSourceResult.setTotal(list.getTotalElements());
@@ -189,7 +188,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .fullDescription(financialAccount.getFullDescription())
                 .code(financialAccount.getCode())
                 .description(financialAccount.getDescription())
-                .activeFlag(financialAccount.getActiveFlag())
+//                .activeFlag(financialAccount.getActiveFlag())
                 .latinDescription(financialAccount.getLatinDescription())
                 .accountNatureTypeId(financialAccount.getAccountNatureType().getId())
                 .accountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription())
@@ -343,7 +342,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setFullDescription(financialAccount.getFullDescription());
         financialAccountOutPutDto.setDescription(financialAccount.getDescription());
         financialAccountOutPutDto.setCode(financialAccount.getCode());
-        financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
+//        financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
         financialAccountOutPutDto.setLatinDescription(financialAccount.getLatinDescription());
         financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType().getId());
         financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription());
