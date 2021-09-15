@@ -311,7 +311,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
-        financialAccount.setActiveFlag(financialAccountRequest.getActiveFlag());
+//        financialAccount.setActiveFlag(financialAccountRequest.getActiveFlag());
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
 //        if (financialAccountRequest.getAccountNatureTypeId() != null) {
         financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));

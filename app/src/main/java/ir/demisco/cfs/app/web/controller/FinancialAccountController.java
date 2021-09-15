@@ -32,7 +32,7 @@ public class FinancialAccountController {
 
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId()));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,100L));
 
     }
 

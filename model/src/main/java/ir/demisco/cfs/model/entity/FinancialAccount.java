@@ -17,7 +17,7 @@ public class FinancialAccount extends AuditModel<Long> {
     private String fullDescription;
     private String code;
     private String description;
-    private Boolean activeFlag;
+//    private Boolean activeFlag;
     private String latinDescription;
     private AccountNatureType accountNatureType;
     private Boolean permanentFlag;
@@ -90,14 +90,14 @@ public class FinancialAccount extends AuditModel<Long> {
         this.description = description;
     }
 
-    @Column(name = "ACTIVE_FLAG")
-    public Boolean getActiveFlag() {
-        return activeFlag;
-    }
-
-    public void setActiveFlag(Boolean activeFlag) {
-        this.activeFlag = activeFlag;
-    }
+//    @Column(name = "ACTIVE_FLAG")
+//    public Boolean getActiveFlag() {
+//        return activeFlag;
+//    }
+//
+//    public void setActiveFlag(Boolean activeFlag) {
+//        this.activeFlag = activeFlag;
+//    }
 
     @Column(name = "LATIN_DESCRIPTION")
     public String getLatinDescription() {
