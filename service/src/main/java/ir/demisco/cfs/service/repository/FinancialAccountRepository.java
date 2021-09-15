@@ -23,7 +23,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fiac.organization_id," +
             "       fiac.code," +
             "       fiac.description," +
-            "       fiac.active_flag," +
+
             "       fiac.account_nature_type_id," +
             "       fiac.permanent_flag," +
             "       fiac.account_relation_type_id," +

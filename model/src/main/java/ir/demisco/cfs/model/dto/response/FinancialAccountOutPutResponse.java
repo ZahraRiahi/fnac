@@ -9,7 +9,7 @@ public class FinancialAccountOutPutResponse {
     private String fullDescription;
     private String description;
     private String code;
-    private Boolean activeFlag;
+//    private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
@@ -82,13 +82,13 @@ public class FinancialAccountOutPutResponse {
         this.code = code;
     }
 
-    public Boolean getActiveFlag() {
-        return activeFlag;
-    }
-
-    public void setActiveFlag(Boolean activeFlag) {
-        this.activeFlag = activeFlag;
-    }
+//    public Boolean getActiveFlag() {
+//        return activeFlag;
+//    }
+//
+//    public void setActiveFlag(Boolean activeFlag) {
+//        this.activeFlag = activeFlag;
+//    }
 
     public String getLatinDescription() {
         return latinDescription;
@@ -285,10 +285,10 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder activeFlag(Boolean activeFlag) {
-            financialAccountOutPutResponse.setActiveFlag(activeFlag);
-            return this;
-        }
+//        public Builder activeFlag(Boolean activeFlag) {
+//            financialAccountOutPutResponse.setActiveFlag(activeFlag);
+//            return this;
+//        }
 
         public Builder latinDescription(String latinDescription) {
             financialAccountOutPutResponse.setLatinDescription(latinDescription);
