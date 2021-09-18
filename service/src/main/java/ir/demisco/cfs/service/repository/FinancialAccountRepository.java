@@ -11,10 +11,34 @@ import java.util.List;
 
 
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
-    @Query(value = " select fa from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
-            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
-            " and fa.organization.id=:organizationId and fa.deletedDate is null")
-    List<FinancialAccount> findByFinancialAccountByOrganizationId(Long organizationId);
+//    @Query(value = " select fa from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
+//            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
+//            " and fa.organization.id=:organizationId and fa.deletedDate is null")
+//    List<FinancialAccount> findByFinancialAccountByOrganizationId(Long organizationId);
+
+    @Query(value = " select fiac.id, " +
+            "       fiac.code," +
+            "       fiac.description," +
+            "       fiac.reference_flag, " +
+            "       fiac.exchange_flag," +
+            "       fiac.account_relation_type_id," +
+            "       fiac.disable_date, " +
+            "       case " +
+            "         when fiac.disable_date is not null then 0 else 1 " +
+            "       end active_flag" +
+            "  from fnac.financial_account fiac" +
+            " inner join fnac.financial_account_structure fs" +
+            "    on fiac.financial_account_structure_id = fs.id" +
+            "   and fs.sequence = (select max(fs_inner.sequence)" +
+            "                        from fnac.financial_account_structure fs_inner " +
+            "                       where fs_inner.financial_coding_type_id = " +
+            "                             fs.financial_coding_type_id) " +
+            " where fiac.organization_id = :organizationId " +
+            "   and fiac.deleted_date is null " +
+            "   and fiac.disable_date is null "
+            , nativeQuery = true)
+    List<Object[]> findByFinancialAccountByOrganizationId(Long organizationId);
+
 
     @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
     List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
@@ -23,7 +47,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fiac.organization_id," +
             "       fiac.code," +
             "       fiac.description," +
-
             "       fiac.account_nature_type_id," +
             "       fiac.permanent_flag," +
             "       fiac.account_relation_type_id," +
