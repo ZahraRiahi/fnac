@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CentricAccountRepository extends JpaRepository<CentricAccount, Long> {
 
-    @Query("select ca from CentricAccount ca where ca.organization.id=:organizationId and ca.centricAccountType.id=:centricAccountTypeId")
+    @Query("select ca from CentricAccount ca where ca.organization.id=:organizationId and ca.centricAccountType.id=:centricAccountTypeId and ca.deletedDate is null ")
     List<CentricAccount> findByCentricAccountAndOrganizationId(Long centricAccountTypeId, Long organizationId);
 
     @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
