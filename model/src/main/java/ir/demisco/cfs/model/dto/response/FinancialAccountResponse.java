@@ -1,5 +1,7 @@
 package ir.demisco.cfs.model.dto.response;
 
+import java.util.Date;
+
 public class FinancialAccountResponse {
     private Long id;
     private String code;
@@ -7,6 +9,8 @@ public class FinancialAccountResponse {
     private Boolean referenceFlag;
     private Boolean exchangeFlag;
     private Long accountRelationTypeId;
+    private Date disableDate;
+    private Long activeFlag;
 
     public Long getId() {
         return id;
@@ -56,6 +60,22 @@ public class FinancialAccountResponse {
         this.accountRelationTypeId = accountRelationTypeId;
     }
 
+    public Date getDisableDate() {
+        return disableDate;
+    }
+
+    public void setDisableDate(Date disableDate) {
+        this.disableDate = disableDate;
+    }
+
+    public Long getActiveFlag() {
+        return activeFlag;
+    }
+
+    public void setActiveFlag(Long activeFlag) {
+        this.activeFlag = activeFlag;
+    }
+
     public static FinancialAccountResponse.Builder builder() {
         return new FinancialAccountResponse.Builder();
     }
@@ -98,6 +118,16 @@ public class FinancialAccountResponse {
 
         public Builder accountRelationTypeId(Long accountRelationTypeId) {
             financialAccountResponse.setAccountRelationTypeId(accountRelationTypeId);
+            return this;
+        }
+
+        public Builder disableDate(Date disableDate) {
+            financialAccountResponse.setDisableDate(disableDate);
+            return this;
+        }
+
+        public Builder activeFlag(Long activeFlag) {
+            financialAccountResponse.setActiveFlag(activeFlag);
             return this;
         }
 
