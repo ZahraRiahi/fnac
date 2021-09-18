@@ -21,11 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -166,16 +164,20 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = Throwable.class)
     public List<FinancialAccountResponse> getFinancialAccountLov(Long OrganizationId) {
-        List<FinancialAccount> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId);
-        return financialAccount.stream().map(e -> FinancialAccountResponse.builder().id(e.getId())
-                .description(e.getDescription())
-                .code(e.getCode())
-                .referenceFlag(e.getReferenceFlag())
-                .exchangeFlag(e.getExchangeFlag())
-                .accountRelationTypeId(e.getAccountRelationType().getId())
+        List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId);
+        return financialAccount.stream().map(e -> FinancialAccountResponse.builder()
+                .id(((BigDecimal) e[0]).longValue())
+                .description(e[2].toString())
+                .code(e[1].toString())
+                .referenceFlag(((BigDecimal) e[3]).longValue() == 1)
+                .exchangeFlag(((BigDecimal) e[4]).longValue() == 1)
+                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
+                .disableDate((Date) e[6])
+                .activeFlag(Long.parseLong(e[7].toString()))
                 .build()).collect(Collectors.toList());
+
     }
 
     @Override
