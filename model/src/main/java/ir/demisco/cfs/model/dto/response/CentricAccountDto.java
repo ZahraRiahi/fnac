@@ -10,6 +10,7 @@ public class CentricAccountDto {
     private String latinName;
     private Long centricAccountTypeId;
     private String centricAccountTypeDescription;
+    private String centricAccountTypeCode;
     private Long organizationId;
     private Long personId;
     private String personName;
@@ -73,6 +74,14 @@ public class CentricAccountDto {
 
     public void setCentricAccountTypeDescription(String centricAccountTypeDescription) {
         this.centricAccountTypeDescription = centricAccountTypeDescription;
+    }
+
+    public String getCentricAccountTypeCode() {
+        return centricAccountTypeCode;
+    }
+
+    public void setCentricAccountTypeCode(String centricAccountTypeCode) {
+        this.centricAccountTypeCode = centricAccountTypeCode;
     }
 
     public Long getOrganizationId() {
@@ -186,6 +195,10 @@ public class CentricAccountDto {
 
         public Builder centricAccountTypeDescription(String centricAccountTypeDescription) {
             centricAccountDto.setCentricAccountTypeDescription(centricAccountTypeDescription);
+            return this;
+        }
+        public Builder centricAccountTypeCode(String centricAccountTypeCode) {
+            centricAccountDto.setCentricAccountTypeCode(centricAccountTypeCode);
             return this;
         }
 
