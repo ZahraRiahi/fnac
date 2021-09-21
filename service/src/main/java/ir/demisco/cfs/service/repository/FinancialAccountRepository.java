@@ -53,6 +53,12 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fiac.financial_account_parent_id," +
             "       acnt.description                 as account_nature_type_Description," +
             "       acrt.description                 as account_relation_type_Description," +
+            "       case " +
+            "         when fiac.disable_date is not null then " +
+            "          0 " +
+            "         else " +
+            "          1 " +
+            "       end active_flag, " +
             "      case when  (exists(select 1 from fnac.financial_account fiac_inner where" +
             "        fiac_inner.financial_account_parent_id=fiac.id" +
             "      and fiac_inner.deleted_date is null" +
