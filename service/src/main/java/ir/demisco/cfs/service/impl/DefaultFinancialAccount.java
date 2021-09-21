@@ -86,15 +86,15 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .organizationId(Long.parseLong(item[1].toString()))
                         .description(item[3].toString())
                         .code(item[2].toString())
-//                        .activeFlag(Integer.parseInt(item[4].toString()) == 1)
+                        .activeFlag(Integer.parseInt(item[10].toString()) == 1)
                         .permanentFlag(item[5] == null ? null : Integer.parseInt(item[5].toString()) == 1)
                         .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
                         .accountRelationTypeDescription(item[9].toString())
                         .accountRelationTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
                         .accountNatureTypeDescription(item[8].toString())
                         .financialAccountParentId(item[7] == null ? null : Long.parseLong(item[7].toString()))
-                        .financialAccountStructureId(item[11] == null ? null : Long.parseLong(item[11].toString()))
-                        .hasChild(Integer.parseInt(item[10].toString()) == 1)
+                        .financialAccountStructureId(item[12] == null ? null : Long.parseLong(item[12].toString()))
+                        .hasChild(Integer.parseInt(item[11].toString()) == 1)
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
