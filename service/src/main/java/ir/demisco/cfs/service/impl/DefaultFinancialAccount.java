@@ -34,7 +34,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountRelatedDescriptionRepository accountRelatedDescriptionRepository;
     private final MoneyTypeRepository moneyTypeRepository;
     private final OrganizationRepository organizationRepository;
-    private final FinancialAccountStructureRepository financialAccountStructureRepository;
     private final AccountNatureTypeRepository accountNatureTypeRepository;
     private final AccountRelationTypeRepository accountRelationTypeRepository;
     private final FinancialAccountStructureService financialAccountStructureService;
@@ -46,8 +45,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountRelatedDescriptionService accountRelatedDescriptionService;
     private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
     private final FinancialDocumentItemRepository financialDocumentItemRepository;
+    private final FinancialAccountStructureRepository financialAccountStructureRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, FinancialAccountStructureRepository financialAccountStructureRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -55,7 +55,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountRelatedDescriptionRepository = accountRelatedDescriptionRepository;
         this.moneyTypeRepository = moneyTypeRepository;
         this.organizationRepository = organizationRepository;
-        this.financialAccountStructureRepository = financialAccountStructureRepository;
         this.accountNatureTypeRepository = accountNatureTypeRepository;
         this.accountRelationTypeRepository = accountRelationTypeRepository;
         this.financialAccountStructureService = financialAccountStructureService;
@@ -67,6 +66,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountRelatedDescriptionService = accountRelatedDescriptionService;
         this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
         this.financialDocumentItemRepository = financialDocumentItemRepository;
+        this.financialAccountStructureRepository = financialAccountStructureRepository1;
     }
 
     @Override
@@ -229,9 +229,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 AccountDefaultValueResponse.builder()
                         .id(Long.parseLong(objects[0].toString()))
                         .accountRelationTypeDetailId(Long.parseLong(objects[1].toString()))
-                        .centricAccountId(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
-                        .centricAccountName(objects[2] == null ? null : objects[3].toString())
-                        .centricAccountCode(objects[3] == null ? null : objects[4].toString())
+                        .centricAccountId(objects[2] == null ? null : Long.parseLong(objects[2].toString()))
+                        .centricAccountName(objects[3] == null ? null : objects[3].toString())
+                        .centricAccountCode(objects[4] == null ? null : objects[4].toString())
                         .accountRelationTypeDescription(objects[5].toString())
                         .accountRelationTypeId(Long.parseLong(objects[6].toString()))
                         .sequence(Long.parseLong(objects[7].toString()))

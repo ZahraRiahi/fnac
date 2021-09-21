@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-
 public interface FinancialAccountStructureRepository extends JpaRepository<FinancialAccountStructure, Long> {
     @Query("select fas from  FinancialAccountStructure fas where fas.financialCodingType.id=:financialCodingTypeId and fas.deletedDate is null")
     List<FinancialAccountStructure> findByFinancialCodingTypeId(Long financialCodingTypeId);
@@ -38,6 +37,4 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             " and fnas_inner2.deleted_date is null))))"
             , nativeQuery = true)
     Long findByFinancialCodingTypeAndFinancialAccountStructure(Long financialCodingTypeId, Long financialAccountStructureId, String financialAccountStructure);
-
-
 }
