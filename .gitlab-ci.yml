@@ -84,7 +84,7 @@ deploy-test:
     - sed -i "s#\$image_name#${CONTAINER_JOBID_IMAGE}#" deploy.yml
     - sed -i "s#\$registry_secret#${registry_secret}#" deploy.yml
     - sed -i "s#\$app_name#${app_name}#" deploy.yml
-    - sed -i "s#\$name_space#${name_space_dev}#" deploy.yml
+    - sed -i "s#\$name_space#${name_space}#" deploy.yml
     - sed -i "s#\$replica#${replica}#" deploy.yml
     - sed -i "s#\$clusterPort#${clusterPort}#" deploy.yml
     - sed -i "s#\$containerPort#${containerPort}#" deploy.yml
