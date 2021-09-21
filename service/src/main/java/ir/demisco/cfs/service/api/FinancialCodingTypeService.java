@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface FinancialCodingTypeService {
     List<FinancialCodingTypeDto> getFinancialCodingTypeByOrganizationId(Long OrganizationId);
+
+    Long save(FinancialCodingTypeDto financialCodingTypeDto);
+
+    FinancialCodingTypeDto update(FinancialCodingTypeDto financialCodingTypeDto);
+
+    Boolean deleteFinancialCodingTypeById(Long financialCodingType);
 }
