@@ -50,13 +50,13 @@ public class FinancialAccountDto {
         this.description = description;
     }
 
-//    public Boolean getActiveFlag() {
-//        return activeFlag;
-//    }
-//
-//    public void setActiveFlag(Boolean activeFlag) {
-//        this.activeFlag = activeFlag;
-//    }
+    public Boolean getActiveFlag() {
+        return activeFlag;
+    }
+
+    public void setActiveFlag(Boolean activeFlag) {
+        this.activeFlag = activeFlag;
+    }
 
     public Boolean getPermanentFlag() {
         return permanentFlag;
@@ -165,10 +165,10 @@ public class FinancialAccountDto {
             return this;
         }
 
-//        public Builder activeFlag(Boolean activeFlag) {
-//            financialAccountDto.setActiveFlag(activeFlag);
-//            return this;
-//        }
+        public Builder activeFlag(Boolean activeFlag) {
+            financialAccountDto.setActiveFlag(activeFlag);
+            return this;
+        }
 
         public Builder permanentFlag(Boolean permanentFlag) {
             financialAccountDto.setPermanentFlag(permanentFlag);
