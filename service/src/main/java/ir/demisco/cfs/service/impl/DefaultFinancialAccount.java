@@ -167,16 +167,17 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public List<FinancialAccountResponse> getFinancialAccountLov(Long OrganizationId) {
         List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId);
-        return financialAccount.stream().map(e -> FinancialAccountResponse.builder()
-                .id(((BigDecimal) e[0]).longValue())
-                .description(e[2].toString())
-                .code(e[1].toString())
-                .referenceFlag(((BigDecimal) e[3]).longValue() == 1)
-                .exchangeFlag(((BigDecimal) e[4]).longValue() == 1)
-                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
-                .disableDate((Date) e[6])
-                .activeFlag(Long.parseLong(e[7].toString()))
-                .build()).collect(Collectors.toList());
+
+            return financialAccount.stream().map(e -> FinancialAccountResponse.builder()
+                    .id(((BigDecimal) e[0]).longValue())
+                    .description(e[2].toString())
+                    .code(e[1].toString())
+                    .referenceFlag(e[3] == null || ((BigDecimal) e[3]).longValue() == 0 ? false : true)
+                    .exchangeFlag(e[4] == null || ((BigDecimal) e[4]).longValue() == 0 ? false : true)
+                    .accountRelationTypeId(((BigDecimal) e[5]).longValue())
+                    .disableDate((Date) e[6])
+                    .activeFlag(Long.parseLong(e[7].toString()))
+                    .build()).collect(Collectors.toList());
 
     }
 
