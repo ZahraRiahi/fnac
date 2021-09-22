@@ -116,6 +116,9 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .personId(centricAccount.getPerson().getId())
                 .personName(centricAccount.getPerson().getPersonName())
                 .activeFlag(centricAccount.getActiveFlag())
+                .parentCentricAccountId(centricAccount.getParentCentricAccount() == null ? null : centricAccount.getParentCentricAccount().getId())
+                .parentCentricAccountCode(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getCode())
+                .parentCentricAccountName(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getName())
                 .build();
     }
 
@@ -126,6 +129,9 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
+        if (centricAccountRequest.getParentCentricAccountId() != null) {
+            centricAccount.setParentCentricAccount(centricAccountRepository.getOne(centricAccountRequest.getParentCentricAccountId()));
+        }
         return centricAccountRepository.save(centricAccount);
     }
 
