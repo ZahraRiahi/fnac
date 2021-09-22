@@ -11,6 +11,9 @@ public class CentricAccountRequest {
     private Long personId;
     private Boolean activeFlag;
     private List<Long> centricPersonRoleListId;
+    private Long parentCentricAccountId;
+    private String parentCentricAccountCode;
+    private String parentCentricAccountName;
 
     public Long getId() {
         return id;
@@ -82,5 +85,29 @@ public class CentricAccountRequest {
 
     public void setCentricPersonRoleList(List<Long> centricPersonRoleListId) {
         this.centricPersonRoleListId = centricPersonRoleListId;
+    }
+
+    public Long getParentCentricAccountId() {
+        return parentCentricAccountId;
+    }
+
+    public void setParentCentricAccountId(Long parentCentricAccountId) {
+        this.parentCentricAccountId = parentCentricAccountId;
+    }
+
+    public String getParentCentricAccountCode() {
+        return parentCentricAccountCode;
+    }
+
+    public void setParentCentricAccountCode(String parentCentricAccountCode) {
+        this.parentCentricAccountCode = parentCentricAccountCode;
+    }
+
+    public String getParentCentricAccountName() {
+        return parentCentricAccountName;
+    }
+
+    public void setParentCentricAccountName(String parentCentricAccountName) {
+        this.parentCentricAccountName = parentCentricAccountName;
     }
 }

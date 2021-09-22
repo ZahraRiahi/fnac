@@ -64,7 +64,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     public CentricAccountDto save(CentricAccountRequest centricAccountRequest) {
         CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId() == null ? 0L : centricAccountRequest.getId()).orElse(new CentricAccount());
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountRequest.getPersonId());
+            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(100L, centricAccountRequest.getPersonId());
             if (countCentricAccount > 0) {
                 throw new RuleException("برای این شخص قبلا کد تمرکز ایجاد شده است");
             }
@@ -116,6 +116,9 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .personId(centricAccount.getPerson().getId())
                 .personName(centricAccount.getPerson().getPersonName())
                 .activeFlag(centricAccount.getActiveFlag())
+                .parentCentricAccountId(centricAccount.getParentCentricAccount() == null ? null : centricAccount.getParentCentricAccount().getId())
+                .parentCentricAccountCode(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getCode())
+                .parentCentricAccountName(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getName())
                 .build();
     }
 
@@ -123,9 +126,12 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
-        centricAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        centricAccount.setOrganization(organizationRepository.getOne(100L));
         centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
+        if (centricAccountRequest.getParentCentricAccountId() != null) {
+            centricAccount.setParentCentricAccount(centricAccountRepository.getOne(centricAccountRequest.getParentCentricAccountId()));
+        }
         return centricAccountRepository.save(centricAccount);
     }
 
