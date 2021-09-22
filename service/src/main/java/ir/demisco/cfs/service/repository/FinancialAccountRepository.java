@@ -16,26 +16,37 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 //            " and fa.organization.id=:organizationId and fa.deletedDate is null")
 //    List<FinancialAccount> findByFinancialAccountByOrganizationId(Long organizationId);
 
-    @Query(value = " select fiac.id, " +
-            "       fiac.code," +
-            "       fiac.description," +
-            "       fiac.reference_flag, " +
-            "       fiac.exchange_flag," +
-            "       fiac.account_relation_type_id," +
-            "       fiac.disable_date, " +
-            "       case " +
-            "         when fiac.disable_date is not null then 0 else 1 " +
-            "       end active_flag" +
-            "  from fnac.financial_account fiac" +
-            " inner join fnac.financial_account_structure fs" +
-            "    on fiac.financial_account_structure_id = fs.id" +
-            "   and fs.sequence = (select max(fs_inner.sequence)" +
-            "                        from fnac.financial_account_structure fs_inner " +
-            "                       where fs_inner.financial_coding_type_id = " +
-            "                             fs.financial_coding_type_id) " +
-            " where fiac.organization_id = :organizationId " +
-            "   and fiac.deleted_date is null " +
-            "   and fiac.disable_date is null "
+    @Query(value = " SELECT FIAC.ID," +
+            "       FIAC.CODE," +
+            "       FIAC.DESCRIPTION," +
+            "       FIAC.REFERENCE_FLAG," +
+            "       FIAC.EXCHANGE_FLAG," +
+            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
+            "       FIAC.DISABLE_DATE," +
+            "       CASE " +
+            "         WHEN FIAC.DISABLE_DATE IS NOT NULL THEN" +
+            "          0 " +
+            "         ELSE " +
+            "          1 " +
+            "       END ACTIVE_FLAG " +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC " +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS " +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID " +
+            " WHERE ORGANIZATION_ID = :organizationId " +
+            "   AND FIAC.DELETED_DATE IS NULL " +
+            "   AND FIAC.DISABLE_DATE IS NULL " +
+            "   AND CASE " +
+            "         WHEN (EXISTS " +
+            "               (SELECT 1 " +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER " +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID " +
+            "                   AND FIAC_INNER.DELETED_DATE IS NULL " +
+            "                   AND FIAC_INNER.ORGANIZATION_ID = :organizationId)) THEN " +
+            "          1 " +
+            "         ELSE " +
+            "          0 " +
+            "       END = 0 " +
+            "   AND FS.SHOW_IN_ACC_FLAG = 1 "
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountByOrganizationId(Long organizationId);
 
