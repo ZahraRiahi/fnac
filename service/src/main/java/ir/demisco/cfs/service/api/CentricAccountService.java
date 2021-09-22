@@ -19,6 +19,5 @@ public interface CentricAccountService {
 
     Boolean getCentricAccountByOrganIdAndPersonId(Long personId,Long organizationId);
 
-//    CentricAccountDto update(CentricAccountRequest centricAccountRequest);
 
 }

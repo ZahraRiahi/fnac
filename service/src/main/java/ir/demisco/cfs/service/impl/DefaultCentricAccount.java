@@ -64,7 +64,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     public CentricAccountDto save(CentricAccountRequest centricAccountRequest) {
         CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId() == null ? 0L : centricAccountRequest.getId()).orElse(new CentricAccount());
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(100L, centricAccountRequest.getPersonId());
+            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountRequest.getPersonId());
             if (countCentricAccount > 0) {
                 throw new RuleException("برای این شخص قبلا کد تمرکز ایجاد شده است");
             }
@@ -126,7 +126,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
-        centricAccount.setOrganization(organizationRepository.getOne(100L));
+        centricAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
         if (centricAccountRequest.getParentCentricAccountId() != null) {
