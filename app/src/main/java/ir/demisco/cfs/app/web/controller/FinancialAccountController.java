@@ -1,6 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -58,5 +59,10 @@ public class FinancialAccountController {
         return ResponseEntity.ok(result);
 
     }
-
+    @GetMapping("/setStatus")
+    public ResponseEntity<Boolean> GetByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
+        boolean result;
+        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest,100L);
+        return ResponseEntity.ok(result);
+    }
 }
