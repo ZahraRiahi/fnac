@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.api;
 
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -22,5 +23,6 @@ public interface FinancialAccountService {
 
     Boolean deleteFinancialAccountById(Long financialAccount);
 
+    Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest,Long organizationId);
 
 }
