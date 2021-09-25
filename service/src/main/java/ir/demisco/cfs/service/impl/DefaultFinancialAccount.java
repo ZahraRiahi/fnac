@@ -1,10 +1,7 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.FinancialAccountParameter;
-import ir.demisco.cfs.model.dto.request.AccountDefaultValueRequest;
-import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
+import ir.demisco.cfs.model.dto.request.*;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.model.entity.*;
 import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -168,16 +166,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     public List<FinancialAccountResponse> getFinancialAccountLov(Long OrganizationId) {
         List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId);
 
-            return financialAccount.stream().map(e -> FinancialAccountResponse.builder()
-                    .id(((BigDecimal) e[0]).longValue())
-                    .description(e[2].toString())
-                    .code(e[1].toString())
-                    .referenceFlag(e[3] == null || ((BigDecimal) e[3]).longValue() == 0 ? false : true)
-                    .exchangeFlag(e[4] == null || ((BigDecimal) e[4]).longValue() == 0 ? false : true)
-                    .accountRelationTypeId(((BigDecimal) e[5]).longValue())
-                    .disableDate((Date) e[6])
-                    .activeFlag(Long.parseLong(e[7].toString()))
-                    .build()).collect(Collectors.toList());
+        return financialAccount.stream().map(e -> FinancialAccountResponse.builder()
+                .id(((BigDecimal) e[0]).longValue())
+                .description(e[2].toString())
+                .code(e[1].toString())
+                .referenceFlag(e[3] == null || ((BigDecimal) e[3]).longValue() == 0 ? false : true)
+                .exchangeFlag(e[4] == null || ((BigDecimal) e[4]).longValue() == 0 ? false : true)
+                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
+                .disableDate((Date) e[6])
+                .activeFlag(Long.parseLong(e[7].toString()))
+                .build()).collect(Collectors.toList());
 
     }
 
@@ -613,5 +611,28 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
         }
         throw new RuleException("حساب انتخاب شده آخرین سطح حساب نمی باشد و امکان حذف آن وجود ندارد");
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
+        FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
+        if (financialAccountStatusRequest.getStatusFlag() == 0) {
+            Long financialAccountStructureCount = financialAccountRepository.findByFinancialAccountIdAndStatusFlag(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            if (financialAccountStructureCount == null) {
+                throw new RuleException("ردیف انتخابی آخرین سطح حساب نیست و یا قبلا غیر فعال شده است");
+            }
+            financialAccount.setDisableDate(new Date());
+        } else {
+            Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountAndIdAndDisableDateIsNotNull(financialAccountStatusRequest.getFinancialAccountId());
+            if (financialAccountActiveCount == null) {
+                financialAccount.setDisableDate(null);
+            } else {
+                throw new RuleException("وضعیت ردیف مورد نظر غیر فعال می باشد.");
+            }
+        }
+
+
+        return true;
     }
 }

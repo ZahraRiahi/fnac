@@ -134,7 +134,14 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " and fa.id=:financialAccountId ")
     Long findByFinancialAccountByAccountRelationTypeId(Long accountRelationTypeId, Long financialAccountId);
 
+    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
+            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
+            " and fa.id=:financialAccountId and fa.deletedDate is null and fa.disableDate is null and fa.organization.id=:organizationId ")
+    Long findByFinancialAccountIdAndStatusFlag(Long financialAccountId, Long organizationId);
 
+
+    @Query("select 1 from  FinancialAccount fa where fa.disableDate is not null and fa.id=:financialAccountId")
+    Long findByFinancialAccountAndIdAndDisableDateIsNotNull(Long financialAccountId);
 //    @Query("select count(adv.id) from FinancialAccount fa join adv.financialAccount fa " +
 //            " where fa.id=:financialAccountId  and adv.accountRelationTypeDetail.id=:accountRelationTypeDetailId " +
 //            " and (:centricAccount is null or " +
