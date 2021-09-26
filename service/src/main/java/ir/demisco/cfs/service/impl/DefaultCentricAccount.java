@@ -1,8 +1,7 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.response.CentricAccountDto;
-import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.model.entity.CentricAccount;
 import ir.demisco.cfs.model.entity.CentricPersonRole;
 import ir.demisco.cfs.service.api.CentricAccountService;
@@ -101,6 +100,37 @@ public class DefaultCentricAccount implements CentricAccountService {
     public Boolean getCentricAccountByOrganIdAndPersonId(Long personId, Long organizationId) {
         Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, SecurityHelper.getCurrentUser().getOrganizationId());
         return centricAccounts == null;
+    }
+
+    @Override
+    @Transactional
+    public CentricAccountOutPutResponse getCentricAccountGetById(Long centricAccountId) {
+        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
+        CentricAccountOutPutResponse centricAccountOutPutResponse = CentricAccountOutPutResponse.builder().id(centricAccountId)
+                .code(centricAccount.getCode())
+                .name(centricAccount.getName())
+                .abbreviationName(centricAccount.getAbbreviationName())
+                .latinName(centricAccount.getLatinName())
+                .centricAccountTypeId(centricAccount.getCentricAccountType().getId())
+                .centricAccountTypeDescription(centricAccount.getCentricAccountType().getDescription())
+                .organizationId(centricAccount.getOrganization().getId())
+                .personId(centricAccount.getPerson().getId())
+                .personName(centricAccount.getPerson().getPersonName())
+                .activeFlag(centricAccount.getActiveFlag())
+                .parentCentricAccountId(centricAccount.getParentCentricAccount().getId())
+                .parentCentricAccountCode(centricAccount.getParentCentricAccount().getCode())
+                .parentCentricAccountName(centricAccount.getParentCentricAccount().getName())
+                .centricAccountTypeCode(centricAccount.getCentricAccountType().getCode())
+                .build();
+        centricAccountOutPutResponse.setPersonRoleTypeOutPutModel(personRoleTypeResponses(centricAccountId));
+        return centricAccountOutPutResponse;
+    }
+
+    private List<PersonRoleTypeDto> personRoleTypeResponses(Long centricAccountId) {
+        List<Object[]> personRoleTypeListObject = personRoleTypeRepository.findByPersonRoleTypeListObject(centricAccountId);
+        return personRoleTypeListObject.stream().map(objects -> PersonRoleTypeDto.builder().id(Long.parseLong(objects[0].toString()))
+                .description(objects[1].toString())
+                .flagExist(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
     }
 
     private CentricAccountDto convertCentricAccountToDto(CentricAccount centricAccount) {
