@@ -1,8 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.response.CentricAccountDto;
-import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -24,12 +23,6 @@ public class CentricAccountController {
     @PostMapping("/list")
     public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
-    }
-
-    @GetMapping("/Get/{id}")
-    public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@PathVariable("id") Long centricAccountTypeId) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, SecurityHelper.getCurrentUser().getOrganizationId()));
-
     }
 
     @PostMapping("/save")
@@ -55,6 +48,12 @@ public class CentricAccountController {
         boolean result;
         result = centricAccountService.deleteCentricAccountById(centricAccountId);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/Get/{centricAccountId}")
+    public ResponseEntity<CentricAccountOutPutResponse> responseEntity(@PathVariable Long centricAccountId) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountGetById(centricAccountId));
+
     }
 }
 
