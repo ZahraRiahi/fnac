@@ -5,6 +5,7 @@ public class AccountMoneyTypeDto {
     private Long id;
     private String description;
     private Long flgExists;
+    private Long nationalCurrencyFlag;
 
     public Long getId() {
         return id;
@@ -29,6 +30,14 @@ public class AccountMoneyTypeDto {
 
     public void setFlgExists(Long flgExists) {
         this.flgExists = flgExists;
+    }
+
+    public Long getNationalCurrencyFlag() {
+        return nationalCurrencyFlag;
+    }
+
+    public void setNationalCurrencyFlag(Long nationalCurrencyFlag) {
+        this.nationalCurrencyFlag = nationalCurrencyFlag;
     }
 
     public static AccountMoneyTypeDto.Builder builder() {
@@ -61,6 +70,12 @@ public class AccountMoneyTypeDto {
             accountMoneyTypeDto.setFlgExists(flgExists);
             return this;
         }
+
+        public Builder nationalCurrencyFlag(Long nationalCurrencyFlag) {
+            accountMoneyTypeDto.setNationalCurrencyFlag(nationalCurrencyFlag);
+            return this;
+        }
+
         public AccountMoneyTypeDto build() {
             return accountMoneyTypeDto;
         }

@@ -33,6 +33,7 @@ public interface MoneyTypeRepository extends JpaRepository<MoneyType, Long> {
 
     @Query(value = "select mnty.id," +
             " mnty.description," +
+            " mnty.national_currency_flag," +
             " case" +
             "  when :financialAccount is null or  not exists " +
             " (select 1" +
