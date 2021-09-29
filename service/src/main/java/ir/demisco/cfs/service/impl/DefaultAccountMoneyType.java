@@ -20,8 +20,8 @@ public class DefaultAccountMoneyType implements AccountMoneyTypeService {
     }
 
     @Override
-    @Transactional
-    public List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest,Long organizationId) {
+    @Transactional(rollbackOn = Throwable.class)
+    public List<AccountMoneyTypeDto> getAccountMoneyType(AccountMoneyTypeRequest accountMoneyTypeRequest, Long organizationId) {
         Object financialAccount;
         if (accountMoneyTypeRequest.getFinancialAccountId() != null) {
             financialAccount = "financialAccount";
@@ -33,7 +33,8 @@ public class DefaultAccountMoneyType implements AccountMoneyTypeService {
 
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeDto.builder().id(Long.parseLong(objects[0].toString()))
                 .description(objects[1].toString())
-                .flgExists(Long.parseLong(objects[2].toString()))
+                .flgExists(Long.parseLong(objects[3].toString()))
+                .nationalCurrencyFlag(objects[2] == null ? 0 : Long.parseLong(objects[2].toString()))
                 .build()).collect(Collectors.toList());
     }
 }
