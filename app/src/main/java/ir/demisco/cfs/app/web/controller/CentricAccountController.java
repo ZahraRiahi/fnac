@@ -25,6 +25,12 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
     }
 
+    @GetMapping("/Get/{id}")
+    public ResponseEntity<List<CentricAccountNewResponse>> responseEntityGet(@PathVariable("id") Long centricAccountTypeId) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, SecurityHelper.getCurrentUser().getOrganizationId()));
+
+    }
+
     @PostMapping("/save")
     public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
         if (centricAccountRequest.getId() == null) {
@@ -50,7 +56,7 @@ public class CentricAccountController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/Get/{centricAccountId}")
+    @GetMapping("/GetForUpdate/{centricAccountId}")
     public ResponseEntity<CentricAccountOutPutResponse> responseEntity(@PathVariable Long centricAccountId) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountGetById(centricAccountId));
 
