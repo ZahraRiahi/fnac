@@ -73,7 +73,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(100L);
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -296,7 +296,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountCodeCount > 0) {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
-        financialAccount.setOrganization(organizationRepository.getOne(100L));
+        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
 //        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
 //        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
 //        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
@@ -618,7 +618,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
         if (financialAccountStatusRequest.getStatusFlag() == 0) {
-            Long financialAccountStructureCount = financialAccountRepository.findByFinancialAccountIdAndStatusFlag(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            Long financialAccountStructureCount = financialAccountRepository.findByFinancialAccountIdAndStatusFlag(financialAccountStatusRequest.getFinancialAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
             if (financialAccountStructureCount == null) {
                 throw new RuleException("ردیف انتخابی آخرین سطح حساب نیست و یا قبلا غیر فعال شده است");
             }
