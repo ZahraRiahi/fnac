@@ -314,14 +314,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setDescription(financialAccountRequest.getDescription());
 //        financialAccount.setActiveFlag(financialAccountRequest.getActiveFlag());
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
-//        if (financialAccountRequest.getAccountNatureTypeId() != null) {
-        financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));
-//        }
+        if (financialAccountRequest.getAccountNatureTypeId() != null) {
+            financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));
+        }
         financialAccount.setRelatedToOthersFlag(financialAccountRequest.getRelatedToOthersFlag());
         financialAccount.setPermanentFlag(financialAccountRequest.getPermanentFlag());
-//        if (financialAccountRequest.getAccountRelationTypeId() != null) {
-        financialAccount.setAccountRelationType(accountRelationTypeRepository.getOne(financialAccountRequest.getAccountRelationTypeId()));
-//        }
+        if (financialAccountRequest.getAccountRelationTypeId() != null) {
+            financialAccount.setAccountRelationType(accountRelationTypeRepository.getOne(financialAccountRequest.getAccountRelationTypeId()));
+        }
         if (financialAccountRequest.getFinancialAccountParentId() != null) {
             financialAccount.setFinancialAccountParent(financialAccountRepository.getOne(financialAccountRequest.getFinancialAccountParentId()));
         }
@@ -345,12 +345,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setCode(financialAccount.getCode());
 //        financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
         financialAccountOutPutDto.setLatinDescription(financialAccount.getLatinDescription());
-        financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType().getId());
-        financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription());
+        financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType() == null ? 0 : financialAccount.getAccountNatureType().getId());
+        financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType() == null ? " " : financialAccount.getAccountNatureType().getDescription());
         financialAccountOutPutDto.setRelatedToOthersFlag(financialAccount.getRelatedToOthersFlag());
         financialAccountOutPutDto.setPermanentFlag(financialAccount.getPermanentFlag());
-        financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType().getId());
-        financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType().getDescription());
+        financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType() == null ? 0 : financialAccount.getAccountRelationType().getId());
+        financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType() == null ? " " : financialAccount.getAccountRelationType().getDescription());
         financialAccountOutPutDto.setFinancialAccountParentId(financialAccount.getFinancialAccountParent() == null ? 0 : financialAccount.getFinancialAccountParent().getId());
         financialAccountOutPutDto.setFinancialAccountParentDescription(financialAccount.getFinancialAccountParent() == null ? " " : financialAccount.getFinancialAccountParent().getDescription());
         financialAccountOutPutDto.setRelatedToFundType(financialAccount.getRelatedToFundType());
