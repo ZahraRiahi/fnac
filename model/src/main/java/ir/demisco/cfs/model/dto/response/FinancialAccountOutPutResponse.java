@@ -14,7 +14,7 @@ public class FinancialAccountOutPutResponse {
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Boolean relatedToOthersFlag;
-    private Boolean permanentFlag;
+//    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
@@ -125,13 +125,13 @@ public class FinancialAccountOutPutResponse {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
 
-    public Boolean getPermanentFlag() {
-        return permanentFlag;
-    }
-
-    public void setPermanentFlag(Boolean permanentFlag) {
-        this.permanentFlag = permanentFlag;
-    }
+//    public Boolean getPermanentFlag() {
+//        return permanentFlag;
+//    }
+//
+//    public void setPermanentFlag(Boolean permanentFlag) {
+//        this.permanentFlag = permanentFlag;
+//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;
@@ -339,10 +339,10 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder permanentFlag(Boolean permanentFlag) {
-            financialAccountOutPutResponse.setPermanentFlag(permanentFlag);
-            return this;
-        }
+//        public Builder permanentFlag(Boolean permanentFlag) {
+//            financialAccountOutPutResponse.setPermanentFlag(permanentFlag);
+//            return this;
+//        }
 
         public Builder accountRelationTypeId(Long accountRelationTypeId) {
             financialAccountOutPutResponse.setAccountRelationTypeId(accountRelationTypeId);

@@ -43,8 +43,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
     private final FinancialDocumentItemRepository financialDocumentItemRepository;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
+    private final AccountStatusRepository accountStatusRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountStatusRepository accountStatusRepository) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -64,6 +65,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
         this.financialDocumentItemRepository = financialDocumentItemRepository;
         this.financialAccountStructureRepository = financialAccountStructureRepository1;
+        this.accountStatusRepository = accountStatusRepository;
     }
 
     @Override
@@ -314,6 +316,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountRequest.getFinancialAccountParentId() != null) {
             financialAccount.setFinancialAccountParent(financialAccountRepository.getOne(financialAccountRequest.getFinancialAccountParentId()));
         }
+        if (financialAccountRequest.getAccountStatusId() != null) {
+            financialAccount.setAccountStatus(accountStatusRepository.getOne(financialAccountRequest.getAccountStatusId()));
+
+        }
         financialAccount.setRelatedToFundType(financialAccountRequest.getRelatedToFundType());
         financialAccount.setReferenceFlag(financialAccountRequest.getReferenceFlag());
         financialAccount.setConvertFlag(financialAccountRequest.getConvertFlag());
@@ -321,6 +327,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountRequest.getAccountAdjustmentId() != null) {
             financialAccount.setAccountAdjustment(financialAccountRepository.getOne(financialAccountRequest.getAccountAdjustmentId()));
         }
+
         return financialAccountRepository.save(financialAccount);
     }
 
@@ -346,6 +353,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setExchangeFlag(financialAccount.getExchangeFlag());
         financialAccountOutPutDto.setAccountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId());
         financialAccountOutPutDto.setAccountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? " " : financialAccount.getAccountAdjustment().getDescription());
+        financialAccountOutPutDto.setAccountStatusId(financialAccount.getAccountStatus() == null ? 0 : financialAccount.getAccountStatus().getId());
+
         return financialAccountOutPutDto;
     }
 

@@ -27,7 +27,7 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
                 filterContext.getPath("description"),
                 filterContext.getPath("code"),
                 filterContext.getPath("activeFlag"),
-                filterContext.getPath("permanentFlag"),
+//                filterContext.getPath("permanentFlag"),
                 filterContext.getPath("accountNatureType.id"),
                 filterContext.getPath("accountNatureType.description"),
                 filterContext.getPath("accountRelationType.id"),
@@ -48,14 +48,14 @@ public class FinancialAccountListGridProvider implements GridDataProvider {
                     .organizationId((Long) array[1])
                     .description((String) array[2])
                     .code((String) array[3])
-//                    .activeFlag((Boolean) array[4])
-                    .permanentFlag((Boolean) array[4])
+                    .activeFlag((Boolean) array[4])
+//                    .permanentFlag((Boolean) array[4])
                     .accountNatureTypeId((Long) array[5])
                     .accountNatureTypeDescription((String) array[6])
                     .accountRelationTypeId((Long) array[7])
                     .accountRelationTypeDescription((String) array[8])
                     .financialAccountParentId((Long) array[9])
-                    .deletedDate((LocalDateTime) array[11])
+                    .deletedDate((LocalDateTime) array[10])
                     .build();
         }).collect(Collectors.toList());
     }
