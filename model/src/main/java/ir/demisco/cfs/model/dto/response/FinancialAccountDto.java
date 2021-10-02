@@ -8,7 +8,7 @@ public class FinancialAccountDto {
     private String code;
     private String description;
     private Boolean activeFlag;
-    private Boolean permanentFlag;
+//    private Boolean permanentFlag;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Long accountRelationTypeId;
@@ -61,13 +61,13 @@ public class FinancialAccountDto {
         this.activeFlag = activeFlag;
     }
 
-    public Boolean getPermanentFlag() {
-        return permanentFlag;
-    }
-
-    public void setPermanentFlag(Boolean permanentFlag) {
-        this.permanentFlag = permanentFlag;
-    }
+//    public Boolean getPermanentFlag() {
+//        return permanentFlag;
+//    }
+//
+//    public void setPermanentFlag(Boolean permanentFlag) {
+//        this.permanentFlag = permanentFlag;
+//    }
 
     public Long getAccountNatureTypeId() {
         return accountNatureTypeId;
@@ -197,10 +197,10 @@ public class FinancialAccountDto {
             return this;
         }
 
-        public Builder permanentFlag(Boolean permanentFlag) {
-            financialAccountDto.setPermanentFlag(permanentFlag);
-            return this;
-        }
+//        public Builder permanentFlag(Boolean permanentFlag) {
+//            financialAccountDto.setPermanentFlag(permanentFlag);
+//            return this;
+//        }
 
         public Builder accountNatureTypeId(Long accountNatureTypeId) {
             financialAccountDto.setAccountNatureTypeId(accountNatureTypeId);

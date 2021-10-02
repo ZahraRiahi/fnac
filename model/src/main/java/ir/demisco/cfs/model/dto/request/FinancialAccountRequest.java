@@ -15,7 +15,7 @@ public class FinancialAccountRequest {
     private String latinDescription;
     private Long accountNatureTypeId;
     private Boolean relatedToOthersFlag;
-    private Boolean permanentFlag;
+//    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private Long financialAccountParentId;
     private String relatedToFundType;
@@ -28,6 +28,7 @@ public class FinancialAccountRequest {
     private List<AccountDefaultValueRequest> accountDefaultValueInPutModel;
     private List<AccountRelatedDescriptionRequest> accountRelatedDescriptionInPutModel;
     private List<Long> moneyTypeId;
+    private Long accountStatusId;
 
     public Long getId() {
         return id;
@@ -109,13 +110,13 @@ public class FinancialAccountRequest {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
 
-    public Boolean getPermanentFlag() {
-        return permanentFlag;
-    }
-
-    public void setPermanentFlag(Boolean permanentFlag) {
-        this.permanentFlag = permanentFlag;
-    }
+//    public Boolean getPermanentFlag() {
+//        return permanentFlag;
+//    }
+//
+//    public void setPermanentFlag(Boolean permanentFlag) {
+//        this.permanentFlag = permanentFlag;
+//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;
@@ -211,5 +212,13 @@ public class FinancialAccountRequest {
 
     public void setMoneyTypeId(List<Long> moneyTypeId) {
         this.moneyTypeId = moneyTypeId;
+    }
+
+    public Long getAccountStatusId() {
+        return accountStatusId;
+    }
+
+    public void setAccountStatusId(Long accountStatusId) {
+        this.accountStatusId = accountStatusId;
     }
 }

@@ -9,12 +9,12 @@ public class FinancialAccountOutPutDto {
     private String fullDescription;
     private String code;
     private String description;
-//    private Boolean activeFlag;
+    //    private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Boolean relatedToOthersFlag;
-    private Boolean permanentFlag;
+    //    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
@@ -29,6 +29,7 @@ public class FinancialAccountOutPutDto {
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
     private List<AccountRelatedDescriptionDto> accountRelatedDescriptionOutputModel;
     private List<AccountMoneyTypeDtoResponse> accountMoneyTypeOutPut;
+    private Long accountStatusId;
 
     public Long getId() {
         return id;
@@ -118,13 +119,13 @@ public class FinancialAccountOutPutDto {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
 
-    public Boolean getPermanentFlag() {
-        return permanentFlag;
-    }
-
-    public void setPermanentFlag(Boolean permanentFlag) {
-        this.permanentFlag = permanentFlag;
-    }
+//    public Boolean getPermanentFlag() {
+//        return permanentFlag;
+//    }
+//
+//    public void setPermanentFlag(Boolean permanentFlag) {
+//        this.permanentFlag = permanentFlag;
+//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;
@@ -230,6 +231,14 @@ public class FinancialAccountOutPutDto {
         this.accountMoneyTypeOutPut = accountMoneyTypeOutPut;
     }
 
+    public Long getAccountStatusId() {
+        return accountStatusId;
+    }
+
+    public void setAccountStatusId(Long accountStatusId) {
+        this.accountStatusId = accountStatusId;
+    }
+
     public static FinancialAccountOutPutDto.Builder builder() {
         return new FinancialAccountOutPutDto.Builder();
     }
@@ -308,10 +317,10 @@ public class FinancialAccountOutPutDto {
             return this;
         }
 
-        public Builder permanentFlag(Boolean permanentFlag) {
-            financialAccountOutPutDto.setPermanentFlag(permanentFlag);
-            return this;
-        }
+//        public Builder permanentFlag(Boolean permanentFlag) {
+//            financialAccountOutPutDto.setPermanentFlag(permanentFlag);
+//            return this;
+//        }
 
         public Builder accountRelationTypeId(Long accountRelationTypeId) {
             financialAccountOutPutDto.setAccountRelationTypeId(accountRelationTypeId);
@@ -370,6 +379,11 @@ public class FinancialAccountOutPutDto {
 
         public Builder accountDefaultValueOutPutModel(List<AccountDefaultValueResponse> accountDefaultValueOutPutModel) {
             financialAccountOutPutDto.setAccountDefaultValueOutPutModel(accountDefaultValueOutPutModel);
+            return this;
+        }
+
+        public Builder accountStatusId(Long accountStatusId) {
+            financialAccountOutPutDto.setAccountStatusId(accountStatusId);
             return this;
         }
 
