@@ -9,7 +9,7 @@ public class FinancialAccountOutPutResponse {
     private String fullDescription;
     private String description;
     private String code;
-//    private Boolean activeFlag;
+    //    private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
@@ -25,6 +25,9 @@ public class FinancialAccountOutPutResponse {
     private Boolean exchangeFlag;
     private Long accountAdjustmentId;
     private String accountAdjustmentDescription;
+    private Long accountStatusId;
+    private String accountStatusCode;
+    private String accountStatusDescription;
     private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
@@ -241,9 +244,35 @@ public class FinancialAccountOutPutResponse {
     public void setAccountMoneyTypeOutPutModel(List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel) {
         this.accountMoneyTypeOutPutModel = accountMoneyTypeOutPutModel;
     }
+
+    public Long getAccountStatusId() {
+        return accountStatusId;
+    }
+
+    public void setAccountStatusId(Long accountStatusId) {
+        this.accountStatusId = accountStatusId;
+    }
+
+    public String getAccountStatusCode() {
+        return accountStatusCode;
+    }
+
+    public void setAccountStatusCode(String accountStatusCode) {
+        this.accountStatusCode = accountStatusCode;
+    }
+
+    public String getAccountStatusDescription() {
+        return accountStatusDescription;
+    }
+
+    public void setAccountStatusDescription(String accountStatusDescription) {
+        this.accountStatusDescription = accountStatusDescription;
+    }
+
     public static FinancialAccountOutPutResponse.Builder builder() {
         return new FinancialAccountOutPutResponse.Builder();
     }
+
     public static final class Builder {
         private FinancialAccountOutPutResponse financialAccountOutPutResponse;
 
@@ -362,6 +391,21 @@ public class FinancialAccountOutPutResponse {
 
         public Builder accountAdjustmentDescription(String accountAdjustmentDescription) {
             financialAccountOutPutResponse.setAccountAdjustmentDescription(accountAdjustmentDescription);
+            return this;
+        }
+
+        public Builder accountStatusId(Long accountStatusId) {
+            financialAccountOutPutResponse.setAccountStatusId(accountStatusId);
+            return this;
+        }
+
+        public Builder accountStatusCode(String accountStatusCode) {
+            financialAccountOutPutResponse.setAccountStatusCode(accountStatusCode);
+            return this;
+        }
+
+        public Builder accountStatusDescription(String accountStatusDescription) {
+            financialAccountOutPutResponse.setAccountStatusDescription(accountStatusDescription);
             return this;
         }
 

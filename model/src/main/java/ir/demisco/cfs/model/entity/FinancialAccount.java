@@ -18,10 +18,10 @@ public class FinancialAccount extends AuditModel<Long> {
     private String fullDescription;
     private String code;
     private String description;
-//        private Boolean activeFlag;
+    //        private Boolean activeFlag;
     private String latinDescription;
     private AccountNatureType accountNatureType;
-    private Boolean permanentFlag;
+//    private Boolean permanentFlag;
     private Boolean relatedToOthersFlag;
     private AccountRelationType accountRelationType;
     private FinancialAccount financialAccountParent;
@@ -33,6 +33,7 @@ public class FinancialAccount extends AuditModel<Long> {
     private LocalDateTime deletedDate;
     private Boolean hasChild;
     private Date disableDate;
+    private AccountStatus accountStatus;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_generator", sequenceName = "sq_financial_account", allocationSize = 50)
@@ -120,14 +121,14 @@ public class FinancialAccount extends AuditModel<Long> {
         this.accountNatureType = accountNatureType;
     }
 
-    @Column(name = "PERMANENT_FLAG")
-    public Boolean getPermanentFlag() {
-        return permanentFlag;
-    }
-
-    public void setPermanentFlag(Boolean permanentFlag) {
-        this.permanentFlag = permanentFlag;
-    }
+//    @Column(name = "PERMANENT_FLAG")
+//    public Boolean getPermanentFlag() {
+//        return permanentFlag;
+//    }
+//
+//    public void setPermanentFlag(Boolean permanentFlag) {
+//        this.permanentFlag = permanentFlag;
+//    }
 
     @Column(name = "RELATED_TO_OTHERS_FLAG")
     public Boolean getRelatedToOthersFlag() {
@@ -229,5 +230,15 @@ public class FinancialAccount extends AuditModel<Long> {
 
     public void setDisableDate(Date disableDate) {
         this.disableDate = disableDate;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ACCOUNT_STATUS_ID")
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 }
