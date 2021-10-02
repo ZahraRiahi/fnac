@@ -17,6 +17,9 @@ public class FinancialAccountDto {
     private LocalDateTime deletedDate;
     private Long financialAccountStructureId;
     private Boolean hasChild;
+    private Long accountStatusId;
+    private String accountStatusCode;
+    private String accountStatusDescription;
 
     public Long getId() {
         return id;
@@ -134,6 +137,30 @@ public class FinancialAccountDto {
         this.hasChild = hasChild;
     }
 
+    public Long getAccountStatusId() {
+        return accountStatusId;
+    }
+
+    public void setAccountStatusId(Long accountStatusId) {
+        this.accountStatusId = accountStatusId;
+    }
+
+    public String getAccountStatusCode() {
+        return accountStatusCode;
+    }
+
+    public void setAccountStatusCode(String accountStatusCode) {
+        this.accountStatusCode = accountStatusCode;
+    }
+
+    public String getAccountStatusDescription() {
+        return accountStatusDescription;
+    }
+
+    public void setAccountStatusDescription(String accountStatusDescription) {
+        this.accountStatusDescription = accountStatusDescription;
+    }
+
     public static final class Builder {
         private FinancialAccountDto financialAccountDto;
 
@@ -212,6 +239,21 @@ public class FinancialAccountDto {
 
         public Builder hasChild(Boolean hasChild) {
             financialAccountDto.setHasChild(hasChild);
+            return this;
+        }
+
+        public Builder accountStatusId(Long accountStatusId) {
+            financialAccountDto.setAccountStatusId(accountStatusId);
+            return this;
+        }
+
+        public Builder accountStatusCode(String accountStatusCode) {
+            financialAccountDto.setAccountStatusCode(accountStatusCode);
+            return this;
+        }
+
+        public Builder accountStatusDescription(String accountStatusDescription) {
+            financialAccountDto.setAccountStatusDescription(accountStatusDescription);
             return this;
         }
 
