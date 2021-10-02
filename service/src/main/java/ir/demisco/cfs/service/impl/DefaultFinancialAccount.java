@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -191,14 +190,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .fullDescription(financialAccount.getFullDescription())
                 .code(financialAccount.getCode())
                 .description(financialAccount.getDescription())
-//                .activeFlag(financialAccount.getActiveFlag())
                 .latinDescription(financialAccount.getLatinDescription())
-                .accountNatureTypeId(financialAccount.getAccountNatureType().getId())
-                .accountNatureTypeDescription(financialAccount.getAccountNatureType().getDescription())
+                .accountNatureTypeId(financialAccount.getAccountNatureType() == null ? 0 : financialAccount.getAccountNatureType().getId())
+                .accountNatureTypeDescription(financialAccount.getAccountNatureType() == null ? "" : financialAccount.getAccountNatureType().getDescription())
                 .relatedToOthersFlag(financialAccount.getRelatedToOthersFlag())
-                .permanentFlag(financialAccount.getPermanentFlag())
-                .accountRelationTypeId(financialAccount.getAccountRelationType().getId())
-                .accountRelationTypeDescription(financialAccount.getAccountRelationType().getDescription())
+                .accountRelationTypeId(financialAccount.getAccountRelationType() == null ? 0 : financialAccount.getAccountRelationType().getId())
+                .accountRelationTypeDescription(financialAccount.getAccountRelationType() == null ? "" : financialAccount.getAccountRelationType().getDescription())
                 .financialAccountParentId(financialAccount.getFinancialAccountParent() == null ? 0 : financialAccount.getFinancialAccountParent().getId())
                 .financialAccountParentDescription(financialAccount.getFinancialAccountParent() == null ? "" : financialAccount.getFinancialAccountParent().getDescription())
                 .relatedToFundType(financialAccount.getRelatedToFundType())
@@ -207,7 +204,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .exchangeFlag(financialAccount.getExchangeFlag())
                 .convertFlag(financialAccount.getConvertFlag())
                 .accountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId())
-                .accountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? "" : financialAccount.getAccountAdjustment().getDescription()).build();
+                .accountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? "" : financialAccount.getAccountAdjustment().getDescription())
+                .accountStatusId(financialAccount.getAccountStatus() == null ? 0 : financialAccount.getAccountStatus().getId())
+                .accountStatusCode(financialAccount.getAccountStatus() == null ? "" : financialAccount.getAccountStatus().getCode())
+                .accountStatusCode(financialAccount.getAccountStatus() == null ? "" : financialAccount.getAccountStatus().getDescription())
+                .build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountRelatedDescriptionOutPutModel(accountRelatedDescriptionResponses(financialAccountId));
@@ -299,28 +300,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
         financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
-//        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
-//        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
-//        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
-//        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
-//                (financialAccountStructureRequest);
-//
-//        if (financialAccountStructureId == null) {
-//            throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
-//        }
-//
-//
-//        financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
-//        financialAccount.setActiveFlag(financialAccountRequest.getActiveFlag());
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
         if (financialAccountRequest.getAccountNatureTypeId() != null) {
             financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));
         }
         financialAccount.setRelatedToOthersFlag(financialAccountRequest.getRelatedToOthersFlag());
-        financialAccount.setPermanentFlag(financialAccountRequest.getPermanentFlag());
         if (financialAccountRequest.getAccountRelationTypeId() != null) {
             financialAccount.setAccountRelationType(accountRelationTypeRepository.getOne(financialAccountRequest.getAccountRelationTypeId()));
         }
@@ -345,12 +332,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setFullDescription(financialAccount.getFullDescription());
         financialAccountOutPutDto.setDescription(financialAccount.getDescription());
         financialAccountOutPutDto.setCode(financialAccount.getCode());
-//        financialAccountOutPutDto.setActiveFlag(financialAccount.getActiveFlag());
         financialAccountOutPutDto.setLatinDescription(financialAccount.getLatinDescription());
         financialAccountOutPutDto.setAccountNatureTypeId(financialAccount.getAccountNatureType() == null ? 0 : financialAccount.getAccountNatureType().getId());
         financialAccountOutPutDto.setAccountNatureTypeDescription(financialAccount.getAccountNatureType() == null ? " " : financialAccount.getAccountNatureType().getDescription());
         financialAccountOutPutDto.setRelatedToOthersFlag(financialAccount.getRelatedToOthersFlag());
-        financialAccountOutPutDto.setPermanentFlag(financialAccount.getPermanentFlag());
         financialAccountOutPutDto.setAccountRelationTypeId(financialAccount.getAccountRelationType() == null ? 0 : financialAccount.getAccountRelationType().getId());
         financialAccountOutPutDto.setAccountRelationTypeDescription(financialAccount.getAccountRelationType() == null ? " " : financialAccount.getAccountRelationType().getDescription());
         financialAccountOutPutDto.setFinancialAccountParentId(financialAccount.getFinancialAccountParent() == null ? 0 : financialAccount.getFinancialAccountParent().getId());
