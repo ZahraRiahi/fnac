@@ -85,10 +85,10 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " fsts.code as account_status_code, " +
             " fsts.description as account_status_description " +
             "  from fnac.financial_account fiac" +
-            " inner join fnac.account_nature_type acnt" +
+            "  left outer join fnac.account_nature_type acnt" +
             "    on fiac.account_nature_type_id = acnt.id" +
             "   and acnt.deleted_date is null" +
-            " inner join fnac.account_relation_type acrt" +
+            "  left outer join fnac.account_relation_type acrt" +
             "    on fiac.account_relation_type_id = acrt.id" +
             "   and acrt.deleted_date is null" +
             " inner join fnac.financial_account_structure fnas" +
