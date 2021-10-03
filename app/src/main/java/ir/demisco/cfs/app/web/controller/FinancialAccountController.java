@@ -28,7 +28,7 @@ public class FinancialAccountController {
 
     @GetMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId()));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
 
     @GetMapping("/Get/{financialAccountId}")
