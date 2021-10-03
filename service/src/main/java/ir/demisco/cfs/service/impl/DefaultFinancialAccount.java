@@ -278,7 +278,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountOutPutDto;
     }
 
-    private FinancialAccount  saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
+    private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
         Long financialAccountCodeCount;
         if (financialAccountRequest.getId() == null) {
@@ -301,7 +301,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountCodeCount > 0) {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
-        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        financialAccount.setOrganization(organizationRepository.getOne(100L));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
@@ -447,10 +447,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccountRequest.setFinancialAccountStructureId(0L);
         }
         List<Object[]> financialAccountStructureListObject =
-                accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccountRequest.getFinancialCodingTypeId()
-                        , financialAccountRequest.getCode(),
-                        financialAccount.getFinancialAccountStructure().getId(),
-                        financialAccountStructure);
+                accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
         financialAccountStructureListObject.forEach(e -> {
             AccountStructureLevel accountStructureLevel = new AccountStructureLevel();
@@ -458,9 +455,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             accountStructureLevel.setFinancialAccountStructure(financialAccountStructureRepository.getOne(Long.parseLong(e[2].toString())));
             accountStructureLevel.setStructureLevel(Long.parseLong(e[0].toString()));
             accountStructureLevel.setStructureLevelCode(e[1].toString());
+            if (e[4] != null) {
+                accountStructureLevel.setRelatedAccountId(Long.parseLong(e[4].toString()));
+            }
+//            accountStructureLevel.setFinancialAccount(financialAccountRepository.getOne(Long.parseLong(e[3].toString())));
             accountStructureLevelRepository.save(accountStructureLevel);
         });
-
     }
 
     @Override
