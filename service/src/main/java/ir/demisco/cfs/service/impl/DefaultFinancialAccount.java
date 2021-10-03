@@ -74,7 +74,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -87,9 +87,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .code(item[2].toString())
                         .activeFlag(Integer.parseInt(item[9].toString()) == 1)
                         .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                        .accountRelationTypeDescription(item[8].toString())
+                        .accountRelationTypeDescription(item[8] == null ? null : item[8].toString())
                         .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .accountNatureTypeDescription(item[7].toString())
+                        .accountNatureTypeDescription(item[7] == null ? null : item[7].toString())
                         .financialAccountParentId(item[6] == null ? null : Long.parseLong(item[6].toString()))
                         .financialAccountStructureId(item[11] == null ? null : Long.parseLong(item[11].toString()))
                         .hasChild(Integer.parseInt(item[10].toString()) == 1)
