@@ -13,6 +13,7 @@ public class AccountStructureLevel extends AuditModel<Long> {
     private String structureLevelCode;
     private FinancialAccountStructure financialAccountStructure;
     private FinancialAccount financialAccount;
+    private Long relatedAccountId;
     private LocalDateTime deletedDate;
 
     @Override
@@ -63,6 +64,15 @@ public class AccountStructureLevel extends AuditModel<Long> {
 
     public void setFinancialAccount(FinancialAccount financialAccount) {
         this.financialAccount = financialAccount;
+    }
+
+    @Column(name = "RELATED_ACCOUNT_ID")
+    public Long getRelatedAccountId() {
+        return relatedAccountId;
+    }
+
+    public void setRelatedAccountId(Long relatedAccountId) {
+        this.relatedAccountId = relatedAccountId;
     }
 
     @Column(name = "DELETED_DATE")
