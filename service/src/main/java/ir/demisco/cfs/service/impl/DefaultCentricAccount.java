@@ -135,9 +135,9 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .personId(centricAccount.getPerson().getId())
                 .personName(centricAccount.getPerson().getPersonName())
                 .activeFlag(centricAccount.getActiveFlag())
-                .parentCentricAccountId(centricAccount.getParentCentricAccount().getId())
-                .parentCentricAccountCode(centricAccount.getParentCentricAccount().getCode())
-                .parentCentricAccountName(centricAccount.getParentCentricAccount().getName())
+                .parentCentricAccountId(centricAccount.getParentCentricAccount() == null ? null : centricAccount.getParentCentricAccount().getId())
+                .parentCentricAccountCode(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getCode())
+                .parentCentricAccountName(centricAccount.getParentCentricAccount() == null ? "" : centricAccount.getParentCentricAccount().getName())
                 .centricAccountTypeCode(centricAccount.getCentricAccountType().getCode())
                 .build();
         centricAccountOutPutResponse.setPersonRoleTypeOutPutModel(personRoleTypeResponses(centricAccountId));
