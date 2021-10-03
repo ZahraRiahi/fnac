@@ -20,8 +20,10 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
 
 
     @Query("select count(ca.id) from CentricAccount ca join ca.centricAccountType cat " +
-            "where ca.organization.id=:organizationId  and ca.person.id=:personId and cat.code='10' and ca.deletedDate is null")
+            "where ca.organization.id=:organizationId  and (:personId is null or " +
+            " ca.person.id=:personId) and cat.code='10' and ca.deletedDate is null")
     Long findByCountCentricAccountAndOrganizationAndPerson(Long organizationId, Long personId);
+
 
     @Query(value = " select acdv.id as accountDefaultValueId ,acdv.account_relation_typ_detail_id ," +
             " acdv.centric_account_id," +
@@ -49,5 +51,12 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " and cnac.deleted_date is null "
             , nativeQuery = true)
     List<Object[]> findByCentricAccountListObject(Long financialAccountId);
+
+
+
+    @Query("select count(ca.id) from CentricAccount ca join ca.centricAccountType cat " +
+            "where ca.organization.id=:organizationId  and cat.id=:centricAccountTypeId" +
+            " and ca.code=:code and ca.deletedDate is null")
+    Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId,String code);
 }
 

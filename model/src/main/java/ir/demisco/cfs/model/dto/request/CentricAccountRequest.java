@@ -1,4 +1,5 @@
 package ir.demisco.cfs.model.dto.request;
+
 import java.util.List;
 
 public class CentricAccountRequest {
@@ -7,6 +8,7 @@ public class CentricAccountRequest {
     private String name;
     private String centricAccountTypeCode;
     private Long centricAccountTypeId;
+    private String centricAccountTypeDescription;
     private Long organizationId;
     private Long personId;
     private Boolean activeFlag;
@@ -109,5 +111,13 @@ public class CentricAccountRequest {
 
     public void setParentCentricAccountName(String parentCentricAccountName) {
         this.parentCentricAccountName = parentCentricAccountName;
+    }
+
+    public String getCentricAccountTypeDescription() {
+        return centricAccountTypeDescription;
+    }
+
+    public void setCentricAccountTypeDescription(String centricAccountTypeDescription) {
+        this.centricAccountTypeDescription = centricAccountTypeDescription;
     }
 }
