@@ -175,7 +175,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .code(e[1].toString())
                 .referenceFlag(e[3] == null || ((BigDecimal) e[3]).longValue() == 0)
                 .exchangeFlag(e[4] == null || ((BigDecimal) e[4]).longValue() == 0)
-                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
+//                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
+                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
                 .disableDate((Date) e[6])
                 .activeFlag(Long.parseLong(e[7].toString()))
                 .build()).collect(Collectors.toList());
