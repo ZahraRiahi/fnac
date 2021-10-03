@@ -33,14 +33,13 @@ public class CentricAccountController {
 
     @PostMapping("/save")
     public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
-        if (centricAccountRequest.getId() == null) {
+//        if (centricAccountRequest.getId() == null) {
             CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
             return ResponseEntity.ok(centricAccountDto);
-        } else {
-            return null;
+//        } else {
 //            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
         }
-    }
+//    }
 
     @GetMapping("/GetByPerson/{id}")
     public ResponseEntity<Boolean> GetByPerson(@PathVariable("id") Long personId) {
