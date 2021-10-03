@@ -301,7 +301,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountCodeCount > 0) {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
-        financialAccount.setOrganization(organizationRepository.getOne(100L));
+        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
