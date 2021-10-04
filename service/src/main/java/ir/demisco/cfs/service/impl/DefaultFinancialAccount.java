@@ -622,10 +622,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccount.setDisableDate(new Date());
         } else {
             Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountAndIdAndDisableDateIsNotNull(financialAccountStatusRequest.getFinancialAccountId());
-            if (financialAccountActiveCount == null) {
+            if (financialAccountActiveCount != null) {
                 financialAccount.setDisableDate(null);
             } else {
-                throw new RuleException("وضعیت ردیف مورد نظر غیر فعال می باشد.");
+                throw new RuleException("وضعیت ردیف مورد نظر  فعال می باشد.");
             }
         }
 

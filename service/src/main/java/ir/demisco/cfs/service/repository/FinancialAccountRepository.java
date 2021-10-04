@@ -145,9 +145,23 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " and fa.id=:financialAccountId ")
     Long findByFinancialAccountByAccountRelationTypeId(Long accountRelationTypeId, Long financialAccountId);
 
-    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
-            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
-            " and fa.id=:financialAccountId and fa.deletedDate is null and fa.disableDate is null and fa.organization.id=:organizationId ")
+    //    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
+//            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
+//            " and fa.id=:financialAccountId and fa.deletedDate is null and fa.disableDate is null and fa.organization.id=:organizationId ")
+    @Query(value = "   select 1 " +
+            "  from fnac.financial_account fiac " +
+            " inner join fnac.financial_account_structure fs " +
+            "    on fiac.financial_account_structure_id = fs.id " +
+            "   and fs.sequence = (select max(fs_inner.sequence) " +
+            "                        from fnac.financial_account_structure fs_inner " +
+            "                       where fs_inner.financial_coding_type_id = " +
+            "                             fs.financial_coding_type_id) " +
+            " where " +
+            "    fiac.deleted_date is null " +
+            "   and fiac.disable_date is null   " +
+            "   and fiac.id = :financialAccountId " +
+            " and fiac.organization_id= :organizationId "
+            , nativeQuery = true)
     Long findByFinancialAccountIdAndStatusFlag(Long financialAccountId, Long organizationId);
 
 
