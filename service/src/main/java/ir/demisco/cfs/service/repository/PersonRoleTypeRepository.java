@@ -30,7 +30,7 @@ public interface PersonRoleTypeRepository extends JpaRepository<PersonRoleType, 
     @Query(value = "    SELECT PR.ID PERSON_ROLE_TYPE_ID, " +
             "          PR.DESCRIPTION, " +
             "          CASE " +
-            "            WHEN CP.ID IS NULL THEN\n" +
+            "            WHEN CP.ID IS NULL THEN " +
             "             0 " +
             "            ELSE " +
             "             1 " +
@@ -38,7 +38,8 @@ public interface PersonRoleTypeRepository extends JpaRepository<PersonRoleType, 
             "     FROM fnac.PERSON_ROLE_TYPE PR " +
             "     LEFT OUTER JOIN fnac.CENTRIC_PERSON_ROLE CP " +
             "       ON CP.PERSON_ROLE_TYPE_ID = PR.ID " +
-            "      AND CP.CENTRIC_ACCOUNT_ID = :centricAccountId "
+            "      AND CP.CENTRIC_ACCOUNT_ID = :centricAccountId" +
+            " and  CP.deleted_date is null "
             , nativeQuery = true)
     List<Object[]> findByPersonRoleTypeListObject(Long centricAccountId);
 
