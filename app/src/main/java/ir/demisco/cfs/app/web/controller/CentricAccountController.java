@@ -1,6 +1,9 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.AccountMoneyTypeRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -25,21 +28,18 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
     }
 
-    @GetMapping("/Get/{id}")
-    public ResponseEntity<List<CentricAccountNewResponse>> responseEntityGet(@PathVariable("id") Long centricAccountTypeId) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountTypeId, SecurityHelper.getCurrentUser().getOrganizationId()));
-
+    @PostMapping("/Get")
+    public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@RequestBody CentricAccountNewRequest centricAccountNewRequest) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountNewRequest));
     }
 
     @PostMapping("/save")
     public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
-//        if (centricAccountRequest.getId() == null) {
-            CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
-            return ResponseEntity.ok(centricAccountDto);
-//        } else {
-//            return ResponseEntity.ok(centricAccountService.update(centricAccountRequest));
-        }
-//    }
+        CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
+        return ResponseEntity.ok(centricAccountDto);
+
+    }
+
 
     @GetMapping("/GetByPerson/{id}")
     public ResponseEntity<Boolean> GetByPerson(@PathVariable("id") Long personId) {
