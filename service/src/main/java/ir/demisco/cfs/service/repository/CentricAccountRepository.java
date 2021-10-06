@@ -8,8 +8,25 @@ import java.util.List;
 
 public interface CentricAccountRepository extends JpaRepository<CentricAccount, Long> {
 
-    @Query("select ca from CentricAccount ca where ca.organization.id=:organizationId and ca.centricAccountType.id=:centricAccountTypeId and ca.deletedDate is null ")
-    List<CentricAccount> findByCentricAccountAndOrganizationId(Long centricAccountTypeId, Long organizationId);
+    @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
+            "  from fnac.centric_account cnac " +
+            " inner join fnac.centric_account_type cnat " +
+            "    on cnac.centric_account_type_id = cnat.id " +
+            "   and cnat.deleted_date is null " +
+            "  left outer join prs.person prsn " +
+            "    on prsn.id = cnac.person_id " +
+            " where  cnac.centric_account_type_id = :centricAccountTypeId " +
+            "   and cnac.organization_id = :organizationId " +
+            "   and cnac.deleted_date is null" +
+            "   and (:parentCentricAccount is null or " +
+            " cnac.parent_centric_account_id = :parentCentricAccountId)"
+            , nativeQuery = true)
+    List<Object[]> findByCentricAccountAndOrganizationIdAndParentCentricAccount(Long centricAccountTypeId, Long organizationId, Object parentCentricAccount, Long parentCentricAccountId);
+
+
+//    @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
+//            "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
+//    List<CentricAccount> findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(Long organizationId, Long personRoleTypeId, Long personId);
 
     @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
             "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
@@ -53,10 +70,9 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
     List<Object[]> findByCentricAccountListObject(Long financialAccountId);
 
 
-
     @Query("select count(ca.id) from CentricAccount ca join ca.centricAccountType cat " +
             "where ca.organization.id=:organizationId  and cat.id=:centricAccountTypeId" +
             " and ca.code=:code and ca.deletedDate is null")
-    Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId,String code);
+    Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId, String code);
 }
 
