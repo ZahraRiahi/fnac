@@ -148,7 +148,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         List<Object[]> centricAccountList = centricAccountRepository.findByCentricAccountAndOrganizationIdAndParentCentricAccount
                 (centricAccountNewRequest.getCentricAccountTypeId(),
-                        100L,
+                        SecurityHelper.getCurrentUser().getOrganizationId(),
                         parentCentricAccount,
                         centricAccountNewRequest.getParentCentricAccountId());
 
