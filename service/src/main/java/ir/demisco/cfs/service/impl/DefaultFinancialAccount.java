@@ -628,8 +628,36 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("وضعیت ردیف مورد نظر  فعال می باشد.");
             }
         }
-
-
         return true;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public List<FinancialAccountNewResponse> getFinancialAccountByFinancialAccountParentAndCodingAndStructure(FinancialAccountNewRequest financialAccountNewRequest) {
+        Object financialAccountParent;
+        if (financialAccountNewRequest.getFinancialAccountParentId() != null) {
+            financialAccountParent = "financialAccountParent";
+        } else {
+            financialAccountNewRequest.setFinancialAccountParentId(0L);
+            financialAccountParent = null;
+        }
+
+        Object financialAccountStructure;
+        if (financialAccountNewRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountNewRequest.setFinancialAccountStructureId(0L);
+            financialAccountStructure = null;
+        }
+
+        List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByFinancialAccountParentAndCodingAndStructure
+                (financialAccountParent, financialAccountNewRequest.getFinancialAccountParentId(), financialAccountNewRequest.getFinancialCodingTypeId(),
+                        financialAccountStructure, financialAccountNewRequest.getFinancialAccountStructureId());
+
+        return financialAccountList.stream().map(e -> FinancialAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
+                .digitCount(Long.parseLong(e[1].toString()))
+                .preCode(e[2] == null ? null : e[2].toString())
+                .suggestedCode(e[3].toString())
+                .build()).collect(Collectors.toList());
     }
 }
