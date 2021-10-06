@@ -1,5 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
 import ir.demisco.cfs.model.dto.response.*;
@@ -65,4 +67,9 @@ public class FinancialAccountController {
         result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest,SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
     }
+    @PostMapping("/GetSuggestedCode")
+    public ResponseEntity<List<FinancialAccountNewResponse>> responseEntity(@RequestBody FinancialAccountNewRequest financialAccountNewRequest) {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountByFinancialAccountParentAndCodingAndStructure(financialAccountNewRequest));
+    }
+
 }
