@@ -11,11 +11,6 @@ import java.util.List;
 
 
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
-//    @Query(value = " select fa from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
-//            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
-//            " and fa.organization.id=:organizationId and fa.deletedDate is null")
-//    List<FinancialAccount> findByFinancialAccountByOrganizationId(Long organizationId);
-
     @Query(value = " SELECT FIAC.ID," +
             "       FIAC.CODE," +
             "       FIAC.DESCRIPTION," +
@@ -53,12 +48,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
     @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
     List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
-
-
-//    fiac.account_status_id,
-//    fsts.code as account_status_code,
-//    fsts.description as account_status_description
-//    from fnac.financial_account fiac
 
     @Query(value = " select fiac.id," +
             "       fiac.organization_id," +
@@ -145,9 +134,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " and fa.id=:financialAccountId ")
     Long findByFinancialAccountByAccountRelationTypeId(Long accountRelationTypeId, Long financialAccountId);
 
-    //    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fs.sequence = (select max(fs_inner.sequence) from  FinancialAccountStructure  fs_inner " +
-//            " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
-//            " and fa.id=:financialAccountId and fa.deletedDate is null and fa.disableDate is null and fa.organization.id=:organizationId ")
     @Query(value = "   select 1 " +
             "  from fnac.financial_account fiac " +
             " inner join fnac.financial_account_structure fs " +
@@ -164,13 +150,50 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             , nativeQuery = true)
     Long findByFinancialAccountIdAndStatusFlag(Long financialAccountId, Long organizationId);
 
-
     @Query("select 1 from  FinancialAccount fa where fa.disableDate is not null and fa.id=:financialAccountId")
     Long findByFinancialAccountAndIdAndDisableDateIsNotNull(Long financialAccountId);
-//    @Query("select count(adv.id) from FinancialAccount fa join adv.financialAccount fa " +
-//            " where fa.id=:financialAccountId  and adv.accountRelationTypeDetail.id=:accountRelationTypeDetailId " +
-//            " and (:centricAccount is null or " +
-//            " adv.centricAccount.id = :centricAccountId)" +
-//            " and adv.deletedDate is null")
-//    Long findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(Long accountRelationTypeDetailId, Long financialAccountId, Long centricAccountId, Object centricAccount);
+
+    @Query(value = " SELECT FNAS.ID, " +
+            "       FNAS.DIGIT_COUNT, " +
+            "       CASE " +
+            "         WHEN :financialAccountParent IS NULL THEN " +
+            "          NULL" +
+            "         ELSE " +
+            "          (SELECT FA_INNER.CODE " +
+            "             FROM FNAC.FINANCIAL_ACCOUNT FA_INNER " +
+            "            WHERE FA_INNER.ID =" +
+            "                  :financialAccountParentId)" +
+            "       END PRE_CODE," +
+            "       CASE " +
+            "         WHEN :financialAccountParent IS NULL THEN" +
+            "          LPAD('1', FNAS.DIGIT_COUNT, '0')" +
+            "         ELSE " +
+            "          LPAD(NVL((SELECT MAX(TO_NUMBER(SUBSTR(FA_INNER.CODE," +
+            "                                               LENGTH(FA_INNER.CODE) -FNAS.DIGIT_COUNT +1," +
+            "                                               FNAS.DIGIT_COUNT))) + 1" +
+            "                     FROM FNAC.FINANCIAL_ACCOUNT FA_INNER" +
+            "                    WHERE FA_INNER.FINANCIAL_ACCOUNT_PARENT_ID = " +
+            "                          :financialAccountParentId)," +
+            "                   1)," +
+            "               FNAS.DIGIT_COUNT," +
+            "               '0')" +
+            "       END SUGGESTED_CODE" +
+            "  FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS" +
+            " WHERE FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   AND FNAS.DELETED_DATE IS NULL" +
+            "   AND FNAS.SEQUENCE =" +
+            "       (SELECT MIN(FNAS_INNER1.SEQUENCE)" +
+            "          FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER1" +
+            "         WHERE FNAS_INNER1.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "           AND FNAS_INNER1.DELETED_DATE IS NULL" +
+            "           AND (:financialAccountStructure IS NULL OR" +
+            "               (FNAS_INNER1.SEQUENCE >" +
+            "               (SELECT FNAS_INNER2.SEQUENCE" +
+            "                    FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER2" +
+            "                   WHERE FNAS_INNER2.ID = :financialAccountStructureId" +
+            "                     AND FNAS_INNER2.DELETED_DATE IS NULL)))) "
+            , nativeQuery = true)
+    List<Object[]> findByFinancialAccountByFinancialAccountParentAndCodingAndStructure(Object financialAccountParent, Long financialAccountParentId, Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
+
+
 }
