@@ -53,4 +53,5 @@ public class FinancialAccountStructureController {
     public ResponseEntity<Long> responseEntity(@RequestBody FinancialAccountStructureRequest financialAccountStructureRequest) {
         return ResponseEntity.ok(financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure(financialAccountStructureRequest));
     }
+
 }
