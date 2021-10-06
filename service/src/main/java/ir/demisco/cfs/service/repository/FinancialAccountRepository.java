@@ -70,9 +70,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "    and fiac_inner.organization_id = :organizationId" +
             ")) then 1 else 0 end haschild," +
             " fiac.financial_account_structure_id, " +
-            " fiac.account_status_id, " +
+            " fiac.account_permanent_status_id, " +
             " fsts.code as account_status_code, " +
-            " fsts.description as account_status_description " +
+            " fsts.description as account_status_description, " +
+            " fnas.flg_show_in_acc, " +
+            " fnas.flg_permanent_status " +
             "  from fnac.financial_account fiac" +
             "  left outer join fnac.account_nature_type acnt" +
             "    on fiac.account_nature_type_id = acnt.id" +
@@ -89,8 +91,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "  left outer join fnac.financial_account fiac_adjustment" +
             "    on fiac_adjustment.id = fiac.account_adjustment_id" +
             "   and fiac_adjustment.deleted_date is null" +
-            "  left outer join fnac.account_status fsts " +
-            "    on fsts.id = fiac.account_status_id " +
+            "  left outer join fnac.account_permanent_status fsts " +
+            "    on fsts.id = fiac.account_permanent_status_id " +
             "   and fsts.deleted_date is null " +
             " where fiac.organization_id = :organizationId" +
             "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
