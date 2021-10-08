@@ -8,7 +8,6 @@ public class FinancialAccountDto {
     private String code;
     private String description;
     private Boolean activeFlag;
-//    private Boolean permanentFlag;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Long accountRelationTypeId;
@@ -20,6 +19,8 @@ public class FinancialAccountDto {
     private Long accountStatusId;
     private String accountStatusCode;
     private String accountStatusDescription;
+    private Boolean flgShowInAcc;
+    private Boolean flgPermanentStatus;
 
     public Long getId() {
         return id;
@@ -117,9 +118,6 @@ public class FinancialAccountDto {
         this.deletedDate = deletedDate;
     }
 
-    public static FinancialAccountDto.Builder builder() {
-        return new FinancialAccountDto.Builder();
-    }
 
     public Long getFinancialAccountStructureId() {
         return financialAccountStructureId;
@@ -159,6 +157,26 @@ public class FinancialAccountDto {
 
     public void setAccountStatusDescription(String accountStatusDescription) {
         this.accountStatusDescription = accountStatusDescription;
+    }
+
+    public Boolean getFlgShowInAcc() {
+        return flgShowInAcc;
+    }
+
+    public void setFlgShowInAcc(Boolean flgShowInAcc) {
+        this.flgShowInAcc = flgShowInAcc;
+    }
+
+    public Boolean getFlgPermanentStatus() {
+        return flgPermanentStatus;
+    }
+
+    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
+        this.flgPermanentStatus = flgPermanentStatus;
+    }
+
+    public static FinancialAccountDto.Builder builder() {
+        return new FinancialAccountDto.Builder();
     }
 
     public static final class Builder {
@@ -254,6 +272,16 @@ public class FinancialAccountDto {
 
         public Builder accountStatusDescription(String accountStatusDescription) {
             financialAccountDto.setAccountStatusDescription(accountStatusDescription);
+            return this;
+        }
+
+        public Builder flgShowInAcc(Boolean flgShowInAcc) {
+            financialAccountDto.setFlgShowInAcc(flgShowInAcc);
+            return this;
+        }
+
+        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
+            financialAccountDto.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }
 

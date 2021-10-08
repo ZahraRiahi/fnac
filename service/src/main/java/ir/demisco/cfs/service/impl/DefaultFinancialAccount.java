@@ -43,9 +43,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialAccountDescriptionRepository financialAccountDescriptionRepository;
     private final FinancialDocumentItemRepository financialDocumentItemRepository;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
-    private final AccountStatusRepository accountStatusRepository;
+    private final AccountPermanentStatusRepository accountPermanentStatusRepository;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountStatusRepository accountStatusRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -65,7 +65,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.financialAccountDescriptionRepository = financialAccountDescriptionRepository;
         this.financialDocumentItemRepository = financialDocumentItemRepository;
         this.financialAccountStructureRepository = financialAccountStructureRepository1;
-        this.accountStatusRepository = accountStatusRepository;
+        this.accountPermanentStatusRepository = accountPermanentStatusRepository;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -96,6 +96,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .accountStatusId(item[12] == null ? null : Long.parseLong(item[12].toString()))
                         .accountStatusCode(item[13] == null ? null : (item[13].toString()))
                         .accountStatusDescription(item[14] == null ? null : (item[14].toString()))
+                        .flgShowInAcc(Integer.parseInt(item[15].toString()) == 1)
+                        .flgPermanentStatus(Integer.parseInt(item[16].toString()) == 1)
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
@@ -208,9 +210,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .convertFlag(financialAccount.getConvertFlag())
                 .accountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId())
                 .accountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? "" : financialAccount.getAccountAdjustment().getDescription())
-                .accountStatusId(financialAccount.getAccountStatus() == null ? 0 : financialAccount.getAccountStatus().getId())
-                .accountStatusCode(financialAccount.getAccountStatus() == null ? "" : financialAccount.getAccountStatus().getCode())
-                .accountStatusCode(financialAccount.getAccountStatus() == null ? "" : financialAccount.getAccountStatus().getDescription())
+                .accountStatusId(financialAccount.getAccountPermanentStatus() == null ? 0 : financialAccount.getAccountPermanentStatus().getId())
+                .accountStatusCode(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getCode())
+                .accountStatusCode(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getDescription())
                 .build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
@@ -318,7 +320,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccount.setFinancialAccountParent(financialAccountRepository.getOne(financialAccountRequest.getFinancialAccountParentId()));
         }
         if (financialAccountRequest.getAccountStatusId() != null) {
-            financialAccount.setAccountStatus(accountStatusRepository.getOne(financialAccountRequest.getAccountStatusId()));
+            financialAccount.setAccountPermanentStatus(accountPermanentStatusRepository.getOne(financialAccountRequest.getAccountStatusId()));
 
         }
         financialAccount.setRelatedToFundType(financialAccountRequest.getRelatedToFundType());
@@ -354,7 +356,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountOutPutDto.setExchangeFlag(financialAccount.getExchangeFlag());
         financialAccountOutPutDto.setAccountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId());
         financialAccountOutPutDto.setAccountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? " " : financialAccount.getAccountAdjustment().getDescription());
-        financialAccountOutPutDto.setAccountStatusId(financialAccount.getAccountStatus() == null ? 0 : financialAccount.getAccountStatus().getId());
+        financialAccountOutPutDto.setAccountStatusId(financialAccount.getAccountPermanentStatus() == null ? 0 : financialAccount.getAccountPermanentStatus().getId());
 
         return financialAccountOutPutDto;
     }

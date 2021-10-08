@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "account_status", schema = "fnac")
-public class AccountStatus {
+@Table(name = "account_permanent_status", schema = "fnac")
+public class AccountPermanentStatus {
     private Long id;
     private String code;
     private String description;
