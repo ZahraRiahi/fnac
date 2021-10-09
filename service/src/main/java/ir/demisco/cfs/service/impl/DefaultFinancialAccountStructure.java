@@ -77,6 +77,8 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructure.setColor(financialAccountStructureDto.getColor());
         financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructure.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
+        financialAccountStructure.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
         return financialAccountStructureRepository.save(financialAccountStructure).getId();
     }
 
@@ -86,7 +88,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(),financialAccountStructure.getId());
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure.getId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
@@ -97,6 +99,8 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructure.setColor(financialAccountStructureDto.getColor());
         financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructure.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
+        financialAccountStructure.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
         financialAccountStructure = financialAccountStructureRepository.save(financialAccountStructure);
         return convertFinancialAccountStructureToDto(financialAccountStructure);
     }
