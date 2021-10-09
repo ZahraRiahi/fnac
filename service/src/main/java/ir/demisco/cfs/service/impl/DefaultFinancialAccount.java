@@ -207,12 +207,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .referenceFlag(financialAccount.getReferenceFlag())
                 .convertFlag(financialAccount.getConvertFlag())
                 .exchangeFlag(financialAccount.getExchangeFlag())
-                .convertFlag(financialAccount.getConvertFlag())
                 .accountAdjustmentId(financialAccount.getAccountAdjustment() == null ? 0 : financialAccount.getAccountAdjustment().getId())
                 .accountAdjustmentDescription(financialAccount.getAccountAdjustment() == null ? "" : financialAccount.getAccountAdjustment().getDescription())
                 .accountStatusId(financialAccount.getAccountPermanentStatus() == null ? 0 : financialAccount.getAccountPermanentStatus().getId())
                 .accountStatusCode(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getCode())
-                .accountStatusCode(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getDescription())
+                .accountStatusDescription(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getDescription())
+                .flgShowInAcc(financialAccount.getFinancialAccountStructure().getFlgShowInAcc())
+                .flgPermanentStatus(financialAccount.getFinancialAccountStructure().getFlgPermanentStatus())
                 .build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
