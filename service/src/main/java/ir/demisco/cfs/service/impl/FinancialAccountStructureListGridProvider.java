@@ -38,7 +38,10 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                 filterContext.getPath("sumDigit"),
                 filterContext.getPath("color"),
                 filterContext.getPath("financialCodingType.id"),
-                filterContext.getPath("deletedDate")
+                filterContext.getPath("deletedDate"),
+                filterContext.getPath("flgShowInAcc"),
+                filterContext.getPath("flgPermanentStatus")
+
         );
     }
 
@@ -62,6 +65,8 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                     .color((String) array[5])
                     .financialCodingTypeId((Long) array[6])
                     .deletedDate((LocalDateTime) array[7])
+                    .flgShowInAcc((Boolean) array[8])
+                    .flgPermanentStatus((Boolean) array[9])
                     .build();
         }).collect(Collectors.toList());
     }

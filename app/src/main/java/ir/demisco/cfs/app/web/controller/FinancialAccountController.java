@@ -29,12 +29,12 @@ public class FinancialAccountController {
 
     @GetMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId()));
     }
 
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,100L));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId()));
 
     }
 
