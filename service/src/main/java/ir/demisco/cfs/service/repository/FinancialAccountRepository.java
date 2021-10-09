@@ -54,43 +54,53 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fiac.code," +
             "       fiac.description," +
             "       fiac.account_nature_type_id," +
+            "       fiac.financial_account_structure_id," +
             "       fiac.account_relation_type_id," +
             "       fiac.financial_account_parent_id," +
-            "       acnt.description                 as account_nature_type_Description," +
-            "       acrt.description                 as account_relation_type_Description," +
-            "       case " +
-            "         when fiac.disable_date is not null then " +
-            "          0 " +
-            "         else " +
-            "          1 " +
-            "       end active_flag, " +
-            "      case when  (exists(select 1 from fnac.financial_account fiac_inner where" +
-            "        fiac_inner.financial_account_parent_id=fiac.id" +
-            "      and fiac_inner.deleted_date is null" +
-            "    and fiac_inner.organization_id = :organizationId" +
-            ")) then 1 else 0 end haschild," +
-            " fiac.financial_account_structure_id, " +
-            " fiac.account_permanent_status_id, " +
-            " fsts.code as account_status_code, " +
-            " fsts.description as account_status_description, " +
-            " fnas.flg_show_in_acc, " +
-            " fnas.flg_permanent_status " +
+            "       case" +
+            "         when fiac.disable_date is not null then" +
+            "          0" +
+            "         else" +
+            "          1" +
+            "       end active_flag," +
+            "       acnt.description as account_nature_type_Description," +
+            "       acrt.description as account_relation_type_Description," +
+            "       case" +
+            "         when (exists" +
+            "               (select 1" +
+            "                  from fnac.financial_account fiac_inner" +
+            "                 where fiac_inner.financial_account_parent_id = fiac.id" +
+            "                   and fiac_inner.deleted_date is null" +
+            "                   and fiac_inner.organization_id = :organizationId)) then" +
+            "          1" +
+            "         else" +
+            "          0" +
+            "       end haschild," +
+            "       fiac.account_permanent_status_id," +
+            "       fsts.code as account_status_code," +
+            "       fsts.description as account_status_description," +
+            "       fnas.flg_show_in_acc," +
+            "       fnas.flg_permanent_status" +
             "  from fnac.financial_account fiac" +
-            "  left outer join fnac.account_nature_type acnt" +
-            "    on fiac.account_nature_type_id = acnt.id" +
-            "   and acnt.deleted_date is null" +
-            "  left outer join fnac.account_relation_type acrt" +
-            "    on fiac.account_relation_type_id = acrt.id" +
-            "   and acrt.deleted_date is null" +
-            " inner join fnac.financial_account_structure fnas" +
-            "    on fnas.id = fiac.financial_account_structure_id" +
-            "   and fnas.deleted_date is null" +
-            "  left outer join fnac.financial_account fiac_parent" +
-            "    on fiac.financial_account_parent_id = fiac_parent.id" +
-            "   and fiac_parent.deleted_date is null" +
-            "  left outer join fnac.financial_account fiac_adjustment" +
-            "    on fiac_adjustment.id = fiac.account_adjustment_id" +
-            "   and fiac_adjustment.deleted_date is null" +
+            "  inner join fnac.account_nature_type acnt " +
+            "    on fiac.account_nature_type_id = acnt.id " +
+            "   and acnt.deleted_date is null " +
+            "   and (:accountNatureType is null or " +
+            "      fiac.account_nature_type_id = :accountNatureTypeId)" +
+            " LEFT OUTER join fnac.account_relation_type acrt " +
+            "    on fiac.account_relation_type_id = acrt.id " +
+            "  and (:accountRelationType is null or " +
+            " fiac.account_relation_type_id = :accountRelationTypeId) " +
+            "   and acrt.deleted_date is null " +
+            " inner join fnac.financial_account_structure fnas " +
+            "    on fnas.id = fiac.financial_account_structure_id " +
+            "   and fnas.deleted_date is null " +
+            "  left outer join fnac.financial_account fiac_parent " +
+            "    on fiac.financial_account_parent_id = fiac_parent.id " +
+            "   and fiac_parent.deleted_date is null " +
+            "  left outer join fnac.financial_account fiac_adjustment " +
+            "    on fiac_adjustment.id = fiac.account_adjustment_id " +
+            "   and fiac_adjustment.deleted_date is null " +
             "  left outer join fnac.account_permanent_status fsts " +
             "    on fsts.id = fiac.account_permanent_status_id " +
             "   and fsts.deleted_date is null " +
@@ -101,12 +111,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
             "   or (:financialAccountParent is not null  and " +
             "       fiac.financial_account_parent_id =:financialAccountParentId))" +
-            "   and (:accountNatureType is null or " +
-            "       fiac.account_nature_type_id = :accountNatureTypeId)" +
             "   and (:financialAccountStructure is null or " +
-            " fiac.financial_account_structure_id = :financialAccountStructureId)" +
-            "  and (:accountRelationType is null or " +
-            "fiac.account_relation_type_id = :accountRelationTypeId)"
+            " fiac.financial_account_structure_id = :financialAccountStructureId)"
             , nativeQuery = true)
     Page<Object[]> financialAccountList(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
                                         Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
