@@ -153,8 +153,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                         centricAccountNewRequest.getParentCentricAccountId());
 
         return centricAccountList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
-                .name(e[1].toString())
-                .code(e[2].toString()).build()).collect(Collectors.toList());
+                .name(e[2].toString())
+                .code(e[1].toString()).build()).collect(Collectors.toList());
     }
 
 
