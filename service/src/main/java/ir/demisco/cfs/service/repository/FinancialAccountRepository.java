@@ -41,7 +41,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "         ELSE " +
             "          0 " +
             "       END = 0 " +
-            "   AND FS.SHOW_IN_ACC_FLAG = 1 "
+            "   AND FS.FLG_SHOW_IN_ACC = 1 "
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountByOrganizationId(Long organizationId);
 
