@@ -9,12 +9,10 @@ public class FinancialAccountOutPutResponse {
     private String fullDescription;
     private String description;
     private String code;
-    //    private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Boolean relatedToOthersFlag;
-//    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
@@ -28,6 +26,8 @@ public class FinancialAccountOutPutResponse {
     private Long accountStatusId;
     private String accountStatusCode;
     private String accountStatusDescription;
+    private Boolean flgShowInAcc;
+    private Boolean flgPermanentStatus;
     private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
@@ -85,14 +85,6 @@ public class FinancialAccountOutPutResponse {
         this.code = code;
     }
 
-//    public Boolean getActiveFlag() {
-//        return activeFlag;
-//    }
-//
-//    public void setActiveFlag(Boolean activeFlag) {
-//        this.activeFlag = activeFlag;
-//    }
-
     public String getLatinDescription() {
         return latinDescription;
     }
@@ -124,14 +116,6 @@ public class FinancialAccountOutPutResponse {
     public void setRelatedToOthersFlag(Boolean relatedToOthersFlag) {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
-
-//    public Boolean getPermanentFlag() {
-//        return permanentFlag;
-//    }
-//
-//    public void setPermanentFlag(Boolean permanentFlag) {
-//        this.permanentFlag = permanentFlag;
-//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;
@@ -269,6 +253,22 @@ public class FinancialAccountOutPutResponse {
         this.accountStatusDescription = accountStatusDescription;
     }
 
+    public Boolean getFlgShowInAcc() {
+        return flgShowInAcc;
+    }
+
+    public void setFlgShowInAcc(Boolean flgShowInAcc) {
+        this.flgShowInAcc = flgShowInAcc;
+    }
+
+    public Boolean getFlgPermanentStatus() {
+        return flgPermanentStatus;
+    }
+
+    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
+        this.flgPermanentStatus = flgPermanentStatus;
+    }
+
     public static FinancialAccountOutPutResponse.Builder builder() {
         return new FinancialAccountOutPutResponse.Builder();
     }
@@ -313,11 +313,6 @@ public class FinancialAccountOutPutResponse {
             financialAccountOutPutResponse.setCode(code);
             return this;
         }
-
-//        public Builder activeFlag(Boolean activeFlag) {
-//            financialAccountOutPutResponse.setActiveFlag(activeFlag);
-//            return this;
-//        }
 
         public Builder latinDescription(String latinDescription) {
             financialAccountOutPutResponse.setLatinDescription(latinDescription);
@@ -426,6 +421,16 @@ public class FinancialAccountOutPutResponse {
 
         public Builder accountMoneyTypeOutPutModel(List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel) {
             financialAccountOutPutResponse.setAccountMoneyTypeOutPutModel(accountMoneyTypeOutPutModel);
+            return this;
+        }
+
+        public Builder flgShowInAcc(Boolean flgShowInAcc) {
+            financialAccountOutPutResponse.setFlgShowInAcc(flgShowInAcc);
+            return this;
+        }
+
+        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
+            financialAccountOutPutResponse.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }
 
