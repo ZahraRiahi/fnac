@@ -21,6 +21,7 @@ public class FinancialAccountDto {
     private String accountStatusDescription;
     private Boolean flgShowInAcc;
     private Boolean flgPermanentStatus;
+    private String color;
 
     public Long getId() {
         return id;
@@ -175,6 +176,14 @@ public class FinancialAccountDto {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public static FinancialAccountDto.Builder builder() {
         return new FinancialAccountDto.Builder();
     }
@@ -282,6 +291,11 @@ public class FinancialAccountDto {
 
         public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
             financialAccountDto.setFlgPermanentStatus(flgPermanentStatus);
+            return this;
+        }
+
+        public Builder color(String color) {
+            financialAccountDto.setColor(color);
             return this;
         }
 

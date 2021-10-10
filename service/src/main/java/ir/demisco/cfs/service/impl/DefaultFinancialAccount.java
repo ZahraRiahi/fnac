@@ -98,6 +98,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .accountStatusDescription(item[14] == null ? null : (item[14].toString()))
                         .flgShowInAcc(Integer.parseInt(item[15].toString()) == 1)
                         .flgPermanentStatus(Integer.parseInt(item[16].toString()) == 1)
+                        .color(item[17] == null ? null : item[17].toString())
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
