@@ -17,13 +17,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       FIAC.REFERENCE_FLAG," +
             "       FIAC.EXCHANGE_FLAG," +
             "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
-            "       FIAC.DISABLE_DATE," +
-            "       CASE " +
-            "         WHEN FIAC.DISABLE_DATE IS NOT NULL THEN" +
-            "          0 " +
-            "         ELSE " +
-            "          1 " +
-            "       END ACTIVE_FLAG " +
+            "       FIAC.DISABLE_DATE " +
             "  FROM FNAC.FINANCIAL_ACCOUNT FIAC " +
             " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS " +
             "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID " +
