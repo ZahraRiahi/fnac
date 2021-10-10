@@ -1,7 +1,9 @@
 package ir.demisco.cfs.service.impl;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.model.entity.FinancialAccount;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
@@ -13,13 +15,13 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
-import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -130,6 +132,42 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureRequest.setFinancialAccountStructureId(0L);
         }
         return financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructure(financialAccountStructureRequest.getFinancialCodingTypeId(), financialAccountStructureRequest.getFinancialAccountStructureId(), financialAccountStructure);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public FinancialAccountStructureNewResponse getFinancialAccountStructureByCodingAndParentAndId(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        String financialAccountStructure = null;
+        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
+        }
+        Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
+        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
+        if (financialAccountStructureFlg == 1) {
+            financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
+            financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
+            return financialAccountStructureNewResponse;
+        } else if (financialAccountStructureFlg == 0 && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
+            throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
+        } else {
+            List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
+            AtomicReference<Long> accountPermanentStatusId = new AtomicReference<>();
+            financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent(objects ->
+                    accountPermanentStatusId.set(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
+            );
+
+            if (accountPermanentStatusId.get() != null) {
+                financialAccountStructureNewResponse.setFlgPermanentStatus(0L);
+                financialAccountStructureNewResponse.setAccountPermanentStatusId(accountPermanentStatusId.get());
+                return financialAccountStructureNewResponse;
+            } else {
+                throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
+
+            }
+        }
+
     }
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {

@@ -1,5 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
@@ -24,17 +25,17 @@ public class FinancialAccountController {
 
     @PostMapping("/list")
     public ResponseEntity<DataSourceResult> financialAccountResponseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
-          return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
     }
 
     @GetMapping("/Get")
     public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId()));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
 
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId,SecurityHelper.getCurrentUser().getOrganizationId()));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId()));
 
     }
 
@@ -60,12 +61,14 @@ public class FinancialAccountController {
         return ResponseEntity.ok(result);
 
     }
+
     @PostMapping("/setStatus")
     public ResponseEntity<Boolean> GetByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
         boolean result;
-        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest,SecurityHelper.getCurrentUser().getOrganizationId());
+        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
     }
+
     @PostMapping("/GetSuggestedCode")
     public ResponseEntity<List<FinancialAccountNewResponse>> responseEntity(@RequestBody FinancialAccountNewRequest financialAccountNewRequest) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountByFinancialAccountParentAndCodingAndStructure(financialAccountNewRequest));
