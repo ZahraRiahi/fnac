@@ -13,7 +13,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
     @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas " +
             " join fas.financialCodingType fct" +
             " where fas.sequence=:sequence and fct.id=:financialCodingTypeId   and fas.deletedDate is null and fas.id not in(:financialAccountStructureId)")
-    Long getCountByFinancialAccountStructureSequenceAndId(Long sequence, Long financialCodingTypeId,Long financialAccountStructureId);
+    Long getCountByFinancialAccountStructureSequenceAndId(Long sequence, Long financialCodingTypeId, Long financialAccountStructureId);
 
 
     @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas " +
@@ -54,6 +54,14 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "                   WHERE FNAS_INNER2.ID = :financialAccountStructureId " +
             "                     AND FNAS_INNER2.DELETED_DATE IS NULL))))"
             , nativeQuery = true)
-    Long findByFinancialCodingTypeAndFinancialAccountStructureId(Long financialCodingTypeId,Object financialAccountStructure, Long financialAccountStructureId );
+    Long findByFinancialCodingTypeAndFinancialAccountStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
+
+    @Query(value = " SELECT 1 " +
+            "  FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE AST " +
+            " WHERE AST.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   AND AST.FLG_PERMANENT_STATUS = 1 " +
+            " and (:financialAccountStructure is null or AST.ID != :financialAccountStructureId) "
+            , nativeQuery = true)
+    Long getFinancialAccountStructureByCodingAndStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
 
 }

@@ -72,39 +72,58 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
-        FinancialAccountStructure financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
-        financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
-        financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
-        financialAccountStructure.setDigitCount(financialAccountStructureDto.getDigitCount());
-        financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
-        financialAccountStructure.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
-        financialAccountStructure.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
-        financialAccountStructure.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
-        return financialAccountStructureRepository.save(financialAccountStructure).getId();
+        String financialAccountStructure = null;
+        if (financialAccountStructureDto.getId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountStructureDto.setId(0L);
+        }
+        if (financialAccountStructureDto.getFlgPermanentStatus() == 1 && financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId()) != null) {
+            throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+        }
+        FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
+        financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
+        financialAccountStructureFlg.setSequence(financialAccountStructureDto.getSequence());
+        financialAccountStructureFlg.setDigitCount(financialAccountStructureDto.getDigitCount());
+        financialAccountStructureFlg.setSumDigit(financialAccountStructureDto.getSumDigit());
+        financialAccountStructureFlg.setColor(financialAccountStructureDto.getColor());
+        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructureFlg.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
+        financialAccountStructureFlg.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
+        return financialAccountStructureRepository.save(financialAccountStructureFlg).getId();
     }
 
     @Override
+    @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
-        FinancialAccountStructure financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
+        FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
-        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure.getId());
+        Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructureFlg.getId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
         }
-        financialAccountStructure.setId(financialAccountStructureDto.getId());
-        financialAccountStructure.setDescription(financialAccountStructureDto.getDescription());
-        financialAccountStructure.setSequence(financialAccountStructureDto.getSequence());
-        financialAccountStructure.setDigitCount(financialAccountStructureDto.getDigitCount());
-        financialAccountStructure.setSumDigit(financialAccountStructureDto.getSumDigit());
-        financialAccountStructure.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructure.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
-        financialAccountStructure.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
-        financialAccountStructure.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
-        financialAccountStructure = financialAccountStructureRepository.save(financialAccountStructure);
-        return convertFinancialAccountStructureToDto(financialAccountStructure);
+        String financialAccountStructure = null;
+        if (financialAccountStructureDto.getId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountStructureDto.setId(0L);
+        }
+        if (financialAccountStructureDto.getFlgPermanentStatus() == 1 && financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId()) != null) {
+            throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+        }
+        financialAccountStructureFlg.setId(financialAccountStructureDto.getId());
+        financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
+        financialAccountStructureFlg.setSequence(financialAccountStructureDto.getSequence());
+        financialAccountStructureFlg.setDigitCount(financialAccountStructureDto.getDigitCount());
+        financialAccountStructureFlg.setSumDigit(financialAccountStructureDto.getSumDigit());
+        financialAccountStructureFlg.setColor(financialAccountStructureDto.getColor());
+        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructureFlg.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
+        financialAccountStructureFlg.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
+        financialAccountStructureFlg = financialAccountStructureRepository.save(financialAccountStructureFlg);
+        return convertFinancialAccountStructureToDto(financialAccountStructureFlg);
     }
 
     @Override
