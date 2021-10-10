@@ -66,7 +66,7 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                     .financialCodingTypeId((Long) array[6])
                     .deletedDate((LocalDateTime) array[7])
                     .flgShowInAcc((Boolean) array[8])
-                    .flgPermanentStatus((Boolean) array[9])
+                    .flgPermanentStatus((Long) array[9])
                     .build();
         }).collect(Collectors.toList());
     }

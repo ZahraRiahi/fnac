@@ -12,7 +12,7 @@ public class FinancialAccountStructureDto {
     private String color;
     private LocalDateTime deletedDate;
     private Boolean flgShowInAcc;
-    private Boolean flgPermanentStatus;
+    private Long flgPermanentStatus;
 
     public FinancialAccountStructureDto(Long id, String description) {
         this.id = id;
@@ -94,11 +94,11 @@ public class FinancialAccountStructureDto {
         this.flgShowInAcc = flgShowInAcc;
     }
 
-    public Boolean getFlgPermanentStatus() {
+    public Long getFlgPermanentStatus() {
         return flgPermanentStatus;
     }
 
-    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
+    public void setFlgPermanentStatus(Long flgPermanentStatus) {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
@@ -160,7 +160,7 @@ public class FinancialAccountStructureDto {
             financialAccountStructureDto.setFlgShowInAcc(flgShowInAcc);
             return this;
         }
-        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
+        public Builder flgPermanentStatus(Long flgPermanentStatus) {
             financialAccountStructureDto.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }

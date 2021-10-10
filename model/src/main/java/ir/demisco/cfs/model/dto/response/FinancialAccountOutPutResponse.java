@@ -27,7 +27,7 @@ public class FinancialAccountOutPutResponse {
     private String accountStatusCode;
     private String accountStatusDescription;
     private Boolean flgShowInAcc;
-    private Boolean flgPermanentStatus;
+    private Long flgPermanentStatus;
     private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
@@ -261,11 +261,11 @@ public class FinancialAccountOutPutResponse {
         this.flgShowInAcc = flgShowInAcc;
     }
 
-    public Boolean getFlgPermanentStatus() {
+    public Long getFlgPermanentStatus() {
         return flgPermanentStatus;
     }
 
-    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
+    public void setFlgPermanentStatus(Long flgPermanentStatus) {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
@@ -429,7 +429,7 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
+        public Builder flgPermanentStatus(Long flgPermanentStatus) {
             financialAccountOutPutResponse.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }
