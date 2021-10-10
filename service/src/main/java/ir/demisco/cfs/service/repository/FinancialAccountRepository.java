@@ -197,5 +197,14 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountByFinancialAccountParentAndCodingAndStructure(Object financialAccountParent, Long financialAccountParentId, Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
 
-
+    @Query(value = " SELECT FS.ID, T.ACCOUNT_PERMANENT_STATUS_ID, FS.FLG_PERMANENT_STATUS " +
+            "      FROM fnac.FINANCIAL_ACCOUNT T " +
+            "     INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FS " +
+            "        ON FS.ID = T.FINANCIAL_ACCOUNT_STRUCTURE_ID " +
+            "     WHERE T.DELETED_DATE IS NULL " +
+            "     START WITH T.ID = :financialAccountParentId " +
+            "    CONNECT BY PRIOR T.FINANCIAL_ACCOUNT_PARENT_ID = T.ID " +
+            "     ORDER BY T.ID ASC  "
+            , nativeQuery = true)
+    List<Object[]> findByFinancialAccountByParentId(Long financialAccountParentId);
 }

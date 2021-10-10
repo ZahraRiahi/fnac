@@ -1,7 +1,9 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -54,4 +56,8 @@ public class FinancialAccountStructureController {
         return ResponseEntity.ok(financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure(financialAccountStructureRequest));
     }
 
+    @PostMapping("/GetPermanentStatus")
+    public ResponseEntity<FinancialAccountStructureNewResponse> responseEntity(@RequestBody FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        return ResponseEntity.ok(financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest));
+    }
 }
