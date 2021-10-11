@@ -74,7 +74,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -281,21 +281,35 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
+        Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
+        if (financialAccountRequest.getId() == null && financialAccountRequest.getFinancialAccountStructureId() != null && financialAccountIdAndStuctureAndAccountId != null) {
+            throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
+        }
+        FinancialAccountStructureNewRequest financialAccountStructureNewRequest = new FinancialAccountStructureNewRequest();
+        financialAccountStructureNewRequest.setFinancialAccountParentId(financialAccountRequest.getFinancialAccountParentId());
+        financialAccountStructureNewRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
+        financialAccountStructureNewRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
+        if (financialAccountStructureNewResponse.getFlgPermanentStatus() == 0) {
+            financialAccountRequest.setAccountStatusId(financialAccountStructureNewResponse.getAccountPermanentStatusId());
+        }
+
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
         Long financialAccountCodeCount;
+        String newGeneratedCode;
+        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
+        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
+                (financialAccountStructureRequest);
         if (financialAccountRequest.getId() == null) {
+
             financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
-            FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
-            financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
-            financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
-            Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
-                    (financialAccountStructureRequest);
 
             if (financialAccountStructureId == null) {
                 throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
             }
             financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
-
         } else {
             financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccount.getId());
             financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
@@ -303,7 +317,18 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountCodeCount > 0) {
             throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
         }
-        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
+
+        if (financialAccountStructureByCodeAndChild == null) {
+            throw new RuleException("ساختار کد (تعداد ارقام وارد شده با توجه به ساختار حساب)، صحیح نمیباشد");
+        }
+        if (financialAccountRequest.getFinancialAccountParentId() != null) {
+            List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
+            newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
+            financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+
+        }
+        financialAccount.setOrganization(organizationRepository.getOne(100L));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
