@@ -74,7 +74,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(100L);
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -327,7 +327,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
 
         }
-        financialAccount.setOrganization(organizationRepository.getOne(100L));
+        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
