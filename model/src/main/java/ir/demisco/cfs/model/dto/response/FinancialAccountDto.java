@@ -7,7 +7,7 @@ public class FinancialAccountDto {
     private Long organizationId;
     private String code;
     private String description;
-    private Boolean activeFlag;
+    private Long activeFlag;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Long accountRelationTypeId;
@@ -15,7 +15,7 @@ public class FinancialAccountDto {
     private Long financialAccountParentId;
     private LocalDateTime deletedDate;
     private Long financialAccountStructureId;
-    private Boolean hasChild;
+    private Long hasChild;
     private Long accountStatusId;
     private String accountStatusCode;
     private String accountStatusDescription;
@@ -55,11 +55,11 @@ public class FinancialAccountDto {
         this.description = description;
     }
 
-    public Boolean getActiveFlag() {
+    public Long getActiveFlag() {
         return activeFlag;
     }
 
-    public void setActiveFlag(Boolean activeFlag) {
+    public void setActiveFlag(Long activeFlag) {
         this.activeFlag = activeFlag;
     }
 
@@ -128,11 +128,11 @@ public class FinancialAccountDto {
         this.financialAccountStructureId = financialAccountStructureId;
     }
 
-    public Boolean getHasChild() {
+    public Long getHasChild() {
         return hasChild;
     }
 
-    public void setHasChild(Boolean hasChild) {
+    public void setHasChild(Long hasChild) {
         this.hasChild = hasChild;
     }
 
@@ -219,7 +219,7 @@ public class FinancialAccountDto {
             return this;
         }
 
-        public Builder activeFlag(Boolean activeFlag) {
+        public Builder activeFlag(Long activeFlag) {
             financialAccountDto.setActiveFlag(activeFlag);
             return this;
         }
@@ -264,7 +264,7 @@ public class FinancialAccountDto {
             return this;
         }
 
-        public Builder hasChild(Boolean hasChild) {
+        public Builder hasChild(Long hasChild) {
             financialAccountDto.setHasChild(hasChild);
             return this;
         }
