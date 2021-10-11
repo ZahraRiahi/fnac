@@ -85,14 +85,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .organizationId(Long.parseLong(item[1].toString()))
                         .description(item[3].toString())
                         .code(item[2].toString())
-                        .activeFlag(item[8] == null || ((BigDecimal) item[8]).longValue() == 0)
+                        .activeFlag(item[8] == null ? null : Long.parseLong(item[8].toString()))
                         .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
                         .accountRelationTypeDescription(item[10] == null ? null : item[10].toString())
                         .accountRelationTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
                         .accountNatureTypeDescription(item[9] == null ? null : item[9].toString())
                         .financialAccountParentId(item[7] == null ? null : Long.parseLong(item[7].toString()))
                         .financialAccountStructureId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .hasChild(item[11] == null || ((BigDecimal) item[11]).longValue() == 0)
+                        .hasChild(item[11] == null ? null : Long.parseLong(item[11].toString()))
                         .accountStatusId(item[12] == null ? null : Long.parseLong(item[12].toString()))
                         .accountStatusCode(item[13] == null ? null : (item[13].toString()))
                         .accountStatusDescription(item[14] == null ? null : (item[14].toString()))
@@ -177,7 +177,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .code(e[1].toString())
                 .referenceFlag(e[3] == null || ((BigDecimal) e[3]).longValue() == 0)
                 .exchangeFlag(e[4] == null || ((BigDecimal) e[4]).longValue() == 0)
-//                .accountRelationTypeId(((BigDecimal) e[5]).longValue())
                 .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
                 .disableDate((Date) e[6])
                 .build()).collect(Collectors.toList());
@@ -485,7 +484,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (e[4] != null) {
                 accountStructureLevel.setRelatedAccountId(Long.parseLong(e[4].toString()));
             }
-//            accountStructureLevel.setFinancialAccount(financialAccountRepository.getOne(Long.parseLong(e[3].toString())));
             accountStructureLevelRepository.save(accountStructureLevel);
         });
     }
