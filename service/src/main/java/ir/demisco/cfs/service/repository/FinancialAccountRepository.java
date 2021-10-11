@@ -208,4 +208,35 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "     ORDER BY T.ID ASC  "
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountByParentId(Long financialAccountParentId);
+
+    @Query(value = " SELECT T.ID," +
+            "         T.FINANCIAL_ACCOUNT_STRUCTURE_ID," +
+            "         T.CODE," +
+            "         T.FINANCIAL_ACCOUNT_PARENT_ID," +
+            "         AST.DIGIT_COUNT," +
+            "         AST.SEQUENCE" +
+            "    FROM fnac.FINANCIAL_ACCOUNT T" +
+            "   INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE AST" +
+            "      ON T.FINANCIAL_ACCOUNT_STRUCTURE_ID = AST.ID" +
+            "   WHERE T.DELETED_DATE IS NULL" +
+            "   AND T.ID = :financialAccountParentId"
+            , nativeQuery = true)
+    List<Object[]> findByFinancialAccountAndFinancialAccountParent(Long financialAccountParentId);
+
+
+    @Query(value = "   SELECT 1" +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FNAS.ID" +
+            " WHERE FIAC.ID = :financialAccountStructureId " +
+            "   AND FNAS.FLG_SHOW_IN_ACC = 1" +
+            "   AND EXISTS (SELECT 1" +
+            "          FROM FNDC.FINANCIAL_DOCUMENT_ITEM FNDI" +
+            "         WHERE FNDI.FINANCIAL_ACCOUNT_ID = FNAS.id) "
+            , nativeQuery = true)
+    Long findByFinancialAccountIdAndStuctureAndAccountId(Long financialAccountStructureId);
+
+
 }
+
+
