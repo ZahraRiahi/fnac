@@ -28,5 +28,6 @@ public interface FinancialAccountService {
 
     List<FinancialAccountNewResponse> getFinancialAccountByFinancialAccountParentAndCodingAndStructure(FinancialAccountNewRequest financialAccountNewRequest);
 
+    List<AccountPermanentStatusDto> getAccountPermanentStatusLov();
 
 }
