@@ -73,4 +73,8 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountByFinancialAccountParentAndCodingAndStructure(financialAccountNewRequest));
     }
 
+    @PostMapping("/GetAccountPermanentStatusList")
+    public ResponseEntity<List<AccountPermanentStatusDto>> responseEntityAccountPermanentStatus() {
+        return ResponseEntity.ok(financialAccountService.getAccountPermanentStatusLov());
+    }
 }
