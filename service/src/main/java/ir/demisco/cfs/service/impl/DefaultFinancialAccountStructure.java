@@ -11,6 +11,7 @@ import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.FinancialAccountRepository;
 import ir.demisco.cfs.service.repository.FinancialAccountStructureRepository;
 import ir.demisco.cfs.service.repository.FinancialCodingTypeRepository;
+import ir.demisco.cfs.service.repository.FinancialDocumentItemRepository;
 import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -32,13 +33,15 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
     private final FinancialCodingTypeRepository financialCodingTypeRepository;
     private final FinancialAccountRepository financialAccountRepository;
+    private final FinancialDocumentItemRepository financialDocumentItemRepository;
 
-    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository) {
+    public DefaultFinancialAccountStructure(GridFilterService gridFilterService, FinancialAccountStructureListGridProvider financialAccountStructureListGridProvider, FinancialAccountStructureRepository financialAccountStructureRepository, FinancialCodingTypeRepository financialCodingTypeRepository1, FinancialAccountRepository financialAccountRepository, FinancialDocumentItemRepository financialDocumentItemRepository) {
         this.gridFilterService = gridFilterService;
         this.financialAccountStructureListGridProvider = financialAccountStructureListGridProvider;
         this.financialAccountStructureRepository = financialAccountStructureRepository;
         this.financialCodingTypeRepository = financialCodingTypeRepository1;
         this.financialAccountRepository = financialAccountRepository;
+        this.financialDocumentItemRepository = financialDocumentItemRepository;
     }
 
     @Override
@@ -97,6 +100,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
+        Long financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
+        if (financialAccountStructureDto.getFlgShowInAcc() == 0 && financialDocument != null) {
+            throw new RuleException("امکان ویرایش این سطح ، به دلیل استفاده در اسناد وجود ندارد");
+        }
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
         }
