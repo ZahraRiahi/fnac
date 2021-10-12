@@ -26,7 +26,7 @@ public class FinancialAccountOutPutResponse {
     private Long accountStatusId;
     private String accountStatusCode;
     private String accountStatusDescription;
-    private Boolean flgShowInAcc;
+    private Long flgShowInAcc;
     private Long flgPermanentStatus;
     private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
@@ -253,11 +253,11 @@ public class FinancialAccountOutPutResponse {
         this.accountStatusDescription = accountStatusDescription;
     }
 
-    public Boolean getFlgShowInAcc() {
+    public Long getFlgShowInAcc() {
         return flgShowInAcc;
     }
 
-    public void setFlgShowInAcc(Boolean flgShowInAcc) {
+    public void setFlgShowInAcc(Long flgShowInAcc) {
         this.flgShowInAcc = flgShowInAcc;
     }
 
@@ -424,7 +424,7 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder flgShowInAcc(Boolean flgShowInAcc) {
+        public Builder flgShowInAcc(Long flgShowInAcc) {
             financialAccountOutPutResponse.setFlgShowInAcc(flgShowInAcc);
             return this;
         }

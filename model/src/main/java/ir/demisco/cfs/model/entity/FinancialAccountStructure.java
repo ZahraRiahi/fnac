@@ -18,7 +18,7 @@ public class FinancialAccountStructure extends AuditModel<Long> {
     private FinancialCodingType financialCodingType;
     private String color;
     private LocalDateTime deletedDate;
-    private Boolean flgShowInAcc;
+    private Long flgShowInAcc;
     private Long flgPermanentStatus;
 
     @Id
@@ -97,11 +97,11 @@ public class FinancialAccountStructure extends AuditModel<Long> {
     }
 
     @Column(name = "FLG_SHOW_IN_ACC")
-    public Boolean getFlgShowInAcc() {
+    public Long getFlgShowInAcc() {
         return flgShowInAcc;
     }
 
-    public void setFlgShowInAcc(Boolean flgShowInAcc) {
+    public void setFlgShowInAcc(Long flgShowInAcc) {
         this.flgShowInAcc = flgShowInAcc;
     }
 
