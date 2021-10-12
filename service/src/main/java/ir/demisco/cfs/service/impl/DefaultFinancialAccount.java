@@ -684,4 +684,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .suggestedCode(e[3].toString())
                 .build()).collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public List<AccountPermanentStatusDto> getAccountPermanentStatusLov() {
+        return accountPermanentStatusRepository.findByAccountPermanentStatus().stream().map(e -> AccountPermanentStatusDto.builder()
+                .id(e.getId())
+                .code(e.getCode())
+                .description(e.getDescription())
+                .build()
+        ).collect(Collectors.toList());
+    }
+
 }
