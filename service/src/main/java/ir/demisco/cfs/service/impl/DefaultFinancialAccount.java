@@ -288,7 +288,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountStructureNewRequest.setFinancialAccountParentId(financialAccountRequest.getFinancialAccountParentId());
         financialAccountStructureNewRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
         financialAccountStructureNewRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+        if (financialAccountRequest.getId() == null) {
+            financialAccountStructureNewRequest.setFlgEditMode(1L);
+        }else{
+            financialAccountStructureNewRequest.setFlgEditMode(0L);
+        }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
+
         if (financialAccountStructureNewResponse.getFlgPermanentStatus() == 0) {
             financialAccountRequest.setAccountStatusId(financialAccountStructureNewResponse.getAccountPermanentStatusId());
         }
