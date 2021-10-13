@@ -163,6 +163,15 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureNewResponse getFinancialAccountStructureByCodingAndParentAndId(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
+        if (financialAccountStructureNewRequest.getFlgEditMode() == 1) {
+            Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureByld(financialAccountStructureNewRequest.getFinancialAccountStructureId());
+
+            if (financialAccountStructureId != null) {
+                financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
+                financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
+            }
+        }
         String financialAccountStructure = null;
         if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
@@ -170,7 +179,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
         }
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
-        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
+//        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureFlg == 1) {
             financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
             financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
