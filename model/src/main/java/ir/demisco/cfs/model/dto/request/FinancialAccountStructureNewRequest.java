@@ -4,6 +4,7 @@ public class FinancialAccountStructureNewRequest {
     private Long financialCodingTypeId;
     private Long financialAccountStructureId;
     private Long financialAccountParentId;
+    private Long flgEditMode;
 
     public Long getFinancialCodingTypeId() {
         return financialCodingTypeId;
@@ -27,5 +28,13 @@ public class FinancialAccountStructureNewRequest {
 
     public void setFinancialAccountParentId(Long financialAccountParentId) {
         this.financialAccountParentId = financialAccountParentId;
+    }
+
+    public Long getFlgEditMode() {
+        return flgEditMode;
+    }
+
+    public void setFlgEditMode(Long flgEditMode) {
+        this.flgEditMode = flgEditMode;
     }
 }
