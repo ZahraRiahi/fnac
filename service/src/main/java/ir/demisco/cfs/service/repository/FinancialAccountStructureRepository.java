@@ -62,7 +62,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "   AND AST.FLG_PERMANENT_STATUS = 1 " +
             " and (:financialAccountStructure is null or AST.ID != :financialAccountStructureId) "
             , nativeQuery = true)
-    Long getFinancialAccountStructureByCodingAndStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
+    List<Long> getFinancialAccountStructureByCodingAndStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
 
 
     @Query(value = "SELECT 1  FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE AST WHERE AST.ID =:childAccountStructure " +

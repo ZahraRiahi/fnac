@@ -280,18 +280,21 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
-        Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
-        if (financialAccountRequest.getId() == null && financialAccountRequest.getFinancialAccountStructureId() != null && financialAccountIdAndStuctureAndAccountId != null) {
-            throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
+        if (financialAccountRequest.getId() == null && financialAccountRequest.getFinancialAccountStructureId() != null) {
+            Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
+
+            if (financialAccountIdAndStuctureAndAccountId != null) {
+                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
+            }
         }
         FinancialAccountStructureNewRequest financialAccountStructureNewRequest = new FinancialAccountStructureNewRequest();
         financialAccountStructureNewRequest.setFinancialAccountParentId(financialAccountRequest.getFinancialAccountParentId());
         financialAccountStructureNewRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
         financialAccountStructureNewRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
         if (financialAccountRequest.getId() == null) {
-            financialAccountStructureNewRequest.setFlgEditMode(1L);
-        }else{
             financialAccountStructureNewRequest.setFlgEditMode(0L);
+        } else {
+            financialAccountStructureNewRequest.setFlgEditMode(1L);
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
 
