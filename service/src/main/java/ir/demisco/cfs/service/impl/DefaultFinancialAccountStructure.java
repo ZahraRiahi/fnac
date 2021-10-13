@@ -81,8 +81,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructureDto.setId(0L);
         }
-        if (financialAccountStructureDto.getFlgPermanentStatus() == 1 && financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId()) != null) {
-            throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+        if (financialAccountStructureDto.getFlgPermanentStatus() == 1) {
+            List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
+            if (financialAccountStructureCoding.size() != 0) {
+                throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+            }
         }
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
         financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
@@ -117,8 +120,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructureDto.setId(0L);
         }
-        if (financialAccountStructureDto.getFlgPermanentStatus() == 1 && financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId()) != null) {
-            throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+        if (financialAccountStructureDto.getFlgPermanentStatus() == 1) {
+            List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
+            if (financialAccountStructureCoding.size() != 0) {
+                throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+            }
         }
         financialAccountStructureFlg.setId(financialAccountStructureDto.getId());
         financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
@@ -163,6 +169,12 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureNewResponse getFinancialAccountStructureByCodingAndParentAndId(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        String financialAccountStructure = null;
+        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
+        }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureNewRequest.getFlgEditMode() == 1) {
             Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureByld(financialAccountStructureNewRequest.getFinancialAccountStructureId());
@@ -172,12 +184,12 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             }
         }
-        String financialAccountStructure = null;
-        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
-            financialAccountStructure = "financialAccountStructure";
-        } else {
-            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
-        }
+//        String financialAccountStructure = null;
+//        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
+//            financialAccountStructure = "financialAccountStructure";
+//        } else {
+//            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
+//        }
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
 //        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureFlg == 1) {
