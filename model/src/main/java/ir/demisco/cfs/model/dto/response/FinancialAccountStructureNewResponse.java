@@ -3,6 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class FinancialAccountStructureNewResponse {
     private Long accountPermanentStatusId;
     private Long flgPermanentStatus;
+    private String accountPermanentStatusDescription;
 
     public Long getAccountPermanentStatusId() {
         return accountPermanentStatusId;
@@ -19,6 +20,15 @@ public class FinancialAccountStructureNewResponse {
     public void setFlgPermanentStatus(Long flgPermanentStatus) {
         this.flgPermanentStatus = flgPermanentStatus;
     }
+
+    public String getAccountPermanentStatusDescription() {
+        return accountPermanentStatusDescription;
+    }
+
+    public void setAccountPermanentStatusDescription(String accountPermanentStatusDescription) {
+        this.accountPermanentStatusDescription = accountPermanentStatusDescription;
+    }
+
     public static FinancialAccountStructureNewResponse.Builder builder() {
         return new FinancialAccountStructureNewResponse.Builder();
     }
@@ -41,6 +51,11 @@ public class FinancialAccountStructureNewResponse {
 
         public Builder flgPermanentStatus(Long flgPermanentStatus) {
             financialAccountStructureNewResponse.setFlgPermanentStatus(flgPermanentStatus);
+            return this;
+        }
+
+        public Builder accountPermanentStatusDescription(String accountPermanentStatusDescription) {
+            financialAccountStructureNewResponse.setAccountPermanentStatusDescription(accountPermanentStatusDescription);
             return this;
         }
 

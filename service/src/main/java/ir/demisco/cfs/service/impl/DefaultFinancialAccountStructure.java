@@ -180,13 +180,19 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
             AtomicReference<Long> accountPermanentStatusId = new AtomicReference<>();
-            financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent(objects ->
-                    accountPermanentStatusId.set(objects[1] == null ? null : Long.parseLong(objects[1].toString()))
+            AtomicReference<String> accountPermanentStatusDescription = new AtomicReference<>();
+            financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent(objects -> {
+                        accountPermanentStatusDescription.set(objects[3] == null ? null : objects[3].toString());
+                        accountPermanentStatusId.set(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
+
+                    }
+
             );
 
             if (accountPermanentStatusId.get() != null) {
                 financialAccountStructureNewResponse.setFlgPermanentStatus(0L);
                 financialAccountStructureNewResponse.setAccountPermanentStatusId(accountPermanentStatusId.get());
+                financialAccountStructureNewResponse.setAccountPermanentStatusDescription(accountPermanentStatusDescription.get());
                 return financialAccountStructureNewResponse;
             } else {
                 throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
