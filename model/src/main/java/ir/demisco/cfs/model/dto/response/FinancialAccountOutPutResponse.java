@@ -28,7 +28,7 @@ public class FinancialAccountOutPutResponse {
     private String accountStatusDescription;
     private Long flgShowInAcc;
     private Long flgPermanentStatus;
-    private List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel;
+    private List<AccountRelatedTypeNewResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
     private List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel;
@@ -197,11 +197,11 @@ public class FinancialAccountOutPutResponse {
         this.accountAdjustmentDescription = accountAdjustmentDescription;
     }
 
-    public List<AccountRelatedTypeResponse> getAccountRelatedTypeOutPutModel() {
+    public List<AccountRelatedTypeNewResponse> getAccountRelatedTypeOutPutModel() {
         return accountRelatedTypeOutPutModel;
     }
 
-    public void setAccountRelatedTypeOutPutModel(List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel) {
+    public void setAccountRelatedTypeOutPutModel(List<AccountRelatedTypeNewResponse> accountRelatedTypeOutPutModel) {
         this.accountRelatedTypeOutPutModel = accountRelatedTypeOutPutModel;
     }
 
@@ -404,7 +404,7 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder accountRelatedTypeOutPutModel(List<AccountRelatedTypeResponse> accountRelatedTypeOutPutModel) {
+        public Builder accountRelatedTypeOutPutModel(List<AccountRelatedTypeNewResponse> accountRelatedTypeOutPutModel) {
             financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeOutPutModel);
             return this;
         }
