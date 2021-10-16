@@ -32,6 +32,12 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
     }
 
+//    @PostMapping("/Get")
+//    public ResponseEntity<DataSourceResult> financialAccountLovResponseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
+//        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(dataSourceRequest));
+//    }
+
+
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId()));
