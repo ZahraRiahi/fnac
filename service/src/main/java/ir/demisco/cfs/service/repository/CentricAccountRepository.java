@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
+import ir.demisco.cfs.model.entity.FinancialAccountDescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,8 +14,6 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " inner join fnac.centric_account_type cnat " +
             "    on cnac.centric_account_type_id = cnat.id " +
             "   and cnat.deleted_date is null " +
-            "  left outer join prs.person prsn " +
-            "    on prsn.id = cnac.person_id " +
             " where  cnac.centric_account_type_id = :centricAccountTypeId " +
             "   and cnac.organization_id = :organizationId " +
             "   and cnac.deleted_date is null" +
@@ -74,5 +73,17 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "where ca.organization.id=:organizationId  and cat.id=:centricAccountTypeId" +
             " and ca.code=:code and ca.deletedDate is null")
     Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId, String code);
+
+    @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
+            "  from fnac.centric_account cnac " +
+            " inner join fnac.centric_account_type cnat " +
+            "    on cnac.centric_account_type_id = cnat.id " +
+            "   and cnat.deleted_date is null " +
+            " where centric_account_type_id in (:centricAccountTypeIdList) " +
+            "   and cnac.organization_id =:organizationId  " +
+            "   and cnac.deleted_date is null " +
+            " and cnac.deleted_date is null "
+            , nativeQuery = true)
+    List<Object[]> findByCentricAccountAndCentricAccountTypeListId(List<Long> centricAccountTypeIdList,Long organizationId);
 }
 

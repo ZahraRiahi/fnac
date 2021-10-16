@@ -1,9 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.AccountMoneyTypeRequest;
-import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
-import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
+import ir.demisco.cfs.model.dto.request.*;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -60,5 +57,13 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountGetById(centricAccountId));
 
     }
+
+
+    @PostMapping("/GetByTypeId")
+        public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccountType(@RequestBody CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndcentricAccountTypeId(centricAccountNewTypeRequest));
+    }
+
+
 }
 

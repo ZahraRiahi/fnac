@@ -13,4 +13,5 @@ public interface CentricAccountTypeRepository extends JpaRepository<CentricAccou
 
     @Query(value = "select cat from  CentricAccountType cat  where  cat.code=:centricAccountTypeCode and cat.deletedDate is null")
     CentricAccountType findByCentricAccountTypeCode(String centricAccountTypeCode);
+
 }
