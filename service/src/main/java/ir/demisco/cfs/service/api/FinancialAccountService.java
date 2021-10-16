@@ -30,4 +30,5 @@ public interface FinancialAccountService {
 
     List<AccountPermanentStatusDto> getAccountPermanentStatusLov();
 
+//    DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest);
 }
