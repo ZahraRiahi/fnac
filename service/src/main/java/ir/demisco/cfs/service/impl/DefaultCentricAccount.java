@@ -1,10 +1,10 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.*;
-import ir.demisco.cfs.model.entity.CentricAccount;
-import ir.demisco.cfs.model.entity.CentricPersonRole;
+import ir.demisco.cfs.model.entity.*;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.repository.*;
 import ir.demisco.cloud.core.middle.exception.RuleException;
@@ -61,10 +61,6 @@ public class DefaultCentricAccount implements CentricAccountService {
             }
         }
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-//            Long countCentricAccount = centricAccountRepository.findByCountCentricAccountAndOrganizationAndPerson(100L, centricAccountRequest.getPersonId());
-//            if (countCentricAccount > 0) {
-//                throw new RuleException("برای این شخص قبلا کد تمرکز ایجاد شده است");
-//            }
             if (centricAccount.getId() != null) {
                 List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
                 centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
@@ -148,7 +144,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         List<Object[]> centricAccountList = centricAccountRepository.findByCentricAccountAndOrganizationIdAndParentCentricAccount
                 (centricAccountNewRequest.getCentricAccountTypeId(),
-                        100L,
+                        SecurityHelper.getCurrentUser().getOrganizationId(),
                         parentCentricAccount,
                         centricAccountNewRequest.getParentCentricAccountId());
 
@@ -156,7 +152,6 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .name(e[2].toString())
                 .code(e[1].toString()).build()).collect(Collectors.toList());
     }
-
 
     private List<PersonRoleTypeDto> personRoleTypeResponses(Long centricAccountId) {
         List<Object[]> personRoleTypeListObject = personRoleTypeRepository.findByPersonRoleTypeListObject(centricAccountId);
@@ -202,4 +197,13 @@ public class DefaultCentricAccount implements CentricAccountService {
         return centricAccountRepository.save(centricAccount);
     }
 
+    @Override
+    @Transactional
+    public List<CentricAccountNewResponse> getCentricAccountByOrganIdAndcentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
+        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeListId(centricAccountNewTypeRequest.getCentricAccountTypeListId(), SecurityHelper.getCurrentUser().getOrganizationId());
+        return centricAccountAndCentricAccountTypeList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
+                .name(e[2].toString())
+                .code(e[1].toString()).build()).collect(Collectors.toList());
+
+    }
 }

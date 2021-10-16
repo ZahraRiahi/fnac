@@ -1,8 +1,8 @@
 package ir.demisco.cfs.service.api;
 
 import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.request.CentricPersonRoleRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -11,8 +11,6 @@ import java.util.List;
 
 public interface CentricAccountService {
     DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest);
-
-//    List<CentricAccountNewResponse> getCentricAccountByOrganizationIdAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
 
     CentricAccountDto save(CentricAccountRequest centricAccountRequest);
 
@@ -24,5 +22,5 @@ public interface CentricAccountService {
 
     List<CentricAccountNewResponse> getCentricAccountByOrganizationIdAndCentricAccountTypeId(CentricAccountNewRequest centricAccountNewRequest);
 
-
+    List<CentricAccountNewResponse> getCentricAccountByOrganIdAndcentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest);
 }
