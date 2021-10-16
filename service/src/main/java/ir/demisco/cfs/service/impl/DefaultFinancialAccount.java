@@ -219,11 +219,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountOutPutResponse;
     }
 
-    private List<AccountRelatedTypeResponse> accountRelatedTypeResponses(Long financialAccountId) {
+    private List<AccountRelatedTypeNewResponse> accountRelatedTypeResponses(Long financialAccountId) {
         List<Object[]> typeListObject = financialAccountTypeRepository.findByFinancialAccount(financialAccountId);
-        return typeListObject.stream().map(objects -> AccountRelatedTypeResponse.builder().financialAccountTypeId(Long.parseLong(objects[0].toString()))
-                .financialAccountTypeCode(objects[1].toString())
-                .financialAccountTypeDescription(objects[2].toString())
+        return typeListObject.stream().map(objects -> AccountRelatedTypeNewResponse.builder().financialAccountTypeId(Long.parseLong(objects[0].toString()))
+                .code(objects[1].toString())
+                .description(objects[2].toString())
                 .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
     }
 
@@ -705,4 +705,41 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         ).collect(Collectors.toList());
     }
 
+//    @Override
+//    @Transactional
+//    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
+//        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+//        FinancialAccountParameter param = setParameter(filters);
+//        Map<String, Object> paramMap = param.getParamMap();
+//        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+//        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+//        Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
+//                , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
+//                , pageable);
+//        List<FinancialAccountDto> financialAccountDtos = list.stream().map(item ->
+//                FinancialAccountDto.builder()
+//                        .id(Long.parseLong(item[0].toString()))
+//                        .organizationId(Long.parseLong(item[1].toString()))
+//                        .description(item[3].toString())
+//                        .code(item[2].toString())
+//                        .activeFlag(item[8] == null ? null : Long.parseLong(item[8].toString()))
+//                        .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
+//                        .accountRelationTypeDescription(item[10] == null ? null : item[10].toString())
+//                        .accountRelationTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
+//                        .accountNatureTypeDescription(item[9] == null ? null : item[9].toString())
+//                        .financialAccountParentId(item[7] == null ? null : Long.parseLong(item[7].toString()))
+//                        .financialAccountStructureId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+//                        .hasChild(item[11] == null ? null : Long.parseLong(item[11].toString()))
+//                        .accountStatusId(item[12] == null ? null : Long.parseLong(item[12].toString()))
+//                        .accountStatusCode(item[13] == null ? null : (item[13].toString()))
+//                        .accountStatusDescription(item[14] == null ? null : (item[14].toString()))
+//                        .flgShowInAcc(Integer.parseInt(item[15].toString()) == 1)
+//                        .flgPermanentStatus(Integer.parseInt(item[16].toString()) == 1)
+//                        .color(item[17] == null ? null : item[17].toString())
+//                        .build()).collect(Collectors.toList());
+//        DataSourceResult dataSourceResult = new DataSourceResult();
+//        dataSourceResult.setData(financialAccountDtos);
+//        dataSourceResult.setTotal(list.getTotalElements());
+//        return dataSourceResult;
+//    }
 }
