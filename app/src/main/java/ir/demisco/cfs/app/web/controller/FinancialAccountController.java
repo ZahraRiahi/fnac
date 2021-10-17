@@ -27,15 +27,10 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccount(dataSourceRequest));
     }
 
-    @GetMapping("/Get")
-    public ResponseEntity<List<FinancialAccountResponse>> responseEntity() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L));
+    @PostMapping("/Get")
+    public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L, dataSourceRequest));
     }
-
-//    @PostMapping("/Get")
-//    public ResponseEntity<DataSourceResult> financialAccountLovResponseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
-//        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(dataSourceRequest));
-//    }
 
 
     @GetMapping("/Get/{financialAccountId}")

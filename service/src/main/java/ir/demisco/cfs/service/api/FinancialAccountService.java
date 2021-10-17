@@ -12,7 +12,7 @@ import java.util.List;
 public interface FinancialAccountService {
     DataSourceResult getFinancialAccount(DataSourceRequest dataSourceRequest);
 
-    List<FinancialAccountResponse> getFinancialAccountLov(Long OrganizationId);
+    DataSourceResult getFinancialAccountLov(Long OrganizationId,DataSourceRequest dataSourceRequest);
 
     FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId);
 
@@ -30,5 +30,4 @@ public interface FinancialAccountService {
 
     List<AccountPermanentStatusDto> getAccountPermanentStatusLov();
 
-//    DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest);
 }
