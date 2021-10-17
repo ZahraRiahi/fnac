@@ -1,6 +1,6 @@
 package ir.demisco.cfs.service.impl;
 
-import ir.demisco.cfs.model.dto.request.CentricAccountNewRequest;
+import ir.demisco.cfs.model.dto.CentricAccountParameter;
 import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.*;
@@ -12,11 +12,16 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -134,23 +139,46 @@ public class DefaultCentricAccount implements CentricAccountService {
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
-    public List<CentricAccountNewResponse> getCentricAccountByOrganizationIdAndCentricAccountTypeId(CentricAccountNewRequest centricAccountNewRequest) {
-        Object parentCentricAccount;
-        if (centricAccountNewRequest.getParentCentricAccountId() != null) {
-            parentCentricAccount = "parentCentricAccount";
-        } else {
-            centricAccountNewRequest.setParentCentricAccountId(0L);
-            parentCentricAccount = null;
-        }
-        List<Object[]> centricAccountList = centricAccountRepository.findByCentricAccountAndOrganizationIdAndParentCentricAccount
-                (centricAccountNewRequest.getCentricAccountTypeId(),
-                        SecurityHelper.getCurrentUser().getOrganizationId(),
-                        parentCentricAccount,
-                        centricAccountNewRequest.getParentCentricAccountId());
-
-        return centricAccountList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
+    public DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        CentricAccountParameter param = setParameter(filters);
+        Map<String, Object> paramMap = param.getParamMap();
+        param.setOrganizationId(100L);
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        Page<Object[]> centricAccountList = centricAccountRepository.findByCentricAccountAndOrganizationIdAndParentCentricAccount(param.getCentricAccountTypeId(), param.getOrganizationId()
+                , paramMap.get("parentCentricAccount"), param.getParentCentricAccountId(), pageable);
+        List<CentricAccountNewResponse> list = centricAccountList.stream().map(e -> CentricAccountNewResponse.builder()
+                .id(((Long) e[0]).longValue())
                 .name(e[2].toString())
                 .code(e[1].toString()).build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(list);
+        dataSourceResult.setTotal(centricAccountList.getTotalElements());
+        return dataSourceResult;
+    }
+
+    private CentricAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
+        CentricAccountParameter centricAccountParameter = new CentricAccountParameter();
+        Map<String, Object> map = new HashMap<>();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "centricAccountType.id":
+                    centricAccountParameter.setCentricAccountTypeId(Long.parseLong(item.getValue().toString()));
+                    break;
+                case "parentCentricAccount.id":
+                    if (item.getValue() != null) {
+                        map.put("parentCentricAccount", "parentCentricAccount");
+                        centricAccountParameter.setParamMap(map);
+                        centricAccountParameter.setParentCentricAccountId(Long.parseLong(item.getValue().toString()));
+                    } else {
+                        map.put("parentCentricAccount", null);
+                        centricAccountParameter.setParamMap(map);
+                        centricAccountParameter.setParentCentricAccountId(0L);
+                    }
+                    break;
+            }
+        }
+        return centricAccountParameter;
     }
 
     private List<PersonRoleTypeDto> personRoleTypeResponses(Long centricAccountId) {
