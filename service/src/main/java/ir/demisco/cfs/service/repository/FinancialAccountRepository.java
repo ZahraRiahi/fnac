@@ -6,38 +6,38 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
-    @Query(value = " SELECT FIAC.ID," +
-            "       FIAC.CODE," +
-            "       FIAC.DESCRIPTION," +
-            "       FIAC.REFERENCE_FLAG," +
-            "       FIAC.EXCHANGE_FLAG," +
-            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
-            "       FIAC.DISABLE_DATE " +
-            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC " +
-            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS " +
-            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID " +
-            " WHERE ORGANIZATION_ID = :organizationId " +
-            "   AND FIAC.DELETED_DATE IS NULL " +
-            "   AND FIAC.DISABLE_DATE IS NULL " +
+    @Query(value = " SELECT fac.id," +
+            "       fac.code," +
+            "       fac.description," +
+            "       fac.referenceFlag," +
+            "       fac.exchangeFlag," +
+            "       art.id as accountRelationTypeId, " +
+            "       fac.disableDate " +
+            "  FROM FinancialAccount fac " +
+            " JOIN fac.financialAccountStructure fs " +
+            " left outer join fac.accountRelationType art " +
+            " WHERE fac.organization.id = :organizationId " +
+            "   AND fac.deletedDate IS NULL " +
+            "   AND fac.disableDate IS NULL " +
             "   AND CASE " +
             "         WHEN (EXISTS " +
             "               (SELECT 1 " +
-            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER " +
-            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID " +
-            "                   AND FIAC_INNER.DELETED_DATE IS NULL " +
-            "                   AND FIAC_INNER.ORGANIZATION_ID = :organizationId)) THEN " +
+            "                  FROM FinancialAccount fai " +
+            "                 WHERE fai.financialAccountParent.id = fac.id " +
+            "                   AND fai.deletedDate IS NULL " +
+            "                   AND fai.organization.id = :organizationId)) THEN " +
             "          1 " +
             "         ELSE " +
             "          0 " +
             "       END = 0 " +
-            "   AND FS.FLG_SHOW_IN_ACC = 1 "
-            , nativeQuery = true)
-    List<Object[]> findByFinancialAccountByOrganizationId(Long organizationId);
+            "   AND fs.flgShowInAcc = 1 ")
+    Page<Object[]> findByFinancialAccountByOrganizationId(Long organizationId,Pageable pageable);
 
 
     @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
@@ -239,6 +239,33 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Long findByFinancialAccountIdAndStuctureAndAccountId(Long financialAccountStructureId);
 
 
+    @Query(value = " SELECT FIAC.ID," +
+            "       FIAC.CODE," +
+            "       FIAC.DESCRIPTION," +
+            "       FIAC.REFERENCE_FLAG," +
+            "       FIAC.EXCHANGE_FLAG," +
+            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
+            "       FIAC.DISABLE_DATE " +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC " +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS " +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID " +
+            " WHERE ORGANIZATION_ID = :organizationId " +
+            "   AND FIAC.DELETED_DATE IS NULL " +
+            "   AND FIAC.DISABLE_DATE IS NULL " +
+            "   AND CASE " +
+            "         WHEN (EXISTS " +
+            "               (SELECT 1 " +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER " +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID " +
+            "                   AND FIAC_INNER.DELETED_DATE IS NULL " +
+            "                   AND FIAC_INNER.ORGANIZATION_ID = :organizationId)) THEN " +
+            "          1 " +
+            "         ELSE " +
+            "          0 " +
+            "       END = 0 " +
+            "   AND FS.FLG_SHOW_IN_ACC = 1 "
+            , nativeQuery = true)
+    Page<Object[]> financialAccountLovList(Long organizationId, Pageable pageable);
 }
 
 
