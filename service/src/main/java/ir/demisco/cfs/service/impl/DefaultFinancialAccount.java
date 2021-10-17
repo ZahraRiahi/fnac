@@ -73,7 +73,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -653,17 +653,25 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
         if (financialAccountStatusRequest.getStatusFlag() == 0) {
-            Long financialAccountStructureCount = financialAccountRepository.findByFinancialAccountIdAndStatusFlag(financialAccountStatusRequest.getFinancialAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
-            if (financialAccountStructureCount == null) {
+            List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            if (financialAccountCount.size() != 0 || financialAccountOrganCount != null) {
                 throw new RuleException("ردیف انتخابی آخرین سطح حساب نیست و یا قبلا غیر فعال شده است");
             }
             financialAccount.setDisableDate(new Date());
         } else {
-            Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountAndIdAndDisableDateIsNotNull(financialAccountStatusRequest.getFinancialAccountId());
+            Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             if (financialAccountActiveCount != null) {
-                financialAccount.setDisableDate(null);
+                throw new RuleException("حساب سطح قبل غیر فعال است.لطفا ابتدا حساب سطح قبل را فعال نمایید");
             } else {
-                throw new RuleException("وضعیت ردیف مورد نظر  فعال می باشد.");
+                Long financialAccountCount = financialAccountRepository.findByFinancialAccountAndIdAndDisableDateIsNotNull(financialAccountStatusRequest.getFinancialAccountId());
+                if (financialAccountCount != null) {
+                    financialAccount.setDisableDate(null);
+                } else {
+                    throw new RuleException("وضعیت ردیف مورد نظر  فعال می باشد.");
+
+                }
+
             }
         }
         return true;
@@ -671,7 +679,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
-    public List<FinancialAccountNewResponse> getFinancialAccountByFinancialAccountParentAndCodingAndStructure(FinancialAccountNewRequest financialAccountNewRequest) {
+    public List<FinancialAccountNewResponse> getFinancialAccountByFinancialAccountParentAndCodingAndStructure
+            (FinancialAccountNewRequest financialAccountNewRequest) {
         Object financialAccountParent;
         if (financialAccountNewRequest.getFinancialAccountParentId() != null) {
             financialAccountParent = "financialAccountParent";
