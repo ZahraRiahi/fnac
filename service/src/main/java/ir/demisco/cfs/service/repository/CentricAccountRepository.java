@@ -1,7 +1,8 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
-import ir.demisco.cfs.model.entity.FinancialAccountDescription;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,23 +10,17 @@ import java.util.List;
 
 public interface CentricAccountRepository extends JpaRepository<CentricAccount, Long> {
 
-    @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
-            "  from fnac.centric_account cnac " +
-            " inner join fnac.centric_account_type cnat " +
-            "    on cnac.centric_account_type_id = cnat.id " +
-            "   and cnat.deleted_date is null " +
-            " where  cnac.centric_account_type_id = :centricAccountTypeId " +
-            "   and cnac.organization_id = :organizationId " +
-            "   and cnac.deleted_date is null" +
+    @Query(value = " select cnac.id, cnac.code, cnac.name, pcnac.id as parentCentricAccountId " +
+            "  from CentricAccount cnac " +
+            "  join cnac.centricAccountType cnat " +
+            "  join cnac.parentCentricAccount pcnac " +
+            " where  cnac.centricAccountType.id = :centricAccountTypeId " +
+            "   and cnac.organization.id = :organizationId " +
+            "   and cnac.deletedDate is null " +
+            " and cnat.deletedDate is null " +
             "   and (:parentCentricAccount is null or " +
-            " cnac.parent_centric_account_id = :parentCentricAccountId)"
-            , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndOrganizationIdAndParentCentricAccount(Long centricAccountTypeId, Long organizationId, Object parentCentricAccount, Long parentCentricAccountId);
-
-
-//    @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
-//            "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
-//    List<CentricAccount> findByCentricPersonRoleAndOrganizationAndPersonRoleTypeAndPerson(Long organizationId, Long personRoleTypeId, Long personId);
+            " cnac.parentCentricAccount.id = :parentCentricAccountId) " )
+    Page<Object[]> findByCentricAccountAndOrganizationIdAndParentCentricAccount(Long centricAccountTypeId, Long organizationId, Object parentCentricAccount, Long parentCentricAccountId, Pageable pageable);
 
     @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
             "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
@@ -84,6 +79,6 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   and cnac.deleted_date is null " +
             " and cnac.deleted_date is null "
             , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndCentricAccountTypeListId(List<Long> centricAccountTypeIdList,Long organizationId);
+    List<Object[]> findByCentricAccountAndCentricAccountTypeListId(List<Long> centricAccountTypeIdList, Long organizationId);
 }
 

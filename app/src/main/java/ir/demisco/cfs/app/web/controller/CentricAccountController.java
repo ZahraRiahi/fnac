@@ -26,8 +26,8 @@ public class CentricAccountController {
     }
 
     @PostMapping("/Get")
-    public ResponseEntity<List<CentricAccountNewResponse>> responseEntity(@RequestBody CentricAccountNewRequest centricAccountNewRequest) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(centricAccountNewRequest));
+    public ResponseEntity<DataSourceResult> responseEntityLov(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(dataSourceRequest));
     }
 
     @PostMapping("/save")
@@ -60,7 +60,7 @@ public class CentricAccountController {
 
 
     @PostMapping("/GetByTypeId")
-        public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccountType(@RequestBody CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
+    public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccountType(@RequestBody CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndcentricAccountTypeId(centricAccountNewTypeRequest));
     }
 
