@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CentricAccountRepository extends JpaRepository<CentricAccount, Long> {
 
-    @Query(value = " select cnac.id, cnac.code, cnac.name" +
+   @Query(value = " select cnac.id, cnac.code, cnac.name" +
             "  from CentricAccount cnac " +
             "  join cnac.centricAccountType cnat " +
             " where  cnat.id = :centricAccountTypeId " +
