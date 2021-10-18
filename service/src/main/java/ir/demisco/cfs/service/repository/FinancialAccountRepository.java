@@ -37,7 +37,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "          0 " +
             "       END = 0 " +
             "   AND fs.flgShowInAcc = 1 ")
-    Page<Object[]> findByFinancialAccountByOrganizationId(Long organizationId,Pageable pageable);
+    Page<Object[]> findByFinancialAccountByOrganizationId(Long organizationId, Pageable pageable);
 
 
     @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
@@ -138,20 +138,34 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Long findByFinancialAccountByAccountRelationTypeId(Long accountRelationTypeId, Long financialAccountId);
 
     @Query(value = "   select 1 " +
-            "  from fnac.financial_account fiac " +
-            " inner join fnac.financial_account_structure fs " +
-            "    on fiac.financial_account_structure_id = fs.id " +
-            "   and fs.sequence = (select max(fs_inner.sequence) " +
-            "                        from fnac.financial_account_structure fs_inner " +
-            "                       where fs_inner.financial_coding_type_id = " +
-            "                             fs.financial_coding_type_id) " +
-            " where " +
-            "    fiac.deleted_date is null " +
-            "   and fiac.disable_date is null   " +
-            "   and fiac.id = :financialAccountId " +
-            " and fiac.organization_id= :organizationId "
+            "    from fnac.financial_account fiac " +
+            "   where fiac.financial_account_parent_id = :financialAccountId " +
+            "     and fiac.organization_id = :organizationId " +
+            "     and fiac.deleted_date is null " +
+            "     and fiac.disable_date is null  "
             , nativeQuery = true)
-    Long findByFinancialAccountIdAndStatusFlag(Long financialAccountId, Long organizationId);
+    List<Long> findByFinancialAccountId(Long financialAccountId, Long organizationId);
+
+    @Query(value = "   select 1 " +
+            "    from fnac.financial_account fiac " +
+            "    where fiac.id = :financialAccountId " +
+            "    and fiac.organization_id = :organizationId " +
+            "    and fiac.deleted_date is null " +
+            "    and fiac.disable_date is not null  "
+            , nativeQuery = true)
+    Long findByFinancialAccountIdAndOrganization(Long financialAccountId, Long organizationId);
+
+
+    @Query(value = "   select 1 " +
+            "  from fnac.financial_account fiac " +
+            "  inner join  fnac.financial_account fiac_parent " +
+            "   on fiac.id = :financialAccountId and fiac.financial_account_parent_id = fiac_parent.id " +
+            "    and fiac.organization_id = :organizationId " +
+            "       and fiac_parent.organization_id = :organizationId " +
+            "   and (fiac_parent.deleted_date is not null " +
+            "   or fiac_parent.disable_date is not null)    "
+            , nativeQuery = true)
+    Long findByFinancialAccountOrganization(Long financialAccountId, Long organizationId);
 
     @Query("select 1 from  FinancialAccount fa where fa.disableDate is not null and fa.id=:financialAccountId")
     Long findByFinancialAccountAndIdAndDisableDateIsNotNull(Long financialAccountId);

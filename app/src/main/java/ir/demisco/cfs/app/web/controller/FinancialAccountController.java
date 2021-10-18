@@ -65,7 +65,7 @@ public class FinancialAccountController {
     @PostMapping("/setStatus")
     public ResponseEntity<Boolean> GetByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
         boolean result;
-        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, SecurityHelper.getCurrentUser().getOrganizationId());
+        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, 100L);
         return ResponseEntity.ok(result);
     }
 
