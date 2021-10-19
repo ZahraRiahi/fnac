@@ -2,7 +2,7 @@ package ir.demisco.cfs.model.dto.request;
 
 public class FinancialAccountStatusRequest {
     private Long financialAccountId;
-    private Long statusFlag;
+    private Boolean statusFlag;
 
     public Long getFinancialAccountId() {
         return financialAccountId;
@@ -12,11 +12,11 @@ public class FinancialAccountStatusRequest {
         this.financialAccountId = financialAccountId;
     }
 
-    public Long getStatusFlag() {
+    public Boolean getStatusFlag() {
         return statusFlag;
     }
 
-    public void setStatusFlag(Long statusFlag) {
+    public void setStatusFlag(Boolean statusFlag) {
         this.statusFlag = statusFlag;
     }
 
