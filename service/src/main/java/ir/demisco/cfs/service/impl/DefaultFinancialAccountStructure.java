@@ -104,7 +104,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
         Long financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
-        if (financialAccountStructureDto.getFlgShowInAcc() == false && financialDocument != null) {
+        if (financialAccountStructureDto.getFlgShowInAcc() .equals(false) && financialDocument != null) {
             throw new RuleException("امکان ویرایش این سطح ، به دلیل استفاده در اسناد وجود ندارد");
         }
         if (financialAccountStructureDto.getSequence() <= 0) {
@@ -120,7 +120,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructureDto.setId(0L);
         }
-        if (financialAccountStructureDto.getFlgPermanentStatus() == true) {
+        if (financialAccountStructureDto.getFlgPermanentStatus() .equals(true)) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
                 throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
@@ -176,7 +176,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
-        if (financialAccountStructureNewRequest.getFlgEditMode() == true) {
+        if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {
             Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureByld(financialAccountStructureNewRequest.getFinancialAccountStructureId());
 
             if (financialAccountStructureId != null) {
