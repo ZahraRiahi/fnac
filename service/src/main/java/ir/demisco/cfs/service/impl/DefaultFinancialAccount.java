@@ -297,9 +297,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountStructureNewRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
         financialAccountStructureNewRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
         if (financialAccountRequest.getId() == null) {
-            financialAccountStructureNewRequest.setFlgEditMode(0L);
+            financialAccountStructureNewRequest.setFlgEditMode(false);
         } else {
-            financialAccountStructureNewRequest.setFlgEditMode(1L);
+            financialAccountStructureNewRequest.setFlgEditMode(true);
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
 
@@ -652,7 +652,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
-        if (financialAccountStatusRequest.getStatusFlag() == 0) {
+        if (financialAccountStatusRequest.getStatusFlag() == false) {
             List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             if (financialAccountCount.size() != 0 || financialAccountOrganCount != null) {
