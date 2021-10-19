@@ -3,7 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class PersonRoleTypeDto {
     private Long id;
     private String description;
-    private Long FlagExist;
+    private Long flagExist;
 
     public Long getId() {
         return id;
@@ -25,11 +25,11 @@ public class PersonRoleTypeDto {
     }
 
     public Long getFlagExist() {
-        return FlagExist;
+        return flagExist;
     }
 
     public void setFlagExist(Long flagExist) {
-        FlagExist = flagExist;
+        flagExist = flagExist;
     }
 
     public static final class Builder {
@@ -54,7 +54,7 @@ public class PersonRoleTypeDto {
         }
 
         public Builder flagExist(Long flagExist){
-            personRoleTypeDto.FlagExist = flagExist;
+            personRoleTypeDto.flagExist = flagExist;
             return this;
         }
         public PersonRoleTypeDto build() {
