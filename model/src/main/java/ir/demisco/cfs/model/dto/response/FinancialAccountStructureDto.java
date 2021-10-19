@@ -11,8 +11,8 @@ public class FinancialAccountStructureDto {
     private Long financialCodingTypeId;
     private String color;
     private LocalDateTime deletedDate;
-    private Long flgShowInAcc;
-    private Long flgPermanentStatus;
+    private Boolean flgShowInAcc;
+    private Boolean flgPermanentStatus;
 
     public FinancialAccountStructureDto(Long id, String description) {
         this.id = id;
@@ -86,19 +86,19 @@ public class FinancialAccountStructureDto {
         this.deletedDate = deletedDate;
     }
 
-    public Long getFlgShowInAcc() {
+    public Boolean getFlgShowInAcc() {
         return flgShowInAcc;
     }
 
-    public void setFlgShowInAcc(Long flgShowInAcc) {
+    public void setFlgShowInAcc(Boolean flgShowInAcc) {
         this.flgShowInAcc = flgShowInAcc;
     }
 
-    public Long getFlgPermanentStatus() {
+    public Boolean getFlgPermanentStatus() {
         return flgPermanentStatus;
     }
 
-    public void setFlgPermanentStatus(Long flgPermanentStatus) {
+    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
@@ -156,11 +156,11 @@ public class FinancialAccountStructureDto {
             financialAccountStructureDto.setDeletedDate(deletedDate);
             return this;
         }
-        public Builder flgShowInAcc(Long flgShowInAcc) {
+        public Builder flgShowInAcc(Boolean flgShowInAcc) {
             financialAccountStructureDto.setFlgShowInAcc(flgShowInAcc);
             return this;
         }
-        public Builder flgPermanentStatus(Long flgPermanentStatus) {
+        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
             financialAccountStructureDto.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }

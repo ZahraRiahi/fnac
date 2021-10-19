@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.impl;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
@@ -65,8 +66,8 @@ public class FinancialAccountStructureListGridProvider implements GridDataProvid
                     .color((String) array[5])
                     .financialCodingTypeId((Long) array[6])
                     .deletedDate((LocalDateTime) array[7])
-                    .flgShowInAcc((Long) array[8])
-                    .flgPermanentStatus((Long) array[9])
+                    .flgShowInAcc((Boolean) array[8])
+                    .flgPermanentStatus((Boolean) array[9])
                     .build();
         }).collect(Collectors.toList());
     }

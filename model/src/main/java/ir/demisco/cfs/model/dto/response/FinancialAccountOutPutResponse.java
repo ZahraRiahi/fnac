@@ -26,8 +26,8 @@ public class FinancialAccountOutPutResponse {
     private Long accountStatusId;
     private String accountStatusCode;
     private String accountStatusDescription;
-    private Long flgShowInAcc;
-    private Long flgPermanentStatus;
+    private Boolean flgShowInAcc;
+    private Boolean flgPermanentStatus;
     private List<AccountRelatedTypeNewResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
@@ -253,19 +253,19 @@ public class FinancialAccountOutPutResponse {
         this.accountStatusDescription = accountStatusDescription;
     }
 
-    public Long getFlgShowInAcc() {
+    public Boolean getFlgShowInAcc() {
         return flgShowInAcc;
     }
 
-    public void setFlgShowInAcc(Long flgShowInAcc) {
+    public void setFlgShowInAcc(Boolean flgShowInAcc) {
         this.flgShowInAcc = flgShowInAcc;
     }
 
-    public Long getFlgPermanentStatus() {
+    public Boolean getFlgPermanentStatus() {
         return flgPermanentStatus;
     }
 
-    public void setFlgPermanentStatus(Long flgPermanentStatus) {
+    public void setFlgPermanentStatus(Boolean flgPermanentStatus) {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
@@ -424,12 +424,12 @@ public class FinancialAccountOutPutResponse {
             return this;
         }
 
-        public Builder flgShowInAcc(Long flgShowInAcc) {
+        public Builder flgShowInAcc(Boolean flgShowInAcc) {
             financialAccountOutPutResponse.setFlgShowInAcc(flgShowInAcc);
             return this;
         }
 
-        public Builder flgPermanentStatus(Long flgPermanentStatus) {
+        public Builder flgPermanentStatus(Boolean flgPermanentStatus) {
             financialAccountOutPutResponse.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }
