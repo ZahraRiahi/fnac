@@ -652,7 +652,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
-        if (financialAccountStatusRequest.getStatusFlag() == false) {
+        if (financialAccountStatusRequest.getStatusFlag() .equals(false)) {
             List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             if (financialAccountCount.size() != 0 || financialAccountOrganCount != null) {
