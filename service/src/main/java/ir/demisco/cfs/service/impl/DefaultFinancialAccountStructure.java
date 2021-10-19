@@ -81,7 +81,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructureDto.setId(0L);
         }
-        if (financialAccountStructureDto.getFlgPermanentStatus() == true) {
+        if (financialAccountStructureDto.getFlgPermanentStatus().equals(true)) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
                 throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
