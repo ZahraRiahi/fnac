@@ -11,6 +11,7 @@ import ir.demisco.cfs.service.repository.*;
 import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
+import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,8 +44,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialDocumentItemRepository financialDocumentItemRepository;
     private final FinancialAccountStructureRepository financialAccountStructureRepository;
     private final AccountPermanentStatusRepository accountPermanentStatusRepository;
+    private final FinancialAccountLovProvider financialAccountLovProvider;
+    private final GridFilterService gridFilterService;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -65,6 +68,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.financialDocumentItemRepository = financialDocumentItemRepository;
         this.financialAccountStructureRepository = financialAccountStructureRepository1;
         this.accountPermanentStatusRepository = accountPermanentStatusRepository;
+        this.financialAccountLovProvider = financialAccountLovProvider;
+        this.gridFilterService = gridFilterService;
     }
 
     @Override
@@ -166,25 +171,25 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountParameter;
     }
 
-    @Override
-    @Transactional(rollbackOn = Throwable.class)
-    public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId, pageable);
-        List<FinancialAccountResponse> list = financialAccount.stream().map(e -> FinancialAccountResponse.builder()
-                .id(((Long) e[0]).longValue())
-                .description(e[2].toString())
-                .code(e[1].toString())
-                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
-                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
-                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
-                .disableDate((Date) e[6])
-                .build()).collect(Collectors.toList());
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(list);
-        dataSourceResult.setTotal(financialAccount.getTotalElements());
-        return dataSourceResult;
-    }
+//    @Override
+//    @Transactional(rollbackOn = Throwable.class)
+//    public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+//        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+//        Page<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId, pageable);
+//        List<FinancialAccountResponse> list = financialAccount.stream().map(e -> FinancialAccountResponse.builder()
+//                .id(((Long) e[0]).longValue())
+//                .description(e[2].toString())
+//                .code(e[1].toString())
+//                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
+//                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
+//                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
+//                .disableDate((Date) e[6])
+//                .build()).collect(Collectors.toList());
+//        DataSourceResult dataSourceResult = new DataSourceResult();
+//        dataSourceResult.setData(list);
+//        dataSourceResult.setTotal(financialAccount.getTotalElements());
+//        return dataSourceResult;
+//    }
 
 
     @Override
@@ -652,7 +657,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
-        if (financialAccountStatusRequest.getStatusFlag() .equals(false)) {
+        if (financialAccountStatusRequest.getStatusFlag().equals(false)) {
             List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
             if (financialAccountCount.size() != 0 || financialAccountOrganCount != null) {
@@ -719,4 +724,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         ).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+        return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
+    }
 }
