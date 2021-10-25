@@ -263,7 +263,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId, 100L);
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
                 .moneyTypeDescription(objects[1].toString())
                 .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
@@ -306,47 +306,50 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         } else {
             financialAccountStructureNewRequest.setFlgEditMode(true);
         }
-        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
-
-        if (financialAccountStructureNewResponse.getFlgPermanentStatus() == 0) {
-            financialAccountRequest.setAccountStatusId(financialAccountStructureNewResponse.getAccountPermanentStatusId());
-        }
-
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
-        Long financialAccountCodeCount;
-        String newGeneratedCode;
-        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
-        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
-        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
-        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
-                (financialAccountStructureRequest);
+
         if (financialAccountRequest.getId() == null) {
+            FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
 
-            financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
-
-            if (financialAccountStructureId == null) {
-                throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
+            if (financialAccountStructureNewResponse.getFlgPermanentStatus() == 0) {
+                financialAccountRequest.setAccountStatusId(financialAccountStructureNewResponse.getAccountPermanentStatusId());
             }
-            financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
-        } else {
-            financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccount.getId());
-            financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
-        }
-        if (financialAccountCodeCount > 0) {
-            throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
-        }
-        Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
 
-        if (financialAccountStructureByCodeAndChild == null) {
-            throw new RuleException("ساختار کد (تعداد ارقام وارد شده با توجه به ساختار حساب)، صحیح نمیباشد");
-        }
-        if (financialAccountRequest.getFinancialAccountParentId() != null) {
-            List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
-            newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
-            financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+            Long financialAccountCodeCount;
+            String newGeneratedCode;
+            FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+            financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountRequest.getFinancialAccountStructureId());
+            financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
+            Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
+                    (financialAccountStructureRequest);
+            if (financialAccountRequest.getId() == null) {
 
+                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
+
+                if (financialAccountStructureId == null) {
+                    throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
+                }
+                financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
+            } else {
+                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccount.getId());
+                financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
+            }
+            if (financialAccountCodeCount > 0) {
+                throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
+            }
+            Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
+
+            if (financialAccountStructureByCodeAndChild == null) {
+                throw new RuleException("ساختار کد (تعداد ارقام وارد شده با توجه به ساختار حساب)، صحیح نمیباشد");
+            }
+            if (financialAccountRequest.getFinancialAccountParentId() != null) {
+                List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
+                newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
+                financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+
+            }
         }
-        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        financialAccount.setOrganization(organizationRepository.getOne(100L));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
@@ -375,6 +378,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
         return financialAccountRepository.save(financialAccount);
     }
+
 
     private FinancialAccountOutPutDto convertFinancialAccountDto(FinancialAccount financialAccount) {
         FinancialAccountOutPutDto financialAccountOutPutDto = new FinancialAccountOutPutDto();
