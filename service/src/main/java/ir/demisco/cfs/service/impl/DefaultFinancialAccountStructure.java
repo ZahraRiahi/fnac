@@ -196,7 +196,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
             financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             return financialAccountStructureNewResponse;
-        } else if (financialAccountStructureFlg == 0 && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
+        } else if (financialAccountStructureFlg == 0  && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
             throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
         } else {
             List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
