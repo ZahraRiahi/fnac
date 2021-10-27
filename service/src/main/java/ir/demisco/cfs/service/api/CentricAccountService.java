@@ -19,7 +19,12 @@ public interface CentricAccountService {
 
     CentricAccountOutPutResponse getCentricAccountGetById(Long centricAccountId);
 
-    DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest);
+//    DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest);
 
     List<CentricAccountNewResponse> getCentricAccountByOrganIdAndcentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest);
+
+    DataSourceResult getCentricAccountLov(Long OrganizationId,DataSourceRequest dataSourceRequest);
+
+
 }
+

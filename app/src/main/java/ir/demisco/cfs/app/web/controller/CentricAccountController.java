@@ -25,10 +25,17 @@ public class CentricAccountController {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
     }
 
+//    @PostMapping("/Get")
+//    public ResponseEntity<DataSourceResult> responseEntityLov(@RequestBody DataSourceRequest dataSourceRequest) {
+//        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(dataSourceRequest));
+//    }
+
+
     @PostMapping("/Get")
     public ResponseEntity<DataSourceResult> responseEntityLov(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndCentricAccountTypeId(dataSourceRequest));
+        return ResponseEntity.ok(centricAccountService.getCentricAccountLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
+
 
     @PostMapping("/save")
     public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
