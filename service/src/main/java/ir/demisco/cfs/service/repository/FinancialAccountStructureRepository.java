@@ -74,4 +74,13 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "                           AND ST.FLG_PERMANENT_STATUS = 1  ", nativeQuery = true)
     Long getFinancialAccountStructureByld(Long financialAccountStructureId);
 
+
+    @Query(value = " SELECT t.sequence,t.sumDigit " +
+            "      FROM FinancialAccountStructure t " +
+            "     WHERE t.financialCodingType.id=:financialCodingTypeId " +
+            "  and t.sequence= (SELECT MAX(iner_st.sequence) " +
+            "          FROM FinancialAccountStructure  iner_st " +
+            "         WHERE iner_st.financialCodingType.id = t.financialCodingType.id ) " )
+    List<Object[]> findByFinancialCodingType(Long financialCodingTypeId);
+
 }

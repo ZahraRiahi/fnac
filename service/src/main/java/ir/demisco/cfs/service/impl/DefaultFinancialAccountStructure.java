@@ -1,10 +1,9 @@
 package ir.demisco.cfs.service.impl;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
-import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
-import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
-import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
+import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.model.entity.FinancialAccount;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
@@ -104,7 +103,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
         Long financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
-        if (financialAccountStructureDto.getFlgShowInAcc() .equals(false) && financialDocument != null) {
+        if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument != null) {
             throw new RuleException("امکان ویرایش این سطح ، به دلیل استفاده در اسناد وجود ندارد");
         }
         if (financialAccountStructureDto.getSequence() <= 0) {
@@ -120,7 +119,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructureDto.setId(0L);
         }
-        if (financialAccountStructureDto.getFlgPermanentStatus() .equals(true)) {
+        if (financialAccountStructureDto.getFlgPermanentStatus().equals(true)) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
                 throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
@@ -184,19 +183,13 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             }
         }
-//        String financialAccountStructure = null;
-//        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
-//            financialAccountStructure = "financialAccountStructure";
-//        } else {
-//            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
-//        }
+
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
-//        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureFlg == 1) {
             financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
             financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             return financialAccountStructureNewResponse;
-        } else if (financialAccountStructureFlg == 0  && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
+        } else if (financialAccountStructureFlg == 0 && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
             throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
         } else {
             List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
@@ -205,11 +198,8 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent(objects -> {
                         accountPermanentStatusDescription.set(objects[3] == null ? null : objects[3].toString());
                         accountPermanentStatusId.set(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
-
                     }
-
             );
-
             if (accountPermanentStatusId.get() != null) {
                 financialAccountStructureNewResponse.setFlgPermanentStatus(0L);
                 financialAccountStructureNewResponse.setAccountPermanentStatusId(accountPermanentStatusId.get());
@@ -220,7 +210,16 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
 
             }
         }
+    }
 
+    @Override
+    @Transactional
+    public List<FinancialAccountStructureDtoResponse> getSumDigitAndSequence(FinancialAccountStructureDtoRequest financialAccountStructureDtoRequest) {
+        List<Object[]> financialAccountStructureList = financialAccountStructureRepository.findByFinancialCodingType(financialAccountStructureDtoRequest.getFinancialCodingTypeId());
+        return financialAccountStructureList.stream().map(e -> FinancialAccountStructureDtoResponse.builder()
+                .sequence(e[0] == null ? null : Long.parseLong(e[0].toString()))
+                .sumDigit(e[1] == null ? null : Long.parseLong(e[1].toString()))
+                .build()).collect(Collectors.toList());
     }
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {
