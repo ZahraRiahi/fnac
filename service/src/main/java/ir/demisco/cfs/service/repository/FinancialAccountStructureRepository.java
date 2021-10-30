@@ -77,10 +77,10 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
 
     @Query(value = " SELECT t.sequence,t.sumDigit " +
             "      FROM FinancialAccountStructure t " +
-            "     WHERE t.financialCodingType.id=:financialCodingTypeId " +
+            "     WHERE t.financialCodingType.id=:financialCodingTypeId and t.deletedDate is null" +
             "  and t.sequence= (SELECT MAX(iner_st.sequence) " +
             "          FROM FinancialAccountStructure  iner_st " +
-            "         WHERE iner_st.financialCodingType.id = t.financialCodingType.id ) " )
+            "         WHERE iner_st.financialCodingType.id = t.financialCodingType.id  and iner_st.deletedDate IS NULL) ")
     List<Object[]> findByFinancialCodingType(Long financialCodingTypeId);
 
 }
