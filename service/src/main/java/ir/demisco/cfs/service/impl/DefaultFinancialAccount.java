@@ -12,12 +12,13 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
-import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -46,8 +47,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final AccountPermanentStatusRepository accountPermanentStatusRepository;
     private final FinancialAccountLovProvider financialAccountLovProvider;
     private final GridFilterService gridFilterService;
+    private final EntityManager entityManager;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService, EntityManager entityManager) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -70,6 +72,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.accountPermanentStatusRepository = accountPermanentStatusRepository;
         this.financialAccountLovProvider = financialAccountLovProvider;
         this.gridFilterService = gridFilterService;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -498,6 +501,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
+//        List resultList = entityManager.createNamedQuery("select fa from FinancialAccount fa where fa.deletedDate is null and   ").getResultList();
         financialAccountStructureListObject.forEach(e -> {
             AccountStructureLevel accountStructureLevel = new AccountStructureLevel();
             accountStructureLevel.setFinancialAccount(financialAccount);
@@ -732,5 +736,25 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional
     public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
         return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest) {
+        if (financialAccountAllowChildRequest.getId() == null && financialAccountAllowChildRequest.getFinancialAccountStructureId() != null) {
+            List<Long> financialAccountStructureAndCodingTypeCount = financialAccountRepository.findByFinancialAccountIdAndStructureAndCodingType(financialAccountAllowChildRequest.getFinancialAccountStructureId());
+            if (financialAccountStructureAndCodingTypeCount.size() != 0) {
+                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح وجود ندارد");
+            }
+        }
+        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+        financialAccountStructureRequest.setFinancialAccountStructureId(financialAccountAllowChildRequest.getFinancialAccountStructureId());
+        financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountAllowChildRequest.getFinancialCodingTypeId());
+        Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
+                (financialAccountStructureRequest);
+        if (financialAccountAllowChildRequest.getId() == null && financialAccountStructureId == null) {
+            throw new RuleException("سطح انتخاب شده ، آخرین سطح ساختار است");
+        }
+        return true;
     }
 }

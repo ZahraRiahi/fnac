@@ -1,5 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
@@ -11,15 +12,18 @@ import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api-financialAccount")
 public class FinancialAccountController {
     private final FinancialAccountService financialAccountService;
+    private final EntityManagerFactory entityManager;
 
-    public FinancialAccountController(FinancialAccountService financialAccountService) {
+    public FinancialAccountController(FinancialAccountService financialAccountService, EntityManagerFactory entityManager) {
         this.financialAccountService = financialAccountService;
+        this.entityManager = entityManager;
     }
 
     @PostMapping("/list")
@@ -78,4 +82,12 @@ public class FinancialAccountController {
     public ResponseEntity<List<AccountPermanentStatusDto>> responseEntityAccountPermanentStatus() {
         return ResponseEntity.ok(financialAccountService.getAccountPermanentStatusLov());
     }
+
+    @PostMapping("/insertAllowControl")
+    public ResponseEntity<Boolean> getInsertAllowControl(@RequestBody FinancialAccountAllowChildRequest financialAccountAllowChildRequest) {
+        boolean result;
+        result = financialAccountService.getFinancialAccountGetInsertAllowControl(financialAccountAllowChildRequest);
+        return ResponseEntity.ok(result);
+    }
+
 }

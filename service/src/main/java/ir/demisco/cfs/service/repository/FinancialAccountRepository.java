@@ -280,6 +280,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   AND FS.FLG_SHOW_IN_ACC = 1 "
             , nativeQuery = true)
     Page<Object[]> financialAccountLovList(Long organizationId, Pageable pageable);
+
+
+    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1" +
+            " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id)")
+    List<Long> findByFinancialAccountIdAndStructureAndCodingType(Long financialAccountStructureId);
 }
 
 
