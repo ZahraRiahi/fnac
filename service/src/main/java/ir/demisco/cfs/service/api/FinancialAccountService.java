@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.api;
 
+import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface FinancialAccountService {
     DataSourceResult getFinancialAccount(DataSourceRequest dataSourceRequest);
 
-    DataSourceResult getFinancialAccountLov(Long OrganizationId,DataSourceRequest dataSourceRequest);
+    DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest);
 
     FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId);
 
@@ -30,4 +31,5 @@ public interface FinancialAccountService {
 
     List<AccountPermanentStatusDto> getAccountPermanentStatusLov();
 
+    Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest);
 }
