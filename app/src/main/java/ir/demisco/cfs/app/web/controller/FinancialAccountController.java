@@ -33,7 +33,7 @@ public class FinancialAccountController {
 
     @PostMapping("/Get")
     public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(100L, dataSourceRequest));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
 
 
@@ -69,7 +69,7 @@ public class FinancialAccountController {
     @PostMapping("/setStatus")
     public ResponseEntity<Boolean> GetByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
         boolean result;
-        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, 100L);
+        result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
     }
 

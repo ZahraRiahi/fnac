@@ -30,7 +30,7 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
     @Transactional(rollbackOn = Throwable.class)
     public boolean deleteAccountRelatedDescriptionById(Long accountRelatedDescriptionId) {
         AccountRelatedDescription accountRelatedDescription =
-                accountRelatedDescriptionRepository.findById(accountRelatedDescriptionId).orElseThrow(() -> new RuleException("شرح مورد استفاده ی حساب مالی یافت نشد"));
+                accountRelatedDescriptionRepository.findById(accountRelatedDescriptionId).orElseThrow(() -> new RuleException("fin.accountRelatedDescription.delete"));
         accountRelatedDescription.setDeletedDate(LocalDateTime.now());
         accountRelatedDescriptionRepository.save(accountRelatedDescription);
         return true;

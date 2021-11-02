@@ -34,7 +34,8 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
         List<Long> accountDefaultValue = accountRelationTypeDetailRepository.findByAccountRelationTypeDetail(accountDefaultValueDtoRequest.getAccountRelationTypeId());
         Long typeDetailIdList = accountDefaultValueRepository.findByFinancialAccountIdAndAccountRelationTypeDetailIdList(accountDefaultValueDtoRequest.getFinancialAccountId(), accountDefaultValue);
         if (typeDetailIdList > 0) {
-            throw new RuleException("برای این حساب مالی تعدادی از تمرکزها قبلا درج شده است");
+//            throw new RuleException("برای این حساب مالی تعدادی از تمرکزها قبلا درج شده است");
+            throw new RuleException("fin.defaultValue.ruleException.save");
         }
         List<AccountDefaultValueDto> accountDefaultValueDtos = new ArrayList<>();
         accountDefaultValue.forEach(e -> {

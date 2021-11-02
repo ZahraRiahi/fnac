@@ -61,7 +61,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         if (centricAccount.getId() == null) {
             Long centricAccountUniqueCount = centricAccountRepository.getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountRequest.getCentricAccountTypeId(), centricAccountRequest.getCode());
             if (centricAccountUniqueCount > 0) {
-                throw new RuleException("کد تمرکز برای این سازمان با این نوع تمرکز و این کد قبلا ثبت شده است.");
+                throw new RuleException("fin.centricAccountUnique.save");
             }
         }
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
@@ -100,7 +100,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         if (!centricPersonRoles.isEmpty()) {
             centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
         }
-        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
+        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         centricAccount.setDeletedDate(LocalDateTime.now());
         return true;
     }
@@ -115,7 +115,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional
     public CentricAccountOutPutResponse getCentricAccountGetById(Long centricAccountId) {
-        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
+        CentricAccount centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         CentricAccountOutPutResponse centricAccountOutPutResponse = CentricAccountOutPutResponse.builder().id(centricAccountId)
                 .code(centricAccount.getCode())
                 .name(centricAccount.getName())

@@ -68,11 +68,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional(rollbackOn = Throwable.class)
     public Long save(FinancialAccountStructureDto financialAccountStructureDto) throws RuleException {
         if (financialAccountStructureDto.getSequence() <= 0) {
-            throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
+            throw new RuleException("fin.financialAccountStructure.chekSequence");
         }
         Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndIdSave(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId());
         if (financialAccountStructureCount > 0) {
-            throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
+            throw new RuleException("fin.financialAccountStructure.Unique");
         }
         String financialAccountStructure = null;
         if (financialAccountStructureDto.getId() != null) {
@@ -83,7 +83,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getFlgPermanentStatus().equals(true)) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
-                throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+                throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
@@ -92,7 +92,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         financialAccountStructureFlg.setDigitCount(financialAccountStructureDto.getDigitCount());
         financialAccountStructureFlg.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructureFlg.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("fin.financialCoding.notFoundId")));
         financialAccountStructureFlg.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
         financialAccountStructureFlg.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
         return financialAccountStructureRepository.save(financialAccountStructureFlg).getId();
@@ -101,17 +101,17 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
-        FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی دوره ی مالی الزامی میباشد."));
+        FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("fin.financialAccountStructure.financialPeriodId"));
         Long financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
         if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument != null) {
-            throw new RuleException("امکان ویرایش این سطح ، به دلیل استفاده در اسناد وجود ندارد");
+            throw new RuleException("fin.updateFinancialAccountStructure.chekFinancialDocument");
         }
         if (financialAccountStructureDto.getSequence() <= 0) {
-            throw new RuleException("مقدار sequence  باید بزرگتر از صفر باشد");
+            throw new RuleException("fin.financialAccountStructure.chekSequence");
         }
         Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructureFlg.getId());
         if (financialAccountStructureCount > 0) {
-            throw new RuleException("ساختار حساب با این sequence، کدینگ و سازمان وجود دارد.");
+            throw new RuleException("fin.financialAccountStructure.Unique");
         }
         String financialAccountStructure = null;
         if (financialAccountStructureDto.getId() != null) {
@@ -122,7 +122,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureDto.getFlgPermanentStatus().equals(true)) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndStructureId(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
-                throw new RuleException("برای این کدینگ ،وضعیت حساب دائمی پیش فرض ، در سطح دیگری انتخاب شده است");
+                throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
         financialAccountStructureFlg.setId(financialAccountStructureDto.getId());
@@ -131,7 +131,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         financialAccountStructureFlg.setDigitCount(financialAccountStructureDto.getDigitCount());
         financialAccountStructureFlg.setSumDigit(financialAccountStructureDto.getSumDigit());
         financialAccountStructureFlg.setColor(financialAccountStructureDto.getColor());
-        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("کدینگ حسابی با این شناسه وجود ندارد.")));
+        financialAccountStructureFlg.setFinancialCodingType(financialCodingTypeRepository.findById(financialAccountStructureDto.getFinancialCodingTypeId()).orElseThrow(() -> new RuleException("fin.financialCoding.notFoundId")));
         financialAccountStructureFlg.setFlgShowInAcc(financialAccountStructureDto.getFlgShowInAcc());
         financialAccountStructureFlg.setFlgPermanentStatus(financialAccountStructureDto.getFlgPermanentStatus());
         financialAccountStructureFlg = financialAccountStructureRepository.save(financialAccountStructureFlg);
@@ -144,9 +144,9 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         List<FinancialAccount> financialAccounts = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
         FinancialAccountStructure financialAccountStructure;
         if (!financialAccounts.isEmpty()) {
-            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+            throw new RuleException("fin.financialAccountStructure.delete");
         } else {
-            financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
+            financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             financialAccountStructure.setDeletedDate(LocalDateTime.now());
             financialAccountStructureRepository.save(financialAccountStructure);
             return true;
@@ -190,7 +190,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             return financialAccountStructureNewResponse;
         } else if (financialAccountStructureFlg == 0 && financialAccountStructureNewRequest.getFinancialAccountParentId() == null) {
-            throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
+            throw new RuleException("fin.financialAccountStructureFlg.getPermanentStatus");
         } else {
             List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
             AtomicReference<Long> accountPermanentStatusId = new AtomicReference<>();
@@ -206,7 +206,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 financialAccountStructureNewResponse.setAccountPermanentStatusDescription(accountPermanentStatusDescription.get());
                 return financialAccountStructureNewResponse;
             } else {
-                throw new RuleException("در هیچ سطحی ، وضعیت دائمی حساب ، به صورت پیش فرض مشخص نشده است");
+                throw new RuleException("fin.financialAccountStructureFlg.getPermanentStatus");
 
             }
         }
