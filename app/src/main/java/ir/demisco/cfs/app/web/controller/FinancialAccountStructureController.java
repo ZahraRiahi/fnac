@@ -1,6 +1,5 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;

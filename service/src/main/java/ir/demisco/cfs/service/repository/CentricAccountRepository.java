@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CentricAccountRepository extends JpaRepository<CentricAccount, Long> {
 
-   @Query(value = " select cnac.id, cnac.code, cnac.name" +
+    @Query(value = " select cnac.id, cnac.code, cnac.name" +
             "  from CentricAccount cnac " +
             "  join cnac.centricAccountType cnat " +
             " where  cnat.id = :centricAccountTypeId " +
@@ -18,7 +18,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   and cnac.deletedDate is null " +
             " and cnat.deletedDate is null " +
             "   and (:parentCentricAccount is null or " +
-            " cnac.parentCentricAccount.id = :parentCentricAccountId) " )
+            " cnac.parentCentricAccount.id = :parentCentricAccountId) ")
     Page<Object[]> findByCentricAccountAndOrganizationIdAndParentCentricAccount(Long centricAccountTypeId, Long organizationId, Object parentCentricAccount, Long parentCentricAccountId, Pageable pageable);
 
     @Query("select ca from CentricAccount ca join ca.centricPersonRoleList cpr " +
@@ -68,7 +68,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " and ca.code=:code and ca.deletedDate is null")
     Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId, String code);
 
-    @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
+        @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
             "  from fnac.centric_account cnac " +
             " inner join fnac.centric_account_type cnat " +
             "    on cnac.centric_account_type_id = cnat.id " +
@@ -78,6 +78,9 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   and cnac.deleted_date is null " +
             " and cnac.deleted_date is null "
             , nativeQuery = true)
+//    @Query("select cnac.id,cnac.code,cnac.name from CentricAccount cnac join cnac.centricAccountType cnat " +
+//            "   " +
+//            "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
     List<Object[]> findByCentricAccountAndCentricAccountTypeListId(List<Long> centricAccountTypeIdList, Long organizationId);
 }
 

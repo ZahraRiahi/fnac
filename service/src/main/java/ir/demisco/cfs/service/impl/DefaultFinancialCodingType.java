@@ -50,7 +50,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialCodingTypeDto update(FinancialCodingTypeDto financialCodingTypeDto) {
-        FinancialCodingType financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeDto.getId()).orElseThrow(() -> new RuleException("برای انجام عملیات ویرایش شناسه ی کدیتگ حساب الزامی میباشد."));
+        FinancialCodingType financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeDto.getId()).orElseThrow(() -> new RuleException("fin.financialCodingType.update"));
         financialCodingType.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialCodingType.setDescription(financialCodingTypeDto.getDescription());
         financialCodingType = financialCodingTypeRepository.save(financialCodingType);
@@ -63,9 +63,9 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
         List<FinancialAccountStructure> financialAccountStructures = financialAccountStructureRepository.findByFinancialCodingTypeId(financialCodingTypeId);
         FinancialCodingType financialCodingType;
         if (!financialAccountStructures.isEmpty()) {
-            throw new RuleException("به دلیل استفاده ی اطلاعات در جداول دیگر امکان حذف این ردیف وجود ندارد");
+            throw new RuleException("fin.financialCodingType.delete");
         } else {
-            financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("ایتمی با این شناسه وجود ندارد"));
+            financialCodingType = financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             financialCodingType.setDeletedDate(LocalDateTime.now());
             financialCodingTypeRepository.save(financialCodingType);
             return true;

@@ -282,8 +282,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Page<Object[]> financialAccountLovList(Long organizationId, Pageable pageable);
 
 
-    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1" +
-            " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id)")
+    @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1 and fa.disableDate is null and fs.deletedDate is null " +
+            " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id and fndi.deletedDate is null )")
     List<Long> findByFinancialAccountIdAndStructureAndCodingType(Long financialAccountStructureId);
 }
 
