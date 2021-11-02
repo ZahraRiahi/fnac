@@ -12,13 +12,13 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
+import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -81,7 +81,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(100L);
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -198,7 +198,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Override
     @Transactional
     public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId) {
-        FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("آیتمی با این شناسه وجود ندارد"));
+        FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         FinancialAccountOutPutResponse financialAccountOutPutResponse = FinancialAccountOutPutResponse.builder().id(financialAccountId)
                 .organizationId(financialAccount.getOrganization().getId())
                 .financialAccountStructureId(financialAccount.getFinancialAccountStructure().getId())
@@ -266,7 +266,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private List<AccountMoneyTypeResponse> accountMoneyTypeResponses(Long financialAccountId) {
-        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId, 100L);
+        List<Object[]> moneyTypeListObject = moneyTypeRepository.findByMonetTypeListObject(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
         return moneyTypeListObject.stream().map(objects -> AccountMoneyTypeResponse.builder().id(Long.parseLong(objects[0].toString()))
                 .moneyTypeDescription(objects[1].toString())
                 .flgExists(Long.parseLong(objects[2].toString())).build()).collect(Collectors.toList());
@@ -294,10 +294,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
         if (financialAccountRequest.getId() == null && financialAccountRequest.getFinancialAccountStructureId() != null) {
-            Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
-
-            if (financialAccountIdAndStuctureAndAccountId != null) {
-                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
+//            Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
+//
+//            if (financialAccountIdAndStuctureAndAccountId != null) {
+//                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
+//            }
+            List<Long> financialAccountStructureAndCodingTypeCount = financialAccountRepository.findByFinancialAccountIdAndStructureAndCodingType(financialAccountRequest.getFinancialAccountStructureId());
+            if (financialAccountStructureAndCodingTypeCount.size() != 0) {
+                throw new RuleException("fin.financialAccount.save");
             }
         }
         FinancialAccountStructureNewRequest financialAccountStructureNewRequest = new FinancialAccountStructureNewRequest();
@@ -330,7 +334,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
 
                 if (financialAccountStructureId == null) {
-                    throw new RuleException("حساب انتخاب شده آخرین سطح حساب می باشد و امکان ایجاد فرزند برای حساب انتخابی وجود ندارد");
+                    throw new RuleException("fin.financialAccount.save.childAccount");
                 }
                 financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
             } else {
@@ -338,12 +342,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
             }
             if (financialAccountCodeCount > 0) {
-                throw new RuleException("حساب مالی با این کد قبلا ثبت شده است");
+                throw new RuleException("fin.financialAccount.duplicateCode");
             }
             Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
 
             if (financialAccountStructureByCodeAndChild == null) {
-                throw new RuleException("ساختار کد (تعداد ارقام وارد شده با توجه به ساختار حساب)، صحیح نمیباشد");
+                throw new RuleException("fin.financialAccount.structureCode");
             }
             if (financialAccountRequest.getFinancialAccountParentId() != null) {
                 List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
@@ -422,9 +426,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             } else {
                 centricAccountId = 0L;
             }
-            Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndfinancialAccountAndAccountRelationTypeDetailId(e.getAccountRelationTypeDetailId(), financialAccount.getId(), centricAccountId, centricAccount);
+            Long countAccountDefaultValue = accountDefaultValueRepository.findByAccountDefaultAndFinancialAccountAndAccountRelationTypeDetailId(e.getAccountRelationTypeDetailId(), financialAccount.getId(), centricAccountId, centricAccount);
             if (countAccountDefaultValue > 0) {
-                throw new RuleException("برای این نوع حساب و نوع جزئیات وابستگی رکوردی قبلا درج شده است");
+                throw new RuleException("fin.financialAccount.accountRelationTypeDetail.financialAccountType");
             }
             AccountDefaultValue accountDefaultValue = new AccountDefaultValue();
             accountDefaultValue.setFinancialAccount(financialAccount);
@@ -501,15 +505,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
-//        List resultList = entityManager.createNamedQuery("select fa from FinancialAccount fa where fa.deletedDate is null and   ").getResultList();
         financialAccountStructureListObject.forEach(e -> {
             AccountStructureLevel accountStructureLevel = new AccountStructureLevel();
             accountStructureLevel.setFinancialAccount(financialAccount);
             accountStructureLevel.setFinancialAccountStructure(financialAccountStructureRepository.getOne(Long.parseLong(e[2].toString())));
             accountStructureLevel.setStructureLevel(Long.parseLong(e[0].toString()));
             accountStructureLevel.setStructureLevelCode(e[1].toString());
-            if (e[4] != null) {
-                accountStructureLevel.setRelatedAccountId(Long.parseLong(e[4].toString()));
+            if (e[3] != null) {
+                accountStructureLevel.setRelatedAccountId(Long.parseLong(e[3].toString()));
             }
             accountStructureLevelRepository.save(accountStructureLevel);
         });
@@ -658,7 +661,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 return true;
             }
         }
-        throw new RuleException("حساب انتخاب شده آخرین سطح حساب نمی باشد و امکان حذف آن وجود ندارد");
+        throw new RuleException("fin.financialAccount.delete");
     }
 
     @Override
@@ -666,22 +669,22 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     public Boolean getFinancialAccountByIdAndStatusFlag(FinancialAccountStatusRequest financialAccountStatusRequest, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountStatusRequest.getFinancialAccountId());
         if (financialAccountStatusRequest.getStatusFlag().equals(false)) {
-            List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), 100L);
-            Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            List<Long> financialAccountCount = financialAccountRepository.findByFinancialAccountId(financialAccountStatusRequest.getFinancialAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
+            Long financialAccountOrganCount = financialAccountRepository.findByFinancialAccountIdAndOrganization(financialAccountStatusRequest.getFinancialAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
             if (financialAccountCount.size() != 0 || financialAccountOrganCount != null) {
-                throw new RuleException("ردیف انتخابی آخرین سطح حساب نیست و یا قبلا غیر فعال شده است");
+                throw new RuleException("fin.financialAccount.setStatus");
             }
             financialAccount.setDisableDate(new Date());
         } else {
-            Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountOrganization(financialAccountStatusRequest.getFinancialAccountId(), 100L);
+            Long financialAccountActiveCount = financialAccountRepository.findByFinancialAccountOrganization(financialAccountStatusRequest.getFinancialAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
             if (financialAccountActiveCount != null) {
-                throw new RuleException("حساب سطح قبل غیر فعال است.لطفا ابتدا حساب سطح قبل را فعال نمایید");
+                throw new RuleException("fin.financialAccount.parentActive");
             } else {
                 Long financialAccountCount = financialAccountRepository.findByFinancialAccountAndIdAndDisableDateIsNotNull(financialAccountStatusRequest.getFinancialAccountId());
                 if (financialAccountCount != null) {
                     financialAccount.setDisableDate(null);
                 } else {
-                    throw new RuleException("وضعیت ردیف مورد نظر  فعال می باشد.");
+                    throw new RuleException("fin.financialAccount.statusActive");
 
                 }
 
@@ -744,7 +747,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountAllowChildRequest.getId() == null && financialAccountAllowChildRequest.getFinancialAccountStructureId() != null) {
             List<Long> financialAccountStructureAndCodingTypeCount = financialAccountRepository.findByFinancialAccountIdAndStructureAndCodingType(financialAccountAllowChildRequest.getFinancialAccountStructureId());
             if (financialAccountStructureAndCodingTypeCount.size() != 0) {
-                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح وجود ندارد");
+                throw new RuleException("fin.financialAccount.save");
             }
         }
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
@@ -753,7 +756,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
                 (financialAccountStructureRequest);
         if (financialAccountAllowChildRequest.getId() == null && financialAccountStructureId == null) {
-            throw new RuleException("سطح انتخاب شده ، آخرین سطح ساختار است");
+            throw new RuleException("fin.financialAccount.finanlLevelAccount");
         }
         return true;
     }
