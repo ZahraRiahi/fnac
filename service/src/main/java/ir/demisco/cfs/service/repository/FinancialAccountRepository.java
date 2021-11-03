@@ -171,7 +171,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Long findByFinancialAccountAndIdAndDisableDateIsNotNull(Long financialAccountId);
 
     @Query(value = " SELECT FNAS.ID, " +
-            "       FNAS.DIGIT_COUNT, " +
+            "       FNAS.DIGIT_COUNT," +
+            "  FNAS.FLG_SHOW_IN_ACC, " +
             "       CASE " +
             "         WHEN :financialAccountParent IS NULL THEN " +
             "          NULL" +
