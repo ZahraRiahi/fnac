@@ -5,6 +5,7 @@ public class FinancialAccountNewResponse {
     private Long digitCount;
     private String preCode;
     private String suggestedCode;
+    private Long flgShowInAcc;
 
     public Long getId() {
         return id;
@@ -36,6 +37,14 @@ public class FinancialAccountNewResponse {
 
     public void setSuggestedCode(String suggestedCode) {
         this.suggestedCode = suggestedCode;
+    }
+
+    public Long getFlgShowInAcc() {
+        return flgShowInAcc;
+    }
+
+    public void setFlgShowInAcc(Long flgShowInAcc) {
+        this.flgShowInAcc = flgShowInAcc;
     }
 
     public static FinancialAccountNewResponse.Builder builder() {
@@ -72,7 +81,10 @@ public class FinancialAccountNewResponse {
             financialAccountNewResponse.setSuggestedCode(suggestedCode);
             return this;
         }
-
+        public Builder flgShowInAcc(Long flgShowInAcc) {
+            financialAccountNewResponse.setFlgShowInAcc(flgShowInAcc);
+            return this;
+        }
         public FinancialAccountNewResponse build() {
             return financialAccountNewResponse;
         }

@@ -719,8 +719,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
         return financialAccountList.stream().map(e -> FinancialAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
                 .digitCount(Long.parseLong(e[1].toString()))
-                .preCode(e[2] == null ? null : e[2].toString())
-                .suggestedCode(e[3].toString())
+                .preCode(e[3] == null ? null : e[2].toString())
+                .suggestedCode(e[4].toString())
+                .flgShowInAcc(Long.parseLong(e[2].toString()))
                 .build()).collect(Collectors.toList());
     }
 
