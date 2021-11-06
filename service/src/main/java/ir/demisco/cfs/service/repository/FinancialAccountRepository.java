@@ -84,8 +84,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "      fiac.account_nature_type_id = :accountNatureTypeId)" +
             " LEFT OUTER join fnac.account_relation_type acrt " +
             "    on fiac.account_relation_type_id = acrt.id " +
-            "  and (:accountRelationType is null or " +
-            " fiac.account_relation_type_id = :accountRelationTypeId) " +
             "   and acrt.deleted_date is null " +
             " inner join fnac.financial_account_structure fnas " +
             "    on fnas.id = fiac.financial_account_structure_id " +
@@ -102,7 +100,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " where fiac.organization_id = :organizationId" +
             "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
             "   and (:description is null or fiac.description like %:description% )" +
-            "   and fiac.deleted_date is null" +
+            "   and fiac.deleted_date is null " +
+            "  and (:accountRelationType is null or " +
+            "  fiac.account_relation_type_id = :accountRelationTypeId) " +
             "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
             "   or (:financialAccountParent is not null  and " +
             "       fiac.financial_account_parent_id =:financialAccountParentId))" +
