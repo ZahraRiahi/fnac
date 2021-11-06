@@ -176,7 +176,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {
-            Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureByld(financialAccountStructureNewRequest.getFinancialAccountStructureId());
+            Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureById(financialAccountStructureNewRequest.getFinancialAccountStructureId());
 
             if (financialAccountStructureId != null) {
                 financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
@@ -185,6 +185,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
+        if(financialAccountStructureFlg==null){
+            throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
+        }
+
         if (financialAccountStructureFlg == 1) {
             financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
             financialAccountStructureNewResponse.setAccountPermanentStatusId(null);

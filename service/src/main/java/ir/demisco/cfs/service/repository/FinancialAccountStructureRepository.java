@@ -72,7 +72,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
     @Query(value = " SELECT 1 FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE ST  " +
             "                            WHERE ST.ID = :financialAccountStructureId " +
             "                           AND ST.FLG_PERMANENT_STATUS = 1  ", nativeQuery = true)
-    Long getFinancialAccountStructureByld(Long financialAccountStructureId);
+    Long getFinancialAccountStructureById(Long financialAccountStructureId);
 
 
     @Query(value = " SELECT t.sequence,t.sumDigit " +
