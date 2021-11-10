@@ -15,5 +15,5 @@ public interface FinancialDocumentItemRepository extends JpaRepository<Financial
             "                              ON FA.ID = DI.FINANCIAL_ACCOUNT_ID " +
             "                              AND FA.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId "
             , nativeQuery = true)
-    Long findByFinancialDocumentAndFinancialAccountStructure(Long financialAccountStructureId);
+    List<Object> findByFinancialDocumentAndFinancialAccountStructure(Long financialAccountStructureId);
 }
