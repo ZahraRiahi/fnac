@@ -102,9 +102,9 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("fin.financialAccountStructure.financialPeriodId"));
-        Long financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
-        if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument != null) {
-            throw new RuleException("fin.updateFinancialAccountStructure.chekFinancialDocument");
+        List<Object> financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
+        if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument.size() != 0) {
+            throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
         }
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("fin.financialAccountStructure.chekSequence");
@@ -185,7 +185,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
-        if(financialAccountStructureFlg==null){
+        if (financialAccountStructureFlg == null) {
             throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
         }
 
