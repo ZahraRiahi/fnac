@@ -81,7 +81,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        param.setOrganizationId(100L);
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
@@ -757,7 +757,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
                 (financialAccountStructureRequest);
         if (financialAccountAllowChildRequest.getId() == null && financialAccountStructureId == null) {
-            throw new RuleException("fin.financialAccount.finanlLevelAccount");
+            throw new RuleException("fin.financialAccount.finalLevelAccount");
         }
         return true;
     }
