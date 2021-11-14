@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -220,13 +221,24 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional
     public List<FinancialAccountStructureDtoResponse> getSumDigitAndSequence(FinancialAccountStructureDtoRequest financialAccountStructureDtoRequest) {
         List<Object[]> financialAccountStructureList = financialAccountStructureRepository.findByFinancialCodingType(financialAccountStructureDtoRequest.getFinancialCodingTypeId());
+       if(financialAccountStructureList.isEmpty()){
+           List<FinancialAccountStructureDtoResponse> result=new ArrayList<>();
+
+          result.add( FinancialAccountStructureDtoResponse.builder()
+                   .sequence(0L)
+                   .sumDigit(0L)
+                   .build());
+          return result;
+       }
         return financialAccountStructureList.stream().map(e -> FinancialAccountStructureDtoResponse.builder()
-                .sequence(e[0] == null ? null : Long.parseLong(e[0].toString()))
-                .sumDigit(e[1] == null ? null : Long.parseLong(e[1].toString()))
+                .sequence(Long.parseLong(e[0].toString()))
+                .sumDigit(Long.parseLong(e[1].toString()))
                 .build()).collect(Collectors.toList());
     }
 
-    private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure financialAccountStructure) {
+
+    private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure
+                                                                                       financialAccountStructure) {
         return FinancialAccountStructureDto.builder().description(financialAccountStructure.getDescription())
                 .sequence(financialAccountStructure.getSequence())
                 .digitCount(financialAccountStructure.getDigitCount())
