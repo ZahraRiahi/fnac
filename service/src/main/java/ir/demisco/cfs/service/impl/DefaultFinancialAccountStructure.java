@@ -185,6 +185,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             }
         }
 
+        List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCoding(financialAccountStructureNewRequest.getFinancialCodingTypeId());
+        if (financialAccountStructureCoding.size() == 0) {
+            throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
+        }
+
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
         if (financialAccountStructureFlg == null) {
             throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
@@ -221,15 +226,15 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional
     public List<FinancialAccountStructureDtoResponse> getSumDigitAndSequence(FinancialAccountStructureDtoRequest financialAccountStructureDtoRequest) {
         List<Object[]> financialAccountStructureList = financialAccountStructureRepository.findByFinancialCodingType(financialAccountStructureDtoRequest.getFinancialCodingTypeId());
-       if(financialAccountStructureList.isEmpty()){
-           List<FinancialAccountStructureDtoResponse> result=new ArrayList<>();
+        if (financialAccountStructureList.isEmpty()) {
+            List<FinancialAccountStructureDtoResponse> result = new ArrayList<>();
 
-          result.add( FinancialAccountStructureDtoResponse.builder()
-                   .sequence(0L)
-                   .sumDigit(0L)
-                   .build());
-          return result;
-       }
+            result.add(FinancialAccountStructureDtoResponse.builder()
+                    .sequence(0L)
+                    .sumDigit(0L)
+                    .build());
+            return result;
+        }
         return financialAccountStructureList.stream().map(e -> FinancialAccountStructureDtoResponse.builder()
                 .sequence(Long.parseLong(e[0].toString()))
                 .sumDigit(Long.parseLong(e[1].toString()))

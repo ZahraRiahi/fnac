@@ -286,6 +286,23 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1 and fa.disableDate is null and fs.deletedDate is null " +
             " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id and fndi.deletedDate is null )")
     List<Long> findByFinancialAccountIdAndStructureAndCodingType(Long financialAccountStructureId);
+
+    @Query(value = " SELECT fiac.id," +
+            "       fiac.code," +
+            "       fiac.description, " +
+            "       fiac.referenceFlag, " +
+            "       fiac.exchangeFlag, " +
+            "       art.id as accountRelationTypeId, " +
+            "       fiac.disableDate " +
+            "  FROM FinancialAccount fiac " +
+            " JOIN fiac.financialAccountStructure fs " +
+            " left outer join fiac.accountRelationType art " +
+            " WHERE fiac.deletedDate IS NULL " +
+            "   AND fiac.disableDate IS NULL " +
+            " and fs.deletedDate is null " +
+            "  AND fiac.organization.id=:organizationId " +
+            "   AND (:financialAccountStructure is null or  fiac.financialAccountStructure.id=:financialAccountStructureId )")
+    List<Object[]> findByFinancialAccountByOrganAndFinancialAccountStructureId(Long organizationId, Object financialAccountStructure, Long financialAccountStructureId);
 }
 
 
