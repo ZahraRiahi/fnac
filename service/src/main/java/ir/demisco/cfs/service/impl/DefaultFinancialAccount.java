@@ -761,4 +761,29 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         return true;
     }
+
+    @Override
+    @Transactional(rollbackOn = Throwable.class)
+    public List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure
+            (Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
+        Object financialAccountStructure;
+        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountGetByStructureRequest.setFinancialAccountStructureId(0L);
+            financialAccountStructure = null;
+        }
+
+
+        List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByOrganAndFinancialAccountStructureId
+                (SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructure, financialAccountGetByStructureRequest.getFinancialAccountStructureId());
+
+        return financialAccountList.stream().map(e -> FinancialAccountGetByStructureResponse.builder().id(Long.parseLong(e[0].toString()))
+                .code(e[1].toString())
+                .description(e[2].toString())
+                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
+                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
+                .accountRelationTypeId(Long.parseLong(e[5].toString()))
+                .build()).collect(Collectors.toList());
+    }
 }
