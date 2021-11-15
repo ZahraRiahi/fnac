@@ -1,9 +1,6 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
+import ir.demisco.cfs.model.dto.request.*;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
@@ -90,4 +87,8 @@ public class FinancialAccountController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/GetByStructure")
+    public ResponseEntity<List<FinancialAccountGetByStructureResponse>> responseEntityGetByStructure(@RequestBody FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(),financialAccountGetByStructureRequest));
+    }
 }

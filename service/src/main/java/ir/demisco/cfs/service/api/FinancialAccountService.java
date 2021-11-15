@@ -1,9 +1,6 @@
 package ir.demisco.cfs.service.api;
 
-import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
-import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
+import ir.demisco.cfs.model.dto.request.*;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -32,4 +29,8 @@ public interface FinancialAccountService {
     List<AccountPermanentStatusDto> getAccountPermanentStatusLov();
 
     Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest);
+
+    List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure(Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest);
+
+
 }
