@@ -48,8 +48,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final FinancialAccountLovProvider financialAccountLovProvider;
     private final GridFilterService gridFilterService;
     private final EntityManager entityManager;
+    private final FinancialAccountGetByStructureProvider financialAccountGetByStructureProvider;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService, EntityManager entityManager) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService, EntityManager entityManager, FinancialAccountGetByStructureProvider financialAccountGetByStructureProvider) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -73,6 +74,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.financialAccountLovProvider = financialAccountLovProvider;
         this.gridFilterService = gridFilterService;
         this.entityManager = entityManager;
+        this.financialAccountGetByStructureProvider = financialAccountGetByStructureProvider;
     }
 
     @Override
@@ -762,31 +764,43 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return true;
     }
 
+//    @Override
+//    @Transactional(rollbackOn = Throwable.class)
+//    public List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure
+//            (Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
+//        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() == 0L || financialAccountGetByStructureRequest.getFinancialAccountStructureId() == null) {
+//            throw new RuleException("fin.financialAccount.getByStructure");
+//        }
+//        Object financialAccountStructure;
+//        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() != null) {
+//            financialAccountStructure = "financialAccountStructure";
+//        } else {
+//            financialAccountGetByStructureRequest.setFinancialAccountStructureId(0L);
+//            financialAccountStructure = null;
+//        }
+//
+//
+//        List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByOrganAndFinancialAccountStructureId
+//                (SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructure, financialAccountGetByStructureRequest.getFinancialAccountStructureId());
+//
+//        return financialAccountList.stream().map(e -> FinancialAccountGetByStructureResponse.builder().id(Long.parseLong(e[0].toString()))
+//                .code(e[1].toString())
+//                .description(e[2].toString())
+//                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
+//                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
+//                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
+//                .build()).collect(Collectors.toList());
+//    }
+
     @Override
-    @Transactional(rollbackOn = Throwable.class)
-    public List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure
-            (Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
-        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() == 0L || financialAccountGetByStructureRequest.getFinancialAccountStructureId() == null) {
-            throw new RuleException("fin.financialAccount.getByStructure");
-        }
-        Object financialAccountStructure;
-        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() != null) {
-            financialAccountStructure = "financialAccountStructure";
-        } else {
-            financialAccountGetByStructureRequest.setFinancialAccountStructureId(0L);
-            financialAccountStructure = null;
-        }
+    @Transactional
+    public DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
+                .create("organization.id", 100, DataSourceRequest.Operators.EQUALS));
+        return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
 
-
-        List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByOrganAndFinancialAccountStructureId
-                (SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructure, financialAccountGetByStructureRequest.getFinancialAccountStructureId());
-
-        return financialAccountList.stream().map(e -> FinancialAccountGetByStructureResponse.builder().id(Long.parseLong(e[0].toString()))
-                .code(e[1].toString())
-                .description(e[2].toString())
-                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
-                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
-                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
-                .build()).collect(Collectors.toList());
     }
 }

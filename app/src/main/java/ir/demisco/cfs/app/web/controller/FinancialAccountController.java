@@ -87,8 +87,13 @@ public class FinancialAccountController {
         return ResponseEntity.ok(result);
     }
 
+//    @PostMapping("/GetByStructure")
+//    public ResponseEntity<List<FinancialAccountGetByStructureResponse>> responseEntityGetByStructure(@RequestBody FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
+//        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(),financialAccountGetByStructureRequest));
+//    }
+
     @PostMapping("/GetByStructure")
-    public ResponseEntity<List<FinancialAccountGetByStructureResponse>> responseEntityGetByStructure(@RequestBody FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(),financialAccountGetByStructureRequest));
+    public ResponseEntity<DataSourceResult> responseEntityGetByStructure(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(100L, dataSourceRequest));
     }
 }

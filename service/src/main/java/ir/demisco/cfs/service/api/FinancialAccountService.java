@@ -30,7 +30,8 @@ public interface FinancialAccountService {
 
     Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest);
 
-    List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure(Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest);
+//    List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure(Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest);
 
+    DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest);
 
 }
