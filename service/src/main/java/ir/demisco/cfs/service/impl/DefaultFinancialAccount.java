@@ -799,7 +799,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("organization.id", 100, DataSourceRequest.Operators.EQUALS));
+                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
         return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
 
     }
