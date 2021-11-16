@@ -766,6 +766,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional(rollbackOn = Throwable.class)
     public List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure
             (Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
+        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() == 0L || financialAccountGetByStructureRequest.getFinancialAccountStructureId() == null) {
+            throw new RuleException("fin.financialAccount.getByStructure");
+        }
         Object financialAccountStructure;
         if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
