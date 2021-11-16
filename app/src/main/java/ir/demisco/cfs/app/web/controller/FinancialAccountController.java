@@ -94,6 +94,6 @@ public class FinancialAccountController {
 
     @PostMapping("/GetByStructure")
     public ResponseEntity<DataSourceResult> responseEntityGetByStructure(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(100L, dataSourceRequest));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
 }
