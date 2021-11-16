@@ -786,7 +786,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .description(e[2].toString())
                 .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
                 .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
-                .accountRelationTypeId(Long.parseLong(e[5].toString()))
+                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
                 .build()).collect(Collectors.toList());
     }
 }
