@@ -68,19 +68,35 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " and ca.code=:code and ca.deletedDate is null")
     Long getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(Long organizationId, Long centricAccountTypeId, String code);
 
-        @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
-            "  from fnac.centric_account cnac " +
-            " inner join fnac.centric_account_type cnat " +
-            "    on cnac.centric_account_type_id = cnat.id " +
-            "   and cnat.deleted_date is null " +
-            " where centric_account_type_id in (:centricAccountTypeIdList) " +
-            "   and cnac.organization_id =:organizationId  " +
-            "   and cnac.deleted_date is null " +
-            " and cnac.deleted_date is null "
-            , nativeQuery = true)
-//    @Query("select cnac.id,cnac.code,cnac.name from CentricAccount cnac join cnac.centricAccountType cnat " +
-//            "   " +
-//            "where ca.organization.id=:organizationId and cpr.personRoleType.id=:personRoleTypeId and ca.person.id=:personId ")
-    List<Object[]> findByCentricAccountAndCentricAccountTypeListId(List<Long> centricAccountTypeIdList, Long organizationId);
+    //        @Query(value = " select cnac.id, cnac.code, cnac.name, cnac.parent_centric_account_id " +
+//            "  from fnac.centric_account cnac " +
+//            " inner join fnac.centric_account_type cnat " +
+//            "    on cnac.centric_account_type_id = cnat.id " +
+//            "   and cnat.deleted_date is null " +
+//            " where centric_account_type_id in (:centricAccountTypeIdList) " +
+//            "   and cnac.organization_id =:organizationId  " +
+//            "   and cnac.deleted_date is null " +
+//            " and cnac.deleted_date is null "
+//            , nativeQuery = true)
+    @Query(value =" SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID " +
+            "  FROM fnac.CENTRIC_ACCOUNT CNAC " +
+            " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT " +
+            "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID " +
+            "   AND CNAT.DELETED_DATE IS NULL" +
+            " WHERE CENTRIC_ACCOUNT_TYPE_ID IN " +
+            "       (SELECT OUTER_R.CENTRIC_ACCOUNT_TYPE_ID " +
+            "          FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL OUTER_R " +
+            "         INNER JOIN (SELECT INER_R.SEQUENCE, INER_R.ACCOUNT_RELATION_TYPE_ID " +
+            "                      FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL INER_R " +
+            "                     WHERE INER_R.CENTRIC_ACCOUNT_TYPE_ID = " +
+            "                           :centricAccountTypeId" +
+            "                       AND INER_R.DELETED_DATE IS NULL) T " +
+            "            ON OUTER_R.SEQUENCE <= T.SEQUENCE" +
+            "           AND OUTER_R.ACCOUNT_RELATION_TYPE_ID = T.ACCOUNT_RELATION_TYPE_ID" +
+            "           AND OUTER_R.DELETED_DATE IS NULL)" +
+            "   AND ORGANIZATION_ID = :organizationId " +
+            "   AND CNAC.DELETED_DATE IS NULL "
+             , nativeQuery = true)
+    List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
 }
 
