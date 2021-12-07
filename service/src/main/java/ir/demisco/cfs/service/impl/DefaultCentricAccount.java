@@ -108,7 +108,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getCentricAccountByOrganIdAndPersonId(Long personId, Long organizationId) {
-        Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, 100L);
+        Long centricAccounts = centricAccountRepository.findByCentricAccountAndOrganizationAndPerson(personId, SecurityHelper.getCurrentUser().getOrganizationId());
         return centricAccounts == null;
     }
 
@@ -227,7 +227,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional
     public List<CentricAccountNewResponse> getCentricAccountByOrganIdAndcentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
-        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(centricAccountNewTypeRequest.getCentricAccountTypeId(), 100L);
+        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
         return centricAccountAndCentricAccountTypeList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
                 .name(e[2].toString())
                 .code(e[1].toString()).build()).collect(Collectors.toList());
