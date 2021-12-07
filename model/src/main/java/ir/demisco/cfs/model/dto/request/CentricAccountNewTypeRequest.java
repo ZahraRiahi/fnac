@@ -1,17 +1,15 @@
 package ir.demisco.cfs.model.dto.request;
 
-import java.util.List;
-
 public class CentricAccountNewTypeRequest {
-    private List<Long> centricAccountTypeListId;
+    private Long centricAccountTypeId;
     private Long organizationId;
 
-    public List<Long> getCentricAccountTypeListId() {
-        return centricAccountTypeListId;
+    public Long getCentricAccountTypeId() {
+        return centricAccountTypeId;
     }
 
-    public void setCentricAccountTypeListId(List<Long> centricAccountTypeListId) {
-        this.centricAccountTypeListId = centricAccountTypeListId;
+    public void setCentricAccountTypeId(Long centricAccountTypeId) {
+        this.centricAccountTypeId = centricAccountTypeId;
     }
 
     public Long getOrganizationId() {
