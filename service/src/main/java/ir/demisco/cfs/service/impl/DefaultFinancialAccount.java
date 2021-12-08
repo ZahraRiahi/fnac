@@ -201,9 +201,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional
     public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-        Optional<FinancialAccount> financialAccountParent = financialAccountRepository.findByFinancialAccountParentId(financialAccountId);
+        List<FinancialAccount> financialAccountParent = financialAccountRepository.findByFinancialAccountParentId(financialAccountId);
         Boolean flagPermanent;
-        if (financialAccountParent.isPresent()){
+        if (financialAccountParent.isEmpty()){
             flagPermanent = financialAccount.getFinancialAccountStructure().getFlgPermanentStatus();
         } else  {
             flagPermanent = false;
