@@ -319,6 +319,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
     Optional<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
 
+    @Query(value = " SELECT 1 " +
+            "     FROM FINANCIAL_ACCOUNT T " +
+            "     WHERE T.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId  "
+            , nativeQuery = true)
+    List<Long> getFinancialAccountByFinancialAccountStructureId(Long financialAccountStructureId);
 }
 
 
