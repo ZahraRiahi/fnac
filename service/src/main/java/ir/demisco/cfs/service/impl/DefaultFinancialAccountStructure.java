@@ -4,7 +4,6 @@ import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
 import ir.demisco.cfs.model.dto.response.*;
-import ir.demisco.cfs.model.entity.FinancialAccount;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.FinancialAccountRepository;
