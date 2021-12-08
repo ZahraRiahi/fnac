@@ -68,7 +68,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Transactional(rollbackOn = Throwable.class)
     public Long save(FinancialAccountStructureDto financialAccountStructureDto) throws RuleException {
         if (financialAccountStructureDto.getSequence() <= 0) {
-            throw new RuleException("fin.financialAccountStructure.chekSequence");
+            throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndIdSave(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId());
         if (financialAccountStructureCount > 0) {
@@ -107,8 +107,13 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
         }
         if (financialAccountStructureDto.getSequence() <= 0) {
-            throw new RuleException("fin.financialAccountStructure.chekSequence");
+            throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
+        List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
+        if (financialStructure != null) {
+            throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
+        }
+
         Long financialAccountStructureCount = financialAccountStructureRepository.getCountByFinancialAccountStructureSequenceAndId(financialAccountStructureDto.getSequence(), financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructureFlg.getId());
         if (financialAccountStructureCount > 0) {
             throw new RuleException("fin.financialAccountStructure.Unique");
