@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
@@ -303,6 +304,13 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "  AND fiac.organization.id=:organizationId " +
             "   AND (:financialAccountStructure is null or  fiac.financialAccountStructure.id=:financialAccountStructureId )")
     List<Object[]> findByFinancialAccountByOrganAndFinancialAccountStructureId(Long organizationId, Object financialAccountStructure, Long financialAccountStructureId);
+
+    Optional<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
+
+//    "SELECT INER_AC.ID\n"+
+//            "                 FROM FINANCIAL_ACCOUNT INER_AC\n"+
+//            "                WHERE INER_AC.FINANCIAL_ACCOUNT_PARENT_ID =\n"+
+//            "                      &FINANCIAL_ACCOUNT_ID\n"
 }
 
 

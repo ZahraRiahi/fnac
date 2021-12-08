@@ -201,6 +201,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Transactional
     public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId) {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
+        Optional<FinancialAccount> financialAccountParent = financialAccountRepository.findByFinancialAccountParentId(financialAccountId);
+        Boolean flagPermanent;
+        if (financialAccountParent.isPresent()){
+            flagPermanent = financialAccount.getFinancialAccountStructure().getFlgPermanentStatus();
+        } else  {
+            flagPermanent = false;
+        }
         FinancialAccountOutPutResponse financialAccountOutPutResponse = FinancialAccountOutPutResponse.builder().id(financialAccountId)
                 .organizationId(financialAccount.getOrganization().getId())
                 .financialAccountStructureId(financialAccount.getFinancialAccountStructure().getId())
@@ -225,7 +232,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .accountStatusCode(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getCode())
                 .accountStatusDescription(financialAccount.getAccountPermanentStatus() == null ? "" : financialAccount.getAccountPermanentStatus().getDescription())
                 .flgShowInAcc(financialAccount.getFinancialAccountStructure().getFlgShowInAcc())
-                .flgPermanentStatus(financialAccount.getFinancialAccountStructure().getFlgPermanentStatus())
+                .flgPermanentStatus(flagPermanent)
                 .build();
         financialAccountOutPutResponse.setAccountRelatedTypeOutPutModel(accountRelatedTypeResponses(financialAccountId));
         financialAccountOutPutResponse.setAccountDefaultValueOutPutModel(accountDefaultValueResponses(financialAccountId));
