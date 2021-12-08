@@ -142,10 +142,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteFinancialAccountStructureById(Long financialAccountStructureId) {
-        List<FinancialAccount> financialAccounts = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
+        Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
         FinancialAccountStructure financialAccountStructure;
-        if (!financialAccounts.isEmpty()) {
-            throw new RuleException("fin.financialAccountStructure.delete");
+        if (countFinancialAccount != null) {
+            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان حذف وجود ندارد");
         } else {
             financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             financialAccountStructure.setDeletedDate(LocalDateTime.now());
