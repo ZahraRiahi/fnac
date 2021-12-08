@@ -41,8 +41,20 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     Page<Object[]> findByFinancialAccountByOrganizationId(Long organizationId, Pageable pageable);
 
 
-    @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
-    List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
+//    @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
+//    List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
+
+    @Query(value = "  SELECT 1 FROM FINANCIAL_ACCOUNT_STRUCTURE OUTER_FANS " +
+            "    WHERE EXISTS (SELECT 1 " +
+            "            FROM FINANCIAL_ACCOUNT_STRUCTURE INER_FANS " +
+            "            WHERE INER_FANS.FINANCIAL_CODING_TYPE_ID = " +
+            "            OUTER_FANS.FINANCIAL_CODING_TYPE_ID " +
+            "            AND INER_FANS.DELETED_DATE IS NULL " +
+            "            AND INER_FANS.SEQUENCE >   OUTER_FANS.SEQUENCE) " +
+            "    AND OUTER_FANS.ID = :financialAccountStructureId " +
+            "    AND OUTER_FANS.DELETED_DATE IS NULL "
+            , nativeQuery = true)
+    Long findByFinancialAccountStructureId(Long financialAccountStructureId);
 
     @Query(value = " select fiac.id," +
             "       fiac.organization_id," +
@@ -307,10 +319,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
     Optional<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
 
-//    "SELECT INER_AC.ID\n"+
-//            "                 FROM FINANCIAL_ACCOUNT INER_AC\n"+
-//            "                WHERE INER_AC.FINANCIAL_ACCOUNT_PARENT_ID =\n"+
-//            "                      &FINANCIAL_ACCOUNT_ID\n"
 }
 
 
