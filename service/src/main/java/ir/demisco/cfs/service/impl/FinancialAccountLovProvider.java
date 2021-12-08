@@ -78,7 +78,6 @@ public class FinancialAccountLovProvider implements GridDataProvider {
         Join<Object, Object> accountRelationTypeJoin = root.join("accountRelationType", JoinType.LEFT);
         filterContext.getJoins().put("accountRelationTypeJoin", accountRelationTypeJoin);
 
-//        SubQueryContext<FinancialAccount> subQueryContext = filterContext.createSubQueryContext(FinancialAccount.class);
         Subquery<FinancialAccount> financialAccountSubQuery = financialAccountQuery.subquery(FinancialAccount.class);
         Root<FinancialAccount> financialAccountRootSubQuery = financialAccountSubQuery.from(FinancialAccount.class);
         financialAccountSubQuery.select(financialAccountRootSubQuery);
