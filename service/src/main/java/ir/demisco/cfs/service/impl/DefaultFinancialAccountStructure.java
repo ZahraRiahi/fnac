@@ -195,9 +195,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long financialAccountStructureFlg = financialAccountStructureRepository.findByFinancialCodingTypeAndFinancialAccountStructureId(financialAccountStructureNewRequest.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureNewRequest.getFinancialAccountStructureId());
-//        if (financialAccountStructureFlg == null) {
-//            throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
-//        }
 
         if (financialAccountStructureFlg == 1) {
             financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
