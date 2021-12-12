@@ -380,6 +380,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "     WHERE T.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId  "
             , nativeQuery = true)
     List<Long> getFinancialAccountByFinancialAccountStructureId(Long financialAccountStructureId);
+
+
 }
 
 
