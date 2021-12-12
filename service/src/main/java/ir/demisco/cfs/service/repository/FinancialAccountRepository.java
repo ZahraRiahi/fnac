@@ -44,9 +44,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 //    @Query("select fa from  FinancialAccount fa where fa.financialAccountStructure.id=:financialAccountStructureId and fa.deletedDate is null")
 //    List<FinancialAccount> findByFinancialAccountStructureId(Long financialAccountStructureId);
 
-    @Query(value = "  SELECT 1 FROM FINANCIAL_ACCOUNT_STRUCTURE OUTER_FANS " +
+    @Query(value = "  SELECT 1 FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE OUTER_FANS " +
             "    WHERE EXISTS (SELECT 1 " +
-            "            FROM FINANCIAL_ACCOUNT_STRUCTURE INER_FANS " +
+            "            FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE INER_FANS " +
             "            WHERE INER_FANS.FINANCIAL_CODING_TYPE_ID = " +
             "            OUTER_FANS.FINANCIAL_CODING_TYPE_ID " +
             "            AND INER_FANS.DELETED_DATE IS NULL " +
@@ -376,7 +376,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     List<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
 
     @Query(value = " SELECT 1 " +
-            "     FROM FINANCIAL_ACCOUNT T " +
+            "     FROM fnac.FINANCIAL_ACCOUNT T " +
             "     WHERE T.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId  "
             , nativeQuery = true)
     List<Long> getFinancialAccountByFinancialAccountStructureId(Long financialAccountStructureId);
