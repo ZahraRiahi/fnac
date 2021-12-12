@@ -49,8 +49,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private final GridFilterService gridFilterService;
     private final EntityManager entityManager;
     private final FinancialAccountGetByStructureProvider financialAccountGetByStructureProvider;
+    private final FinancialAccountAdjustmentLovProvider financialAccountAdjustmentLovProvider;
 
-    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService, EntityManager entityManager, FinancialAccountGetByStructureProvider financialAccountGetByStructureProvider) {
+    public DefaultFinancialAccount(FinancialAccountRepository financialAccountRepository, CentricAccountRepository centricAccountRepository, FinancialAccountTypeRepository financialAccountTypeRepository, AccountRelatedDescriptionRepository accountRelatedDescriptionRepository, MoneyTypeRepository moneyTypeRepository, OrganizationRepository organizationRepository, AccountNatureTypeRepository accountNatureTypeRepository, AccountRelationTypeRepository accountRelationTypeRepository, FinancialAccountStructureService financialAccountStructureService, AccountRelatedTypeRepository accountRelatedTypeRepository, AccountMoneyTypeRepository accountMoneyTypeRepository, AccountDefaultValueRepository accountDefaultValueRepository, AccountRelationTypeDetailRepository accountRelationTypeDetailRepository, AccountStructureLevelRepository accountStructureLevelRepository, AccountRelatedDescriptionService accountRelatedDescriptionService, FinancialAccountDescriptionRepository financialAccountDescriptionRepository, FinancialDocumentItemRepository financialDocumentItemRepository, FinancialAccountStructureRepository financialAccountStructureRepository1, AccountPermanentStatusRepository accountPermanentStatusRepository, FinancialAccountLovProvider financialAccountLovProvider, GridFilterService gridFilterService, EntityManager entityManager, FinancialAccountGetByStructureProvider financialAccountGetByStructureProvider, FinancialAccountAdjustmentLovProvider financialAccountAdjustmentLovProvider) {
 
         this.financialAccountRepository = financialAccountRepository;
         this.financialAccountTypeRepository = financialAccountTypeRepository;
@@ -75,6 +76,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         this.gridFilterService = gridFilterService;
         this.entityManager = entityManager;
         this.financialAccountGetByStructureProvider = financialAccountGetByStructureProvider;
+        this.financialAccountAdjustmentLovProvider = financialAccountAdjustmentLovProvider;
     }
 
     @Override
@@ -203,9 +205,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         List<FinancialAccount> financialAccountParent = financialAccountRepository.findByFinancialAccountParentId(financialAccountId);
         Boolean flagPermanent;
-        if (financialAccountParent.isEmpty()){
+        if (financialAccountParent.isEmpty()) {
             flagPermanent = financialAccount.getFinancialAccountStructure().getFlgPermanentStatus();
-        } else  {
+        } else {
             flagPermanent = false;
         }
         FinancialAccountOutPutResponse financialAccountOutPutResponse = FinancialAccountOutPutResponse.builder().id(financialAccountId)
@@ -527,15 +529,21 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         });
     }
 
+    //    @Override
+//    @Transactional
+//    public List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId) {
+//        List<FinancialAccount> financialAccount = financialAccountRepository.findByFinancialAccountAdjustmentByOrganizationId(OrganizationId);
+//        return financialAccount.stream().map(e -> FinancialAccountAdjustmentResponse.builder().id(e.getId())
+//                .description(e.getDescription())
+//                .code(e.getCode())
+//                .fullDescription(e.getFullDescription())
+//                .build()).collect(Collectors.toList());
+//    }
     @Override
     @Transactional
-    public List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId) {
-        List<FinancialAccount> financialAccount = financialAccountRepository.findByFinancialAccountAdjustmentByOrganizationId(OrganizationId);
-        return financialAccount.stream().map(e -> FinancialAccountAdjustmentResponse.builder().id(e.getId())
-                .description(e.getDescription())
-                .code(e.getCode())
-                .fullDescription(e.getFullDescription())
-                .build()).collect(Collectors.toList());
+    public DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        return gridFilterService.filter(dataSourceRequest, financialAccountAdjustmentLovProvider);
     }
 
     @Override
@@ -747,7 +755,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     @Override
     @Transactional
-    public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
         return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
     }
 
