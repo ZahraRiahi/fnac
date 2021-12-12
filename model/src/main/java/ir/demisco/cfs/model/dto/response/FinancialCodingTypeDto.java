@@ -3,7 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class FinancialCodingTypeDto {
     private Long id;
     private String description;
-    private long organizationId;
+    private Long organizationId;
 
     public Long getId() {
         return id;
@@ -21,11 +21,11 @@ public class FinancialCodingTypeDto {
         this.description = description;
     }
 
-    public long getOrganizationId() {
+    public Long getOrganizationId() {
         return organizationId;
     }
 
-    public void setOrganizationId(long organizationId) {
+    public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
     }
 

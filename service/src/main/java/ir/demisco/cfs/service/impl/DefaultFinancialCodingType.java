@@ -1,6 +1,7 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
+import ir.demisco.cfs.model.dto.response.FinancialCodingTypeResponse;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.model.entity.FinancialCodingType;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
@@ -31,9 +32,9 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
 
     @Override
     @Transactional
-    public List<FinancialCodingTypeDto> getFinancialCodingTypeByOrganizationId(Long OrganizationId) {
+    public List<FinancialCodingTypeResponse> getFinancialCodingTypeByOrganizationId(Long OrganizationId) {
         List<FinancialCodingType> financialPeriodTypeList = financialCodingTypeRepository.findByOrganizationId(OrganizationId);
-        return financialPeriodTypeList.stream().map(e -> FinancialCodingTypeDto.builder().id(e.getId())
+        return financialPeriodTypeList.stream().map(e -> FinancialCodingTypeResponse.builder().id(e.getId())
                 .description(e.getDescription())
                 .build()).collect(Collectors.toList());
     }
