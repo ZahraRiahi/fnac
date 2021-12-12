@@ -30,7 +30,7 @@ public class FinancialAccountController {
 
     @PostMapping("/Get")
     public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(dataSourceRequest));
     }
 
 
@@ -50,9 +50,13 @@ public class FinancialAccountController {
         }
     }
 
-    @GetMapping("/GetAdjustment")
-    public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
+    //   @GetMapping("/GetAdjustment")
+//    public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
+//        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
+//    }
+    @PostMapping("/GetAdjustment")
+    public ResponseEntity<DataSourceResult> responseEntityFinancialAccountAdjustment(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
 
     @GetMapping("/delete/{id}")
