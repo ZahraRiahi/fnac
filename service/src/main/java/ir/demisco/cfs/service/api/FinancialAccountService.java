@@ -10,7 +10,7 @@ import java.util.List;
 public interface FinancialAccountService {
     DataSourceResult getFinancialAccount(DataSourceRequest dataSourceRequest);
 
-    DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest);
+    DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest);
 
     FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId);
 
@@ -18,7 +18,8 @@ public interface FinancialAccountService {
 
     FinancialAccountOutPutDto update(FinancialAccountRequest financialAccountRequest);
 
-    List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
+    //    List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
+    DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest);
 
     Boolean deleteFinancialAccountById(Long financialAccount);
 
