@@ -1,6 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
+import ir.demisco.cfs.model.dto.response.FinancialCodingTypeResponse;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class FinancialCodingTypeController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<FinancialCodingTypeDto>> responseEntity() {
-        return ResponseEntity.ok(financialCodingTypeService.getFinancialCodingTypeByOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId()));
+    public ResponseEntity<List<FinancialCodingTypeResponse>> responseEntity() {
+        return ResponseEntity.ok(financialCodingTypeService.getFinancialCodingTypeByOrganizationId(100L));
     }
 
     @PostMapping("/save")
