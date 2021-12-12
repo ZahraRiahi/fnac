@@ -178,27 +178,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountParameter;
     }
 
-//    @Override
-//    @Transactional(rollbackOn = Throwable.class)
-//    public DataSourceResult getFinancialAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-//        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-//        Page<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByOrganizationId(OrganizationId, pageable);
-//        List<FinancialAccountResponse> list = financialAccount.stream().map(e -> FinancialAccountResponse.builder()
-//                .id(((Long) e[0]).longValue())
-//                .description(e[2].toString())
-//                .code(e[1].toString())
-//                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
-//                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
-//                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
-//                .disableDate((Date) e[6])
-//                .build()).collect(Collectors.toList());
-//        DataSourceResult dataSourceResult = new DataSourceResult();
-//        dataSourceResult.setData(list);
-//        dataSourceResult.setTotal(financialAccount.getTotalElements());
-//        return dataSourceResult;
-//    }
-
-
     @Override
     @Transactional
     public FinancialAccountOutPutResponse getFinancialAccountGetById(Long financialAccountId, Long organizationId) {
@@ -529,16 +508,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         });
     }
 
-    //    @Override
-//    @Transactional
-//    public List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId) {
-//        List<FinancialAccount> financialAccount = financialAccountRepository.findByFinancialAccountAdjustmentByOrganizationId(OrganizationId);
-//        return financialAccount.stream().map(e -> FinancialAccountAdjustmentResponse.builder().id(e.getId())
-//                .description(e.getDescription())
-//                .code(e.getCode())
-//                .fullDescription(e.getFullDescription())
-//                .build()).collect(Collectors.toList());
-//    }
     @Override
     @Transactional
     public DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
@@ -729,6 +698,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccountNewRequest.setFinancialAccountStructureId(0L);
             financialAccountStructure = null;
         }
+        List<Long> financialStructure = financialAccountStructureRepository.findFinancialAccountStructureByCoding(financialAccountNewRequest.getFinancialCodingTypeId());
+        if (financialStructure.size() == 0) {
+            throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
+        }
 
         List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByFinancialAccountParentAndCodingAndStructure
                 (financialAccountParent, financialAccountNewRequest.getFinancialAccountParentId(), financialAccountNewRequest.getFinancialCodingTypeId(),
@@ -778,34 +751,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         return true;
     }
-
-//    @Override
-//    @Transactional(rollbackOn = Throwable.class)
-//    public List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure
-//            (Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
-//        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() == 0L || financialAccountGetByStructureRequest.getFinancialAccountStructureId() == null) {
-//            throw new RuleException("fin.financialAccount.getByStructure");
-//        }
-//        Object financialAccountStructure;
-//        if (financialAccountGetByStructureRequest.getFinancialAccountStructureId() != null) {
-//            financialAccountStructure = "financialAccountStructure";
-//        } else {
-//            financialAccountGetByStructureRequest.setFinancialAccountStructureId(0L);
-//            financialAccountStructure = null;
-//        }
-//
-//
-//        List<Object[]> financialAccountList = financialAccountRepository.findByFinancialAccountByOrganAndFinancialAccountStructureId
-//                (SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructure, financialAccountGetByStructureRequest.getFinancialAccountStructureId());
-//
-//        return financialAccountList.stream().map(e -> FinancialAccountGetByStructureResponse.builder().id(Long.parseLong(e[0].toString()))
-//                .code(e[1].toString())
-//                .description(e[2].toString())
-//                .referenceFlag(e[3] == null || ((Boolean) e[3]).equals(0))
-//                .exchangeFlag(e[4] == null || ((Boolean) e[4]).equals(0))
-//                .accountRelationTypeId(e[5] == null ? null : Long.parseLong(e[5].toString()))
-//                .build()).collect(Collectors.toList());
-//    }
 
     @Override
     @Transactional
