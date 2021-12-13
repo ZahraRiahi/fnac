@@ -177,7 +177,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
         } else {
-            financialAccountStructureNewRequest.setFinancialAccountStructureId(null);
+            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {

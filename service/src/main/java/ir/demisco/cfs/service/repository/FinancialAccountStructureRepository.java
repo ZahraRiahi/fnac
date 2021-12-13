@@ -38,7 +38,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             , nativeQuery = true)
     Long findByFinancialCodingTypeAndFinancialAccountStructure(Long financialCodingTypeId, Long financialAccountStructureId, String financialAccountStructure);
 
-    @Query(value = "SELECT FNAS.FLG_PERMANENT_STATUS     " +
+    @Query(value = " SELECT FNAS.FLG_PERMANENT_STATUS     " +
             "  FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS " +
             " WHERE FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
             "   AND FNAS.DELETED_DATE IS NULL " +
