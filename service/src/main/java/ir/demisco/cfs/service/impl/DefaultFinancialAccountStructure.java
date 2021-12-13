@@ -110,7 +110,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure != null) {
+        if (financialStructure == null) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
@@ -241,7 +241,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 .sumDigit(Long.parseLong(e[1].toString()))
                 .build()).collect(Collectors.toList());
     }
-
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure
                                                                                        financialAccountStructure) {
