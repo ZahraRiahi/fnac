@@ -242,7 +242,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 .build()).collect(Collectors.toList());
     }
 
-
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure
                                                                                        financialAccountStructure) {
         return FinancialAccountStructureDto.builder().description(financialAccountStructure.getDescription())
