@@ -59,7 +59,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     public CentricAccountDto save(CentricAccountRequest centricAccountRequest) {
         CentricAccount centricAccount = centricAccountRepository.findById(centricAccountRequest.getId() == null ? 0L : centricAccountRequest.getId()).orElse(new CentricAccount());
         if (centricAccount.getId() == null) {
-            Long centricAccountUniqueCount = centricAccountRepository.getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountRequest.getCentricAccountTypeId(), centricAccountRequest.getCode());
+            Long centricAccountUniqueCount = centricAccountRepository.getCountByCentricAccountAndOrganizationAndCentricAccountTypeAndCode(100L, centricAccountRequest.getCentricAccountTypeId(), centricAccountRequest.getCode());
             if (centricAccountUniqueCount > 0) {
                 throw new RuleException("fin.centricAccountUnique.save");
             }
@@ -75,7 +75,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                     centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
                     centricPersonRoleRepository.save(centricPersonRole);
                 });
-
+                centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
             } else {
                 centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
                 CentricAccount finalCentricAccount = centricAccount;
@@ -136,26 +136,6 @@ public class DefaultCentricAccount implements CentricAccountService {
         return centricAccountOutPutResponse;
     }
 
-//    @Override
-//    @Transactional(rollbackOn = Throwable.class)
-//    public DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest) {
-//        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-//        CentricAccountParameter param = setParameter(filters);
-//        Map<String, Object> paramMap = param.getParamMap();
-//        param.setOrganizationId(100L);
-//        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-//        Page<Object[]> centricAccountList = centricAccountRepository.findByCentricAccountAndOrganizationIdAndParentCentricAccount(param.getCentricAccountTypeId(), param.getOrganizationId()
-//                , paramMap.get("parentCentricAccount"), param.getParentCentricAccountId(), pageable);
-//        List<CentricAccountNewResponse> list = centricAccountList.stream().map(e -> CentricAccountNewResponse.builder()
-//                .id(((Long) e[0]).longValue())
-//                .name(e[2].toString())
-//                .code(e[1].toString()).build()).collect(Collectors.toList());
-//        DataSourceResult dataSourceResult = new DataSourceResult();
-//        dataSourceResult.setData(list);
-//        dataSourceResult.setTotal(centricAccountList.getTotalElements());
-//        return dataSourceResult;
-//    }
-
     private CentricAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
         CentricAccountParameter centricAccountParameter = new CentricAccountParameter();
         Map<String, Object> map = new HashMap<>();
@@ -213,7 +193,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.getOne(centricAccountRequest.getCentricAccountTypeId()));
         centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
-        centricAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
+        centricAccount.setOrganization(organizationRepository.getOne(100L));
         if (centricAccountRequest.getPersonId() != null) {
             centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         }

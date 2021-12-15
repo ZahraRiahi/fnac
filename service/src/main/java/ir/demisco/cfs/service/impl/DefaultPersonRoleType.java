@@ -35,18 +35,4 @@ public class DefaultPersonRoleType implements PersonRoleTypeService {
                 .build()).collect(Collectors.toList());
     }
 
-
-//    @Override
-//    @Transactional
-//    public List<PersonRoleTypeDto> getPersonRoleType() {
-//        List<Object[]> personRoleTypeList = personRoleTypeRepository.findByPersonRoleTypeListObject();
-//        List<PersonRoleTypeDto> personRoleTypeDtos = new ArrayList<>();
-//        personRoleTypeList.forEach(objects -> {
-//            PersonRoleTypeDto personRoleTypeDto = PersonRoleTypeDto.builder().id(Long.parseLong(objects[0].toString()))
-//                    .description(objects[1].toString()).flagExist(Long.parseLong(objects[2].toString())).build();
-//            personRoleTypeDtos.add(personRoleTypeDto);
-//        });
-//        return personRoleTypeDtos;
-//
-//    }
 }
