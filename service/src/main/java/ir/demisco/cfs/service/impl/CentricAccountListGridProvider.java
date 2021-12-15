@@ -74,7 +74,6 @@ public class CentricAccountListGridProvider implements GridDataProvider {
         Root<Object> root = filterContext.getRoot();
         Join<Object, Object> centricAccountParent = root.join("parentCentricAccount", JoinType.LEFT);
         criteriaBuilder.equal(centricAccountParent.get("id"), root.get("id"));
-        Join<Object, Object> centricPerson = root.join("person", JoinType.LEFT);
         criteriaBuilder.equal(centricAccountParent.get("id"), root.get("id"));
         DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
         for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
