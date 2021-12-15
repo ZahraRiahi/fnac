@@ -110,7 +110,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure != null) {
+        if (financialStructure.size()!=0) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
