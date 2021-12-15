@@ -110,7 +110,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure != null) {
+        if (financialStructure.size()!=0) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
@@ -118,6 +118,12 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureCount > 0) {
             throw new RuleException("fin.financialAccountStructure.Unique");
         }
+
+        Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureDto.getId());
+        if (countFinancialAccount != null) {
+            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان ویرایش وجود ندارد");
+        }
+
         String financialAccountStructure = null;
         if (financialAccountStructureDto.getId() != null) {
             financialAccountStructure = "financialAccountStructure";
@@ -177,7 +183,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
             financialAccountStructure = "financialAccountStructure";
         } else {
-            financialAccountStructureNewRequest.setFinancialAccountStructureId(null);
+            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
         }
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
         if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {
@@ -241,7 +247,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 .sumDigit(Long.parseLong(e[1].toString()))
                 .build()).collect(Collectors.toList());
     }
-
 
     private FinancialAccountStructureDto convertFinancialAccountStructureToDto(FinancialAccountStructure
                                                                                        financialAccountStructure) {

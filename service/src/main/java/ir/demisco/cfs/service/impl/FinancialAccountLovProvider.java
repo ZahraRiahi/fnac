@@ -81,16 +81,13 @@ public class FinancialAccountLovProvider implements GridDataProvider {
         Subquery<FinancialAccount> financialAccountSubQuery = financialAccountQuery.subquery(FinancialAccount.class);
         Root<FinancialAccount> financialAccountRootSubQuery = financialAccountSubQuery.from(FinancialAccount.class);
         financialAccountSubQuery.select(financialAccountRootSubQuery);
-
         Join<Object, Object> financialAccountParent = financialAccountRootSubQuery.join("financialAccountParent");
         Join<Object, Object> organization = financialAccountRootSubQuery.join("organization");
-
         List<Predicate> subQueryPredicateList = new ArrayList<>();
         subQueryPredicateList.add(criteriaBuilder.equal(financialAccountParent.get("id"), root.get("id")));
         subQueryPredicateList.add(criteriaBuilder.equal(organization.get("id"), 100));
         subQueryPredicateList.add(criteriaBuilder.isNull(financialAccountRootSubQuery.get("deletedDate")));
         financialAccountSubQuery.where(subQueryPredicateList.toArray(new Predicate[]{}));
-
         return criteriaBuilder.and(criteriaBuilder.not(criteriaBuilder.exists(financialAccountSubQuery)));
 
     }

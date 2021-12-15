@@ -38,7 +38,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             , nativeQuery = true)
     Long findByFinancialCodingTypeAndFinancialAccountStructure(Long financialCodingTypeId, Long financialAccountStructureId, String financialAccountStructure);
 
-    @Query(value = "SELECT FNAS.FLG_PERMANENT_STATUS     " +
+    @Query(value = " SELECT FNAS.FLG_PERMANENT_STATUS     " +
             "  FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS " +
             " WHERE FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
             "   AND FNAS.DELETED_DATE IS NULL " +
@@ -60,6 +60,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "  FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE AST " +
             " WHERE AST.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
             "   AND AST.FLG_PERMANENT_STATUS = 1 " +
+            " AND AST.DELETED_DATE IS NULL " +
             " and (:financialAccountStructure is null or AST.ID != :financialAccountStructureId) "
             , nativeQuery = true)
     List<Long> getFinancialAccountStructureByCodingAndStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
@@ -93,7 +94,7 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
     @Query(value = "   SELECT 1 " +
             "  FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE T " +
             " WHERE T.DELETED_DATE IS NULL " +
-            "   AND T.FINANCIAL_CODING_TYPE_ID = 7001  "
+            "   AND T.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId  "
             , nativeQuery = true)
     List<Long> findFinancialAccountStructureByCoding(Long financialCodingTypeId);
 

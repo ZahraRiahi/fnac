@@ -284,11 +284,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private FinancialAccount saveFinancialAccount(FinancialAccountRequest financialAccountRequest) {
         if (financialAccountRequest.getId() == null && financialAccountRequest.getFinancialAccountStructureId() != null) {
-//            Long financialAccountIdAndStuctureAndAccountId = financialAccountRepository.findByFinancialAccountIdAndStuctureAndAccountId(financialAccountRequest.getFinancialAccountStructureId());
-//
-//            if (financialAccountIdAndStuctureAndAccountId != null) {
-//                throw new RuleException("امکان ایجاد این سطح حساب ، به دلیل انتخاب سطح قبل به عنوان ، آخرین سطح ،وجود ندارد");
-//            }
             List<Long> financialAccountStructureAndCodingTypeCount = financialAccountRepository.findByFinancialAccountIdAndStructureAndCodingType(financialAccountRequest.getFinancialAccountStructureId());
             if (financialAccountStructureAndCodingTypeCount.size() != 0) {
                 throw new RuleException("fin.financialAccount.save");
@@ -486,12 +481,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount financialAccount) {
-        Object financialAccountStructure = null;
-        if (financialAccountRequest.getFinancialAccountStructureId() != null) {
-            financialAccountStructure = "financialAccountStructure";
-        } else {
-            financialAccountRequest.setFinancialAccountStructureId(0L);
-        }
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
