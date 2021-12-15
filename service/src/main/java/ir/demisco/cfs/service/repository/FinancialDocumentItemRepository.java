@@ -13,7 +13,7 @@ public interface FinancialDocumentItemRepository extends JpaRepository<Financial
     @Query(value = "   SELECT 1 FROM FNDC.FINANCIAL_DOCUMENT_ITEM DI " +
             "                        INNER JOIN fnac.FINANCIAL_ACCOUNT FA " +
             "                              ON FA.ID = DI.FINANCIAL_ACCOUNT_ID " +
-            "                              AND FA.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId "
+            "                              AND FA.FINANCIAL_ACCOUNT_STRUCTURE_ID = :financialAccountStructureId AND DI.DELETED_DATE IS NULL  "
             , nativeQuery = true)
     List<Object> findByFinancialDocumentAndFinancialAccountStructure(Long financialAccountStructureId);
 }
