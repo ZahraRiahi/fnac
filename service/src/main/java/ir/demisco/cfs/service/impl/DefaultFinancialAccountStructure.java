@@ -110,7 +110,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure == null) {
+        if (financialStructure != null) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
@@ -118,6 +118,12 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureCount > 0) {
             throw new RuleException("fin.financialAccountStructure.Unique");
         }
+
+        Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureDto.getId());
+        if (countFinancialAccount != null) {
+            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان ویرایش وجود ندارد");
+        }
+
         String financialAccountStructure = null;
         if (financialAccountStructureDto.getId() != null) {
             financialAccountStructure = "financialAccountStructure";
