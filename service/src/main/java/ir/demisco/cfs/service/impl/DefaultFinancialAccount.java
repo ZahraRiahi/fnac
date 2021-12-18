@@ -289,6 +289,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("fin.financialAccount.save");
             }
         }
+        if (financialAccountRequest.getId() != null) {
+            List<Long> financialDocumentItem = financialDocumentItemRepository.findByFinancialDocumentItemByFinancialAccountId(financialAccountRequest.getId());
+            if (financialDocumentItem.size() != 0) {
+                throw new RuleException("fin.financialAccount.update.useFinancialDocumentItem");
+            }
+
+        }
         FinancialAccountStructureNewRequest financialAccountStructureNewRequest = new FinancialAccountStructureNewRequest();
         financialAccountStructureNewRequest.setFinancialAccountParentId(financialAccountRequest.getFinancialAccountParentId());
         financialAccountStructureNewRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
