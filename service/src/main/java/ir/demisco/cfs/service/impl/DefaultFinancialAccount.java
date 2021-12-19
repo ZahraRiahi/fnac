@@ -521,6 +521,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount = saveFinancialAccount(financialAccountRequest);
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(accountDefaultValueResponses);
+
+
         financialAccountOutPutDto.setAccountRelatedTypeOutPutModel(updateAccountRelatedType
                 (financialAccountRequest.getFinancialAccountTypeId(), financialAccount));
         financialAccountOutPutDto.setAccountMoneyTypeOutPut(updateAccountMoneyType

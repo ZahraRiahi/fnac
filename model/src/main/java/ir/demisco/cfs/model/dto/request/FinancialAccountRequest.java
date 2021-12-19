@@ -2,6 +2,7 @@ package ir.demisco.cfs.model.dto.request;
 
 import ir.demisco.cfs.model.entity.AccountRelatedDescription;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class FinancialAccountRequest {
@@ -134,6 +135,7 @@ public class FinancialAccountRequest {
         this.financialAccountParentId = financialAccountParentId;
     }
 
+    @Size(max = 3 ,message = "تعداد کارکترهای این فیلد بیشتر از 3 نمیتواند باشد.")
     public String getRelatedToFundType() {
         return relatedToFundType;
     }

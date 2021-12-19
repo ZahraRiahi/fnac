@@ -78,9 +78,11 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
 
 
     public AccountRelatedDescriptionDto convertAccountRelatedDescriptionDto(AccountRelatedDescription accountRelatedDescription) {
-        return AccountRelatedDescriptionDto.builder().financialAccountId(accountRelatedDescription.getFinancialAccount().getId())
-                .financialAccountDescriptionId(accountRelatedDescription.getId())
+        return AccountRelatedDescriptionDto.builder()
+                .financialAccountId(accountRelatedDescription.getFinancialAccount().getId())
+                .accountRelatedDescriptionId(accountRelatedDescription.getId())
                 .financialAccountDescription(accountRelatedDescription.getFinancialAccountDescription().getDescription())
+                .financialAccountDescriptionId(accountRelatedDescription.getFinancialAccountDescription().getId())
                 .build();
 
     }
