@@ -359,17 +359,24 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
         if (financialAccountRequest.getAccountNatureTypeId() != null) {
             financialAccount.setAccountNatureType(accountNatureTypeRepository.getOne(financialAccountRequest.getAccountNatureTypeId()));
+        } else {
+            financialAccount.setAccountNatureType(null);
         }
         financialAccount.setRelatedToOthersFlag(financialAccountRequest.getRelatedToOthersFlag());
         if (financialAccountRequest.getAccountRelationTypeId() != null) {
             financialAccount.setAccountRelationType(accountRelationTypeRepository.getOne(financialAccountRequest.getAccountRelationTypeId()));
+        } else {
+            financialAccount.setAccountRelationType(null);
         }
         if (financialAccountRequest.getFinancialAccountParentId() != null) {
             financialAccount.setFinancialAccountParent(financialAccountRepository.getOne(financialAccountRequest.getFinancialAccountParentId()));
+        } else {
+            financialAccount.setFinancialAccountParent(null);
         }
         if (financialAccountRequest.getAccountStatusId() != null) {
             financialAccount.setAccountPermanentStatus(accountPermanentStatusRepository.getOne(financialAccountRequest.getAccountStatusId()));
-
+        } else {
+            financialAccount.setAccountPermanentStatus(null);
         }
         financialAccount.setRelatedToFundType(financialAccountRequest.getRelatedToFundType());
         financialAccount.setReferenceFlag(financialAccountRequest.getReferenceFlag());
@@ -377,6 +384,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setExchangeFlag(financialAccountRequest.getExchangeFlag());
         if (financialAccountRequest.getAccountAdjustmentId() != null) {
             financialAccount.setAccountAdjustment(financialAccountRepository.getOne(financialAccountRequest.getAccountAdjustmentId()));
+        } else {
+            financialAccount.setAccountAdjustment(null);
         }
 
         return financialAccountRepository.save(financialAccount);
