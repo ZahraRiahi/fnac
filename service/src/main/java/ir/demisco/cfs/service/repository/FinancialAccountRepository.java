@@ -88,7 +88,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fsts.description as account_status_description," +
             "       fnas.flg_show_in_acc," +
             "       fnas.flg_permanent_status, " +
-            " fnas.color " +
+            " fnas.color," +
+            "  FIAC.RELATED_TO_OTHERS_FLAG, " +
+            "  FIAC.REFERENCE_FLAG, " +
+            "       FIAC.CONVERT_FLAG, " +
+            "       FIAC.EXCHANGE_FLAG " +
             "  from fnac.financial_account fiac" +
             "  inner join fnac.account_nature_type acnt " +
             "    on fiac.account_nature_type_id = acnt.id " +
