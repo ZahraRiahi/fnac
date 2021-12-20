@@ -22,6 +22,10 @@ public class FinancialAccountDto {
     private Boolean flgShowInAcc;
     private Boolean flgPermanentStatus;
     private String color;
+    private Long relatedToOtherFlag;
+    private Long referenceFlag;
+    private Long convertFlag;
+    private Long exchangeFlag;
 
     public Long getId() {
         return id;
@@ -62,14 +66,6 @@ public class FinancialAccountDto {
     public void setActiveFlag(Long activeFlag) {
         this.activeFlag = activeFlag;
     }
-
-//    public Boolean getPermanentFlag() {
-//        return permanentFlag;
-//    }
-//
-//    public void setPermanentFlag(Boolean permanentFlag) {
-//        this.permanentFlag = permanentFlag;
-//    }
 
     public Long getAccountNatureTypeId() {
         return accountNatureTypeId;
@@ -184,6 +180,38 @@ public class FinancialAccountDto {
         this.color = color;
     }
 
+    public Long getRelatedToOtherFlag() {
+        return relatedToOtherFlag;
+    }
+
+    public void setRelatedToOtherFlag(Long relatedToOtherFlag) {
+        this.relatedToOtherFlag = relatedToOtherFlag;
+    }
+
+    public Long getReferenceFlag() {
+        return referenceFlag;
+    }
+
+    public void setReferenceFlag(Long referenceFlag) {
+        this.referenceFlag = referenceFlag;
+    }
+
+    public Long getConvertFlag() {
+        return convertFlag;
+    }
+
+    public void setConvertFlag(Long convertFlag) {
+        this.convertFlag = convertFlag;
+    }
+
+    public Long getExchangeFlag() {
+        return exchangeFlag;
+    }
+
+    public void setExchangeFlag(Long exchangeFlag) {
+        this.exchangeFlag = exchangeFlag;
+    }
+
     public static FinancialAccountDto.Builder builder() {
         return new FinancialAccountDto.Builder();
     }
@@ -223,11 +251,6 @@ public class FinancialAccountDto {
             financialAccountDto.setActiveFlag(activeFlag);
             return this;
         }
-
-//        public Builder permanentFlag(Boolean permanentFlag) {
-//            financialAccountDto.setPermanentFlag(permanentFlag);
-//            return this;
-//        }
 
         public Builder accountNatureTypeId(Long accountNatureTypeId) {
             financialAccountDto.setAccountNatureTypeId(accountNatureTypeId);
@@ -299,7 +322,24 @@ public class FinancialAccountDto {
             return this;
         }
 
+        public Builder relatedToOtherFlag(Long relatedToOtherFlag) {
+            financialAccountDto.setRelatedToOtherFlag(relatedToOtherFlag);
+            return this;
+        }
 
+        public Builder referenceFlag(Long referenceFlag) {
+            financialAccountDto.setReferenceFlag(referenceFlag);
+            return this;
+        }
+
+        public Builder convertFlag(Long convertFlag) {
+            financialAccountDto.setConvertFlag(convertFlag);
+            return this;
+        }
+        public Builder exchangeFlag(Long exchangeFlag) {
+            financialAccountDto.setExchangeFlag(exchangeFlag);
+            return this;
+        }
         public FinancialAccountDto build() {
             return financialAccountDto;
         }
