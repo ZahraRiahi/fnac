@@ -110,6 +110,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .flgShowInAcc(Integer.parseInt(item[15].toString()) == 1)
                         .flgPermanentStatus(Integer.parseInt(item[16].toString()) == 1)
                         .color(item[17] == null ? null : item[17].toString())
+                        .relatedToOtherFlag(item[18] == null ? null : Long.parseLong(item[18].toString()))
+                        .referenceFlag(item[19] == null ? null : Long.parseLong(item[19].toString()))
+                        .convertFlag(item[20] == null ? 0 : Long.parseLong(item[20].toString()))
+                        .exchangeFlag(item[21] == null ? null : Long.parseLong(item[21].toString()))
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
