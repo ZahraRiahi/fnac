@@ -256,6 +256,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> accountRelatedDescriptionListObject = accountRelatedDescriptionRepository.findByAccountRelatedDescriptionListObject(financialAccountId);
         return accountRelatedDescriptionListObject.stream().map(objects -> AccountRelatedDescriptionResponse.builder().financialAccountDescriptionId(Long.parseLong(objects[0].toString()))
                 .financialAccountDescriptionDescription(objects[1].toString())
+                .accountRelatedDescriptionId(Long.parseLong(objects[2].toString()))
                 .build()).collect(Collectors.toList());
     }
 
