@@ -3,6 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class AccountRelatedDescriptionResponse {
     private Long financialAccountDescriptionId;
     private String financialAccountDescriptionDescription;
+    private Long accountRelatedDescriptionId;
 
     public Long getFinancialAccountDescriptionId() {
         return financialAccountDescriptionId;
@@ -19,6 +20,15 @@ public class AccountRelatedDescriptionResponse {
     public void setFinancialAccountDescriptionDescription(String financialAccountDescriptionDescription) {
         this.financialAccountDescriptionDescription = financialAccountDescriptionDescription;
     }
+
+    public Long getAccountRelatedDescriptionId() {
+        return accountRelatedDescriptionId;
+    }
+
+    public void setAccountRelatedDescriptionId(Long accountRelatedDescriptionId) {
+        this.accountRelatedDescriptionId = accountRelatedDescriptionId;
+    }
+
     public static AccountRelatedDescriptionResponse.Builder builder() {
         return new AccountRelatedDescriptionResponse.Builder();
     }
@@ -40,6 +50,10 @@ public class AccountRelatedDescriptionResponse {
 
         public Builder financialAccountDescriptionDescription(String financialAccountDescriptionDescription) {
             accountRelatedDescriptionResponse.setFinancialAccountDescriptionDescription(financialAccountDescriptionDescription);
+            return this;
+        }
+        public Builder accountRelatedDescriptionId(Long accountRelatedDescriptionId) {
+            accountRelatedDescriptionResponse.setAccountRelatedDescriptionId(accountRelatedDescriptionId);
             return this;
         }
 
