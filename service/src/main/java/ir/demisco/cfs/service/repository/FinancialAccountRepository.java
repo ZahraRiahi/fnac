@@ -4,12 +4,10 @@ import ir.demisco.cfs.model.entity.FinancialAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
@@ -243,7 +241,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       END PRE_CODE," +
             "       CASE " +
             "         WHEN :financialAccountParent IS NULL THEN " +
-            "          LPAD(NVL((SELECT MAX(TO_NUMBER(SUBSTR(FA_INNER.CODE, " +
+            "          RPAD(NVL((SELECT MAX(TO_NUMBER(SUBSTR(FA_INNER.CODE, " +
             "                                               LENGTH(FA_INNER.CODE)- " +
             "                                               FNAS.DIGIT_COUNT + 1, " +
             "                                               FNAS.DIGIT_COUNT))) +1 " +
