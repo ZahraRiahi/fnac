@@ -326,9 +326,40 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccountStructureRequest.setFinancialCodingTypeId(financialAccountRequest.getFinancialCodingTypeId());
             Long financialAccountStructureId = financialAccountStructureService.getFinancialAccountStructureByFinancialCodingTypeAndFinancialAccountStructure
                     (financialAccountStructureRequest);
+//            if (financialAccountRequest.getId() == null) {
+//
+//                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountStructureId, financialAccountRequest.getOrganizationId());
+//
+//                if (financialAccountStructureId == null) {
+//                    throw new RuleException("fin.financialAccount.save.childAccount");
+//                }
+//                financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountStructureId));
+//            } else {
+//                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccount.getId());
+//                financialAccount.setFinancialAccountStructure(financialAccountStructureRepository.getOne(financialAccountRequest.getFinancialAccountStructureId()));
+//            }
+//            if (financialAccountCodeCount > 0) {
+//                throw new RuleException("fin.financialAccount.duplicateCode");
+//            }
+            Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
+
+            if (financialAccountStructureByCodeAndChild == null) {
+                throw new RuleException("fin.financialAccount.structureCode");
+            }
+
+            Long financialAccountStructureByChildAccountStructureAndCode = financialAccountStructureRepository.getFinancialAccountStructureByChildAccountStructureAndCode(financialAccountStructureId, financialAccountRequest.getCode());
+            if (financialAccountStructureByChildAccountStructureAndCode != null) {
+                throw new RuleException("fin.financialAccountStructure.saveFinancialAccount");
+            }
+            if (financialAccountRequest.getFinancialAccountParentId() != null) {
+                List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
+                newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
+                financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+
+            }
             if (financialAccountRequest.getId() == null) {
 
-                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode());
+                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountStructureId, financialAccountRequest.getOrganizationId());
 
                 if (financialAccountStructureId == null) {
                     throw new RuleException("fin.financialAccount.save.childAccount");
@@ -341,18 +372,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (financialAccountCodeCount > 0) {
                 throw new RuleException("fin.financialAccount.duplicateCode");
             }
-            Long financialAccountStructureByCodeAndChild = financialAccountStructureRepository.getFinancialAccountStructureByCodeAndChild(financialAccountStructureId, financialAccountRequest.getCode());
-
-            if (financialAccountStructureByCodeAndChild == null) {
-                throw new RuleException("fin.financialAccount.structureCode");
-            }
-            if (financialAccountRequest.getFinancialAccountParentId() != null) {
-                List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
-                newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
-                financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
-
-            }
         }
+
         financialAccount.setOrganization(organizationRepository.getOne(100L));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
@@ -502,7 +523,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount financialAccount) {
-        List<Object[]> financialAccountStructureListObject =
+         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
         financialAccountStructureListObject.forEach(e -> {
