@@ -134,10 +134,10 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     List<FinancialAccount> findByFinancialAccountAdjustmentByOrganizationId(Long organizationId);
 
 
-    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code")
-    Long getCountByFinancialAccountAndCode(String code);
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.financialAccountStructure.id=:financialAccountStructureId and fa.organization.id=:organizationId ")
+    Long getCountByFinancialAccountAndCode(String code,Long financialAccountStructureId,Long organizationId);
 
-    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)")
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)  ")
     Long getCountByFinancialAccountAndCode(String code, Long financialAccountId);
 
 
