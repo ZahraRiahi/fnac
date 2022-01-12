@@ -410,7 +410,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccount.setAccountAdjustment(null);
         }
 
-        return financialAccountRepository.save(financialAccount);
+        financialAccount = financialAccountRepository.save(financialAccount);
+        return financialAccount;
     }
 
 
@@ -523,7 +524,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     }
 
     private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount financialAccount) {
-         List<Object[]> financialAccountStructureListObject =
+        List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
         financialAccountStructureListObject.forEach(e -> {
