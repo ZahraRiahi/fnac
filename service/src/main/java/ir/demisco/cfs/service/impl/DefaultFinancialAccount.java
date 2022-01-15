@@ -374,7 +374,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
         }
 
-        financialAccount.setOrganization(organizationRepository.getOne(100L));
+        financialAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         financialAccount.setFullDescription(financialAccountRequest.getFullDescription());
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
