@@ -88,6 +88,16 @@ public class FinancialAccountLovProvider implements GridDataProvider {
         subQueryPredicateList.add(criteriaBuilder.equal(organization.get("id"), 100));
         subQueryPredicateList.add(criteriaBuilder.isNull(financialAccountRootSubQuery.get("deletedDate")));
         financialAccountSubQuery.where(subQueryPredicateList.toArray(new Predicate[]{}));
+
+        for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
+            switch (filter.getField()) {
+                case "id":
+                    if (filter.getValue() == null) {
+                        filter.setDisable(true);
+                    }
+                    break;
+            }
+        }
         return criteriaBuilder.and(criteriaBuilder.not(criteriaBuilder.exists(financialAccountSubQuery)));
 
     }
