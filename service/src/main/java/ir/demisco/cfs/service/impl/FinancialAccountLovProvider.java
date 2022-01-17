@@ -96,6 +96,11 @@ public class FinancialAccountLovProvider implements GridDataProvider {
                         filter.setDisable(true);
                     }
                     break;
+                case "description":
+                    if (filter.getValue() == null || filter.getValue() == "") {
+                        filter.setDisable(true);
+                    }
+                    break;
             }
         }
         return criteriaBuilder.and(criteriaBuilder.not(criteriaBuilder.exists(financialAccountSubQuery)));
