@@ -381,7 +381,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             , nativeQuery = true)
     List<Long> getFinancialAccountByFinancialAccountStructureId(Long financialAccountStructureId);
 
-
+    @Query(value = " SELECT fiac.id" +
+            "  FROM FinancialAccount fiac " +
+            " JOIN fiac.financialAccountStructure fs " +
+            " WHERE  fiac.financialAccountStructure.id = :financialAccountStructureId ")
+    List<Object[]> findByFinancialAccountStructureIdForDelete(Long financialAccountStructureId);
 }
 
 

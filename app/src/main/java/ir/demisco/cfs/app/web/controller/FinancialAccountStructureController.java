@@ -43,7 +43,7 @@ public class FinancialAccountStructureController {
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialAccountStructureId) {
+    public ResponseEntity<Boolean> DeleteFinancialAccountStructure(@PathVariable("id") Long FinancialAccountStructureId) {
         boolean result;
         result = financialAccountStructureService.deleteFinancialAccountStructureById(FinancialAccountStructureId);
         return ResponseEntity.ok(result);
