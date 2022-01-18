@@ -631,14 +631,15 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (financialDocumentItemCount > 0) {
                 throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
-                accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e ->
-                        e.setDeletedDate(LocalDateTime.now()));
-                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> {
+                    accountDefaultValueRepository.deleteById(financialAccountId);
+                });
+                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
+                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
+                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
 
                 FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountId);
-                financialAccount.setDeletedDate(LocalDateTime.now());
+                accountDefaultValueRepository.deleteById(financialAccount.getId());
                 return true;
             }
         }
