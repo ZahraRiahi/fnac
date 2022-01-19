@@ -198,7 +198,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.getOne(centricAccountRequest.getCentricAccountTypeId()));
         centricAccount.setCentricAccountType(centricAccountTypeRepository.findByCentricAccountTypeCode(centricAccountRequest.getCentricAccountTypeCode()));
-        centricAccount.setOrganization(organizationRepository.getOne(100L));
+        centricAccount.setOrganization(organizationRepository.getOne(SecurityHelper.getCurrentUser().getOrganizationId()));
         if (centricAccountRequest.getPersonId() != null) {
             centricAccount.setPerson(personRepository.getOne(centricAccountRequest.getPersonId()));
         }

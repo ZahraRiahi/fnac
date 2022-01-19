@@ -7,9 +7,10 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.persistence.EntityManagerFactory;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,11 @@ public class FinancialAccountController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody FinancialAccountRequest financialAccountRequest) {
+    public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody @Valid FinancialAccountRequest financialAccountRequest, BindingResult result ) {
+        if (result.hasErrors()){
+            System.out.println(result.getAllErrors());
+        }
+
         if (financialAccountRequest.getId() == null) {
             FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
             return ResponseEntity.ok(financialAccountOutPutDto);

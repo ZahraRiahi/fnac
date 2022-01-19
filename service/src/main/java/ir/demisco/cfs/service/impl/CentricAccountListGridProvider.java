@@ -31,8 +31,6 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                 filterContext.getPath("centricAccountType.description"),
                 filterContext.getPath("centricAccountType.code"),
                 filterContext.getPath("organization.id"),
-//                filterContext.getPath("person.id"),
-//                filterContext.getPath("person.personName"),
                 filterContext.getPath("activeFlag"),
                 filterContext.getPath("parentCentricAccount.id"),
                 filterContext.getPath("parentCentricAccount.code"),
@@ -57,8 +55,6 @@ public class CentricAccountListGridProvider implements GridDataProvider {
                     .centricAccountTypeDescription((String) array[6])
                     .centricAccountTypeCode((String) array[7])
                     .organizationId((Long) array[8])
-//                    .personId((Long) array[9])
-//                    .personName((String) array[10])
                     .activeFlag((Boolean) array[9])
                     .parentCentricAccountId((Long) array[10])
                     .parentCentricAccountCode((String) array[11])

@@ -4,12 +4,10 @@ import ir.demisco.cfs.model.entity.FinancialAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
@@ -88,7 +86,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       fsts.description as account_status_description," +
             "       fnas.flg_show_in_acc," +
             "       fnas.flg_permanent_status, " +
-            " fnas.color " +
+            " fnas.color," +
+            "  FIAC.RELATED_TO_OTHERS_FLAG, " +
+            "  FIAC.REFERENCE_FLAG, " +
+            "       FIAC.CONVERT_FLAG, " +
+            "       FIAC.EXCHANGE_FLAG " +
             "  from fnac.financial_account fiac" +
             "  inner join fnac.account_nature_type acnt " +
             "    on fiac.account_nature_type_id = acnt.id " +
@@ -132,10 +134,10 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     List<FinancialAccount> findByFinancialAccountAdjustmentByOrganizationId(Long organizationId);
 
 
-    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code")
-    Long getCountByFinancialAccountAndCode(String code);
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.financialAccountStructure.id=:financialAccountStructureId and fa.organization.id=:organizationId ")
+    Long getCountByFinancialAccountAndCode(String code,Long financialAccountStructureId,Long organizationId);
 
-    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)")
+    @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)  ")
     Long getCountByFinancialAccountAndCode(String code, Long financialAccountId);
 
 
@@ -239,7 +241,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       END PRE_CODE," +
             "       CASE " +
             "         WHEN :financialAccountParent IS NULL THEN " +
-            "          LPAD(NVL((SELECT MAX(TO_NUMBER(SUBSTR(FA_INNER.CODE, " +
+            "          RPAD(NVL((SELECT MAX(TO_NUMBER(SUBSTR(FA_INNER.CODE, " +
             "                                               LENGTH(FA_INNER.CODE)- " +
             "                                               FNAS.DIGIT_COUNT + 1, " +
             "                                               FNAS.DIGIT_COUNT))) +1 " +

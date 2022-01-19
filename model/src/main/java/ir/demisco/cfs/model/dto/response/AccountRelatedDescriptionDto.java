@@ -4,6 +4,7 @@ public class AccountRelatedDescriptionDto {
     private Long financialAccountId;
     private Long financialAccountDescriptionId;
     private String financialAccountDescription;
+    private Long accountRelatedDescriptionId;
 
     public Long getFinancialAccountId() {
         return financialAccountId;
@@ -28,9 +29,19 @@ public class AccountRelatedDescriptionDto {
     public void setFinancialAccountDescription(String financialAccountDescription) {
         this.financialAccountDescription = financialAccountDescription;
     }
+
     public static AccountRelatedDescriptionDto.Builder builder() {
         return new AccountRelatedDescriptionDto.Builder();
     }
+
+    public Long getAccountRelatedDescriptionId() {
+        return accountRelatedDescriptionId;
+    }
+
+    public void setAccountRelatedDescriptionId(Long accountRelatedDescriptionId) {
+        this.accountRelatedDescriptionId = accountRelatedDescriptionId;
+    }
+
     public static final class Builder {
         private AccountRelatedDescriptionDto accountRelatedDescriptionDto;
 
@@ -56,7 +67,10 @@ public class AccountRelatedDescriptionDto {
             accountRelatedDescriptionDto.setFinancialAccountDescription(financialAccountDescription);
             return this;
         }
-
+        public Builder accountRelatedDescriptionId(Long accountRelatedDescriptionId) {
+            accountRelatedDescriptionDto.setAccountRelatedDescriptionId(accountRelatedDescriptionId);
+            return this;
+        }
         public AccountRelatedDescriptionDto build() {
             return accountRelatedDescriptionDto;
         }
