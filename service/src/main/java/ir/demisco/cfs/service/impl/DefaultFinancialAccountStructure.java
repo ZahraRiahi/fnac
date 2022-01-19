@@ -110,7 +110,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure.size()!=0) {
+        if (financialStructure.size() != 0) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
@@ -155,12 +155,16 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
         FinancialAccountStructure financialAccountStructure;
         if (countFinancialAccount != null) {
-            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان حذف وجود ندارد");
+            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده، امکان حذف وجود ندارد");
         } else {
             financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-            financialAccountStructure.setDeletedDate(LocalDateTime.now());
-            financialAccountStructureRepository.save(financialAccountStructure);
-            return true;
+            List<Object[]> byFinancialAccountStructureIdForDelete = financialAccountRepository.findByFinancialAccountStructureIdForDelete(financialAccountStructureId);
+            if(byFinancialAccountStructureIdForDelete.isEmpty()) {
+                financialAccountStructureRepository.deleteById(financialAccountStructure.getId());
+                return true;
+            }else {
+                throw new RuleException(" به علت استفاده از این ساختار در حساب های مالی، امکان حذف وجود ندارد.");
+            }
         }
     }
 

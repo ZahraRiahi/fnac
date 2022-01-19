@@ -98,11 +98,16 @@ public class DefaultCentricAccount implements CentricAccountService {
         List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
         CentricAccount centricAccount;
         if (!centricPersonRoles.isEmpty()) {
-            centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+            centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
         }
         centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-        centricAccount.setDeletedDate(LocalDateTime.now());
-        return true;
+        Long accountIdForDelete = centricAccountRepository.findBycentricAccountIdForDelete(centricAccount.getId());
+        if (accountIdForDelete > 1) {
+            throw new RuleException(" به علت استفاده از این کد تمرکز در موارد دیگر، امکان حذف وجود ندارد.");
+        } else {
+            centricAccountRepository.deleteById(centricAccount.getId());
+            return true;
+        }
     }
 
     @Override

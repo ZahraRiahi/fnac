@@ -98,5 +98,55 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   AND CNAC.DELETED_DATE IS NULL "
              , nativeQuery = true)
     List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
+    @Query(value ="select count(t.id)" +
+            "  from fnac.centric_account t" +
+            " left join fnac.account_default_value adv" +
+            "    on t.id = adv.centric_account_id" +
+            " left join bkac.bank_account ba" +
+            "   on t.id = ba.centric_account_id" +
+            " left join fnac.centric_account ca" +
+            "    on t.id = ca.parent_centric_account_id" +
+            " left join fnac.centric_person_role cpr" +
+            "    on t.id = cpr.centric_account_id" +
+            " left join fndc.financial_document_item fdi1" +
+            "    on t.id = fdi1.centric_account_id_1" +
+            " left join fndc.financial_document_item fdi2" +
+            "   on t.id = fdi2.centric_account_id_2" +
+            " left join fndc.financial_document_item fdi3" +
+            "   on t.id = fdi3.centric_account_id_3" +
+            " left join fndc.financial_document_item fdi4" +
+            "    on t.id = fdi4.centric_account_id_4" +
+            " left join fndc.financial_document_item fdi5" +
+            "    on t.id = fdi5.centric_account_id_5" +
+            "  left join fndc.financial_document_item fdi6" +
+            "    on t.id = fdi6.centric_account_id_6" +
+            "  left join rprq.request_item ri1" +
+            "  on t.id = ri1.centric_account_id_1" +
+            "  left join rprq.request_item ri2" +
+            "   on t.id = ri2.centric_account_id_2" +
+            "  left join rprq.request_item ri3" +
+            "    on t.id = ri3.centric_account_id_3" +
+            " left  join rprq.request_item ri4" +
+            "    on t.id = ri4.centric_account_id_4" +
+            "  left join rprq.request_item ri5" +
+            "   on t.id = ri5.centric_account_id_5" +
+            " where t.id = :centricAccountId" +
+            " and( adv.centric_account_id = :centricAccountId" +
+            "   or ba.centric_account_id = :centricAccountId" +
+            "   or ca.parent_centric_account_id = :centricAccountId" +
+            "   or cpr.centric_account_id = :centricAccountId" +
+            "   or fdi1.centric_account_id_1 = :centricAccountId" +
+            "   or fdi2.centric_account_id_2 = :centricAccountId" +
+            "   or fdi3.centric_account_id_3 = :centricAccountId" +
+            "   or fdi4.centric_account_id_4 = :centricAccountId" +
+            "   or fdi5.centric_account_id_5 = :centricAccountId" +
+            "   or fdi6.centric_account_id_6 = :centricAccountId" +
+            "   or ri1.centric_account_id_1 = :centricAccountId" +
+            "   or ri2.centric_account_id_2 = :centricAccountId" +
+            "   or ri3.centric_account_id_3 = :centricAccountId" +
+            "   or ri4.centric_account_id_4 = :centricAccountId" +
+            "   or ri5.centric_account_id_5 = :centricAccountId)"
+            , nativeQuery = true)
+    Long findBycentricAccountIdForDelete(Long centricAccountId);
 }
 

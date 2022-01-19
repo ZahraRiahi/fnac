@@ -29,10 +29,10 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public boolean deleteAccountRelatedDescriptionById(Long accountRelatedDescriptionId) {
-        AccountRelatedDescription accountRelatedDescription =
-                accountRelatedDescriptionRepository.findById(accountRelatedDescriptionId).orElseThrow(() -> new RuleException("fin.accountRelatedDescription.delete"));
-        accountRelatedDescription.setDeletedDate(LocalDateTime.now());
-        accountRelatedDescriptionRepository.save(accountRelatedDescription);
+        accountRelatedDescriptionRepository.findById(accountRelatedDescriptionId).orElseThrow(() -> new RuleException("fin.accountRelatedDescription.delete"));
+//        accountRelatedDescription.setDeletedDate(LocalDateTime.now());
+        accountRelatedDescriptionRepository.deleteById(accountRelatedDescriptionId);
+//        accountRelatedDescriptionRepository.save(accountRelatedDescription);
         return true;
     }
 

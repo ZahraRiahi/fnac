@@ -582,24 +582,28 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         financialAccountRequest.getFinancialAccountStructureId(),
                         financialAccountStructure);
         if (countFinancialAccountStructure != null) {
-            accountStructureLevelRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountStructureLevel ->
-                    accountStructureLevel.setDeletedDate(LocalDateTime.now())
-            );
+            accountStructureLevelRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountStructureLevel -> {
+                accountDefaultValueRepository.deleteById(financialAccount.getId());
+//                    accountStructureLevel.setDeletedDate(LocalDateTime.now())
+            });
             saveAccountStructureLevel(financialAccountRequest, financialAccount);
         }
     }
 
     private List<AccountRelatedTypeDtoResponse> updateAccountRelatedType(List<Long> accountRelatedTypeOutPutModel, FinancialAccount financialAccount) {
-        accountRelatedTypeRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountRelatedType ->
-                accountRelatedType.setDeletedDate(LocalDateTime.now())
-        );
+        accountRelatedTypeRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountRelatedType -> {
+            accountRelatedTypeRepository.deleteById(financialAccount.getId());
+            //                    accountRelatedType.setDeletedDate(LocalDateTime.now())
+        });
         return saveAccountRelatedType(accountRelatedTypeOutPutModel, financialAccount);
     }
 
     private List<AccountMoneyTypeDtoResponse> updateAccountMoneyType(List<Long> accountMoneyTypeOutPut, FinancialAccount financialAccount) {
         accountMoneyTypeRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountMoneyType ->
-                accountMoneyType.setDeletedDate(LocalDateTime.now())
-        );
+        {
+            accountMoneyTypeRepository.deleteById(financialAccount.getId());
+//                accountMoneyType.setDeletedDate(LocalDateTime.now())
+        });
         return saveAccountMoneyType(accountMoneyTypeOutPut, financialAccount);
     }
 
@@ -624,7 +628,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     );
         } else {
             accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountRequest.getId())
-                    .forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                    .forEach(e -> {
+
+//                            e.setDeletedDate(LocalDateTime.now())
+                    });
             accountDefaultValueResponses.addAll(saveAccountDefaultValue
                     (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
         }
@@ -670,14 +677,15 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (financialDocumentItemCount > 0) {
                 throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
-                accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e ->
-                        e.setDeletedDate(LocalDateTime.now()));
-                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> {
+                    accountDefaultValueRepository.deleteById(e.getId());
+                });
+                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
+                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
+                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
 
                 FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountId);
-                financialAccount.setDeletedDate(LocalDateTime.now());
+                accountDefaultValueRepository.findByFinancialAccountId(financialAccount.getId()).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
                 return true;
             }
         }
