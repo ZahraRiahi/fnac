@@ -555,7 +555,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private List<AccountMoneyTypeDtoResponse> updateAccountMoneyType(List<Long> accountMoneyTypeOutPut, FinancialAccount financialAccount) {
         accountMoneyTypeRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountMoneyType ->
-        { accountMoneyTypeRepository.deleteById(financialAccount.getId());
+        {
+            accountMoneyTypeRepository.deleteById(financialAccount.getId());
 //                accountMoneyType.setDeletedDate(LocalDateTime.now())
         });
         return saveAccountMoneyType(accountMoneyTypeOutPut, financialAccount);
@@ -632,14 +633,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
                 accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> {
-                    accountDefaultValueRepository.deleteById(financialAccountId);
+                    accountDefaultValueRepository.deleteById(e.getId());
                 });
                 accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
                 accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
                 accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
 
                 FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountId);
-                accountDefaultValueRepository.deleteById(financialAccount.getId());
+                accountDefaultValueRepository.findByFinancialAccountId(financialAccount.getId()).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
                 return true;
             }
         }
