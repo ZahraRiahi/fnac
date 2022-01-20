@@ -163,7 +163,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 financialAccountStructureRepository.deleteById(financialAccountStructure.getId());
                 return true;
             }else {
-                throw new RuleException(" به علت استفاده از این ساختار در حساب های مالی، امکان حذف وجود ندارد.");
+                throw new RuleException("fin.financialAccountStructure.check.for.delete");
             }
         }
     }

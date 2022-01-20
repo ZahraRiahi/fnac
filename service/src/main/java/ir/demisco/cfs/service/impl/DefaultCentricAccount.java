@@ -102,8 +102,8 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         Long accountIdForDelete = centricAccountRepository.findBycentricAccountIdForDelete(centricAccount.getId());
-        if (accountIdForDelete > 1) {
-            throw new RuleException(" به علت استفاده از این کد تمرکز در موارد دیگر، امکان حذف وجود ندارد.");
+        if (accountIdForDelete > 0) {
+            throw new RuleException("fin.centricAccount.check.for.delete");
         } else {
             centricAccountRepository.deleteById(centricAccount.getId());
             return true;
