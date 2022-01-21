@@ -46,7 +46,6 @@ public class FinancialAccountController {
         if (result.hasErrors()){
             System.out.println(result.getAllErrors());
         }
-
         if (financialAccountRequest.getId() == null) {
             FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
             return ResponseEntity.ok(financialAccountOutPutDto);
