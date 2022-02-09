@@ -668,10 +668,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
                 accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
                 accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
-
-                FinancialAccount financialAccount = financialAccountRepository.getOne(financialAccountId);
-                accountDefaultValueRepository.findByFinancialAccountId(financialAccount.getId()).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
-                return true;
+                List<Object[]> byFinancialAccountIdForDelete = financialAccountRepository.findByFinancialAccountIdForDelete(financialAccountId);
+                if(byFinancialAccountIdForDelete.isEmpty()) {
+                   financialAccountRepository.deleteById(financialAccountId);
+                    return true;
+                }else {
+                    throw new RuleException("fin.financialAccountStructure.check.for.delete");
+                }
             }
         }
         throw new RuleException("fin.financialAccount.delete");

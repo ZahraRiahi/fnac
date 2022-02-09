@@ -23,7 +23,4 @@ public interface AccountDefaultValueRepository extends JpaRepository<AccountDefa
 
     List<AccountDefaultValue> findByFinancialAccountIdAndDeletedDateIsNull(Long financialAccountId);
 
-
-    List<AccountDefaultValue> findByFinancialAccountId(Long financialAccountId);
-
 }
