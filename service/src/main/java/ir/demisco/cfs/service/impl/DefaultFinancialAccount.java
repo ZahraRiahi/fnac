@@ -664,13 +664,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (financialDocumentItemCount > 0) {
                 throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
-                accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
-                accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
-                accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
-                accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
-                List<Object[]> byFinancialAccountIdForDelete = financialAccountRepository.findByFinancialAccountIdForDelete(financialAccountId);
-                if(byFinancialAccountIdForDelete.isEmpty()) {
-                   financialAccountRepository.deleteById(financialAccountId);
+                Long byFinancialAccountIdForDelete = financialAccountRepository.findByFinancialAccountIdForDelete(financialAccountId);
+                if(byFinancialAccountIdForDelete == 0L) {
+                    accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
+                    accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
+                    accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
+                    accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
+                    financialAccountRepository.deleteById(financialAccountId);
                     return true;
                 }else {
                     throw new RuleException("fin.financialAccountStructure.check.for.delete");

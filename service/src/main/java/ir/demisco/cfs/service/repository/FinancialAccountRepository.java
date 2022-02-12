@@ -411,7 +411,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " or fdp.financial_account_id=:financialAccountId" +
             " or rs.financial_account_id=:financialAccountId" +
             " or t.financial_account_parent_id = :financialAccountId)",nativeQuery = true)
-    List<Object[]> findByFinancialAccountIdForDelete(Long financialAccountId);
+    Long findByFinancialAccountIdForDelete(Long financialAccountId);
 
 
 }
