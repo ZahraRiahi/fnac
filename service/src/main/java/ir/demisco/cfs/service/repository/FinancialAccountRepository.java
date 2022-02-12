@@ -1,5 +1,6 @@
 package ir.demisco.cfs.service.repository;
 
+import ir.demisco.cfs.model.entity.AccountDefaultValue;
 import ir.demisco.cfs.model.entity.FinancialAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -388,6 +389,31 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " JOIN fiac.financialAccountStructure fs " +
             " WHERE  fiac.financialAccountStructure.id = :financialAccountStructureId ")
     List<Object[]> findByFinancialAccountStructureIdForDelete(Long financialAccountStructureId);
+
+
+    @Query(value = "select count(t.id) from fnac.financial_account t" +
+            " left join fnac.account_structure_level asl" +
+            "  on asl.financial_account_id=t.id" +
+            " left join bkac.bank_account ba" +
+            "  on t.id=ba.financial_account_id" +
+            " left join fndc.financial_document_item fdi" +
+            "  on t.id=fdi.financial_account_id" +
+            " left join fndc.financial_document_pattern fdp" +
+            "  on fdp.financial_account_id= t.id" +
+            " left join rprq.request_subject rs" +
+            "  on t.id=rs.financial_account_id" +
+            " left join fnac.financial_account fa1" +
+            "  on fa1.id=t.financial_account_parent_id" +
+            " where t.id=:financialAccountId" +
+            " and( asl.financial_account_id=:financialAccountId" +
+            " or ba.financial_account_id =:financialAccountId" +
+            " or fdi.financial_account_id =:financialAccountId" +
+            " or fdp.financial_account_id=:financialAccountId" +
+            " or rs.financial_account_id=:financialAccountId" +
+            " or t.financial_account_parent_id = :financialAccountId)",nativeQuery = true)
+    Long findByFinancialAccountIdForDelete(Long financialAccountId);
+
+
 }
 
 
