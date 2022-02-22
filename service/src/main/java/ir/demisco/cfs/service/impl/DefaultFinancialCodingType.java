@@ -33,7 +33,7 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
     @Override
     @Transactional
     public List<FinancialCodingTypeResponse> getFinancialCodingTypeByOrganizationId(Long OrganizationId) {
-        List<FinancialCodingType> financialPeriodTypeList = financialCodingTypeRepository.findByOrganizationId(OrganizationId);
+        List<FinancialCodingType> financialPeriodTypeList = financialCodingTypeRepository.findByOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         return financialPeriodTypeList.stream().map(e -> FinancialCodingTypeResponse.builder().id(e.getId())
                 .description(e.getDescription())
                 .build()).collect(Collectors.toList());
