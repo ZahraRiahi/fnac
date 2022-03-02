@@ -78,7 +78,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
 //            "   and cnac.deleted_date is null " +
 //            " and cnac.deleted_date is null "
 //            , nativeQuery = true)
-    @Query(value =" SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID " +
+    @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID " +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC " +
             " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT " +
             "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID " +
@@ -96,9 +96,10 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "           AND OUTER_R.DELETED_DATE IS NULL)" +
             "   AND ORGANIZATION_ID = :organizationId " +
             "   AND CNAC.DELETED_DATE IS NULL "
-             , nativeQuery = true)
+            , nativeQuery = true)
     List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
-    @Query(value ="select count(t.id)" +
+
+    @Query(value = "select count(t.id)" +
             "  from fnac.centric_account t" +
             " left join fnac.account_default_value adv" +
             "    on t.id = adv.centric_account_id" +
@@ -148,5 +149,35 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   or ri5.centric_account_id_5 = :centricAccountId)"
             , nativeQuery = true)
     Long findBycentricAccountIdForDelete(Long centricAccountId);
+
+    @Query(value = " SELECT CNAC.ID," +
+            "       CNAC.CODE," +
+            "       CNAC.NAME," +
+            "       CNAC.ACTIVE_FLAG," +
+            "       CNAC.ABBREVIATION_NAME," +
+            "       CNAC.LATIN_NAME," +
+            "       CNAC.CENTRIC_ACCOUNT_TYPE_ID," +
+            "       CNAC.ORGANIZATION_ID," +
+            "       CNAC.PERSON_ID," +
+            "       CNAT.DESCRIPTION               AS CENTRIC_ACCOUNT_TYPE_DES," +
+            "       CNAT.CODE                      AS CENTRIC_ACCOUNT_TYPE_CODE," +
+            "       CNAC.PARENT_CENTRIC_ACCOUNT_ID," +
+            "       PARENT_C.CODE                  PARENT_CODE," +
+            "       PARENT_C.NAME                  PARENT_DESCRIPTION" +
+            "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
+            " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
+            "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID" +
+            "  LEFT OUTER JOIN FNAC.CENTRIC_ACCOUNT PARENT_C" +
+            "    ON PARENT_C.ID = CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
+            " WHERE CNAC.CENTRIC_ACCOUNT_TYPE_ID = :centricAccountTypeId" +
+            "   and (:name is null or CNAC.NAME  like %:name%) " +
+            "   AND  EXISTS (SELECT 1" +
+            "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            , nativeQuery = true)
+    Page<Object[]> centricAccountList(Long centricAccountTypeId, String name, Long organizationId
+            , Pageable pageable);
 }
 
