@@ -78,24 +78,27 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
 //            "   and cnac.deleted_date is null " +
 //            " and cnac.deleted_date is null "
 //            , nativeQuery = true)
-    @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID " +
-            "  FROM fnac.CENTRIC_ACCOUNT CNAC " +
-            " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT " +
-            "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID " +
+    @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
+            "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
+            " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
+            "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID" +
             "   AND CNAT.DELETED_DATE IS NULL" +
-            " WHERE CENTRIC_ACCOUNT_TYPE_ID IN " +
-            "       (SELECT OUTER_R.CENTRIC_ACCOUNT_TYPE_ID " +
-            "          FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL OUTER_R " +
-            "         INNER JOIN (SELECT INER_R.SEQUENCE, INER_R.ACCOUNT_RELATION_TYPE_ID " +
-            "                      FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL INER_R " +
-            "                     WHERE INER_R.CENTRIC_ACCOUNT_TYPE_ID = " +
-            "                           :centricAccountTypeId" +
-            "                       AND INER_R.DELETED_DATE IS NULL) T " +
+            " WHERE CENTRIC_ACCOUNT_TYPE_ID IN" +
+            "       (SELECT OUTER_R.CENTRIC_ACCOUNT_TYPE_ID" +
+            "          FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL OUTER_R" +
+            "         INNER JOIN (SELECT INER_R.SEQUENCE, INER_R.ACCOUNT_RELATION_TYPE_ID" +
+            "                      FROM fnac.ACCOUNT_RELATION_TYPE_DETAIL INER_R" +
+            "                     WHERE INER_R.CENTRIC_ACCOUNT_TYPE_ID =" +
+            "                           :centricAccountTypeId " +
+            "                       AND INER_R.DELETED_DATE IS NULL) T" +
             "            ON OUTER_R.SEQUENCE <= T.SEQUENCE" +
             "           AND OUTER_R.ACCOUNT_RELATION_TYPE_ID = T.ACCOUNT_RELATION_TYPE_ID" +
             "           AND OUTER_R.DELETED_DATE IS NULL)" +
-            "   AND ORGANIZATION_ID = :organizationId " +
-            "   AND CNAC.DELETED_DATE IS NULL "
+            "   AND EXISTS (SELECT 1" +
+            "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
+            "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1) "
             , nativeQuery = true)
     List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
 

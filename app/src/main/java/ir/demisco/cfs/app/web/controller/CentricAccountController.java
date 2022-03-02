@@ -73,7 +73,7 @@ public class CentricAccountController {
 
     @PostMapping("/GetByTypeId")
     public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccountType(@RequestBody CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndcentricAccountTypeId(centricAccountNewTypeRequest));
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndCentricAccountTypeId(centricAccountNewTypeRequest));
     }
 
 
