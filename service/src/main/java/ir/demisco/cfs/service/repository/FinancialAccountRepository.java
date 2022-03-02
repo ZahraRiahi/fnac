@@ -55,75 +55,161 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             , nativeQuery = true)
     Long findByFinancialAccountStructureId(Long financialAccountStructureId);
 
-    @Query(value = " select fiac.id," +
-            "       fiac.organization_id," +
-            "       fiac.code," +
-            "       fiac.description," +
-            "       fiac.account_nature_type_id," +
-            "       fiac.financial_account_structure_id," +
-            "       fiac.account_relation_type_id," +
-            "       fiac.financial_account_parent_id," +
-            "       case" +
-            "         when fiac.disable_date is not null then" +
+    //    @Query(value = " select fiac.id," +
+//            "       fiac.organization_id," +
+//            "       fiac.code," +
+//            "       fiac.description," +
+//            "       fiac.account_nature_type_id," +
+//            "       fiac.financial_account_structure_id," +
+//            "       fiac.account_relation_type_id," +
+//            "       fiac.financial_account_parent_id," +
+//            "       case" +
+//            "         when fiac.disable_date is not null then" +
+//            "          0" +
+//            "         else" +
+//            "          1" +
+//            "       end active_flag," +
+//            "       acnt.description as account_nature_type_Description," +
+//            "       acrt.description as account_relation_type_Description," +
+//            "       case" +
+//            "         when (exists" +
+//            "               (select 1" +
+//            "                  from fnac.financial_account fiac_inner" +
+//            "                 where fiac_inner.financial_account_parent_id = fiac.id" +
+//            "                   and fiac_inner.deleted_date is null" +
+//            "                   and fiac_inner.organization_id = :organizationId)) then" +
+//            "          1" +
+//            "         else" +
+//            "          0" +
+//            "       end haschild," +
+//            "       fiac.account_permanent_status_id," +
+//            "       fsts.code as account_status_code," +
+//            "       fsts.description as account_status_description," +
+//            "       fnas.flg_show_in_acc," +
+//            "       fnas.flg_permanent_status, " +
+//            " fnas.color," +
+//            "  FIAC.RELATED_TO_OTHERS_FLAG, " +
+//            "  FIAC.REFERENCE_FLAG, " +
+//            "       FIAC.CONVERT_FLAG, " +
+//            "       FIAC.EXCHANGE_FLAG " +
+//            "  from fnac.financial_account fiac" +
+//            "  inner join fnac.account_nature_type acnt " +
+//            "    on fiac.account_nature_type_id = acnt.id " +
+//            "   and acnt.deleted_date is null " +
+//            "   and (:accountNatureType is null or " +
+//            "      fiac.account_nature_type_id = :accountNatureTypeId)" +
+//            " LEFT OUTER join fnac.account_relation_type acrt " +
+//            "    on fiac.account_relation_type_id = acrt.id " +
+//            "   and acrt.deleted_date is null " +
+//            " inner join fnac.financial_account_structure fnas " +
+//            "    on fnas.id = fiac.financial_account_structure_id " +
+//            "   and fnas.deleted_date is null " +
+//            "  left outer join fnac.financial_account fiac_parent " +
+//            "    on fiac.financial_account_parent_id = fiac_parent.id " +
+//            "   and fiac_parent.deleted_date is null " +
+//            "  left outer join fnac.financial_account fiac_adjustment " +
+//            "    on fiac_adjustment.id = fiac.account_adjustment_id " +
+//            "   and fiac_adjustment.deleted_date is null " +
+//            "  left outer join fnac.account_permanent_status fsts " +
+//            "    on fsts.id = fiac.account_permanent_status_id " +
+//            "   and fsts.deleted_date is null " +
+//            " where fiac.organization_id = :organizationId" +
+//            "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
+//            "   and (:description is null or fiac.description like %:description% )" +
+//            "   and fiac.deleted_date is null " +
+//            "  and (:accountRelationType is null or " +
+//            "  fiac.account_relation_type_id = :accountRelationTypeId) " +
+//            "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
+//            "   or (:financialAccountParent is not null  and " +
+//            "       fiac.financial_account_parent_id =:financialAccountParentId))" +
+//            "   and (:financialAccountStructure is null or " +
+//            " fiac.financial_account_structure_id = :financialAccountStructureId)"
+//            , nativeQuery = true)
+    @Query(value = " SELECT FIAC.ID," +
+            "       FIAC.ORGANIZATION_ID," +
+            "       FIAC.CODE," +
+            "       FIAC.DESCRIPTION," +
+            "       FIAC.RELATED_TO_OTHERS_FLAG," +
+            "       FIAC.REFERENCE_FLAG," +
+            "       FIAC.CONVERT_FLAG," +
+            "       FIAC.EXCHANGE_FLAG," +
+            "       FIAC.ACCOUNT_NATURE_TYPE_ID," +
+            "       FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID," +
+            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
+            "       FIAC.FINANCIAL_ACCOUNT_PARENT_ID," +
+            "       CASE" +
+            "         WHEN FIAC.DISABLE_DATE IS NOT NULL THEN" +
             "          0" +
-            "         else" +
+            "         ELSE" +
             "          1" +
-            "       end active_flag," +
-            "       acnt.description as account_nature_type_Description," +
-            "       acrt.description as account_relation_type_Description," +
-            "       case" +
-            "         when (exists" +
-            "               (select 1" +
-            "                  from fnac.financial_account fiac_inner" +
-            "                 where fiac_inner.financial_account_parent_id = fiac.id" +
-            "                   and fiac_inner.deleted_date is null" +
-            "                   and fiac_inner.organization_id = :organizationId)) then" +
+            "       END ACTIVE_FLAG," +
+            "       ACNT.DESCRIPTION AS ACCOUNT_NATURE_TYPE_DESCRIPTION," +
+            "       ACRT.DESCRIPTION AS ACCOUNT_RELATION_TYPE_DESCRIPTION," +
+            "       CASE" +
+            "         WHEN (EXISTS" +
+            "               (SELECT 1" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+            "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
+            "                    ON FNAS_INNER.ID =" +
+            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                   AND EXISTS" +
+            "                 (SELECT 1" +
+            "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "                         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "                           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "                               FNAS_INNER.FINANCIAL_CODING_TYPE_ID" +
+            "                           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "                )" +
+            "              ) THEN" +
             "          1" +
-            "         else" +
+            "         ELSE" +
             "          0" +
-            "       end haschild," +
-            "       fiac.account_permanent_status_id," +
-            "       fsts.code as account_status_code," +
-            "       fsts.description as account_status_description," +
-            "       fnas.flg_show_in_acc," +
-            "       fnas.flg_permanent_status, " +
-            " fnas.color," +
-            "  FIAC.RELATED_TO_OTHERS_FLAG, " +
-            "  FIAC.REFERENCE_FLAG, " +
-            "       FIAC.CONVERT_FLAG, " +
-            "       FIAC.EXCHANGE_FLAG " +
-            "  from fnac.financial_account fiac" +
-            "  inner join fnac.account_nature_type acnt " +
-            "    on fiac.account_nature_type_id = acnt.id " +
-            "   and acnt.deleted_date is null " +
+            "       END HASCHILD," +
+            "       FIAC.ACCOUNT_PERMANENT_STATUS_ID," +
+            "       FSTS.CODE AS ACCOUNT_STATUS_CODE," +
+            "       FSTS.DESCRIPTION AS ACCOUNT_STATUS_DESCRIPTION," +
+            "       FNAS.FLG_SHOW_IN_ACC," +
+            "       FNAS.FLG_PERMANENT_STATUS," +
+            "       FNAS.COLOR" +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.ACCOUNT_NATURE_TYPE ACNT" +
+            "    ON FIAC.ACCOUNT_NATURE_TYPE_ID = ACNT.ID" +
             "   and (:accountNatureType is null or " +
             "      fiac.account_nature_type_id = :accountNatureTypeId)" +
-            " LEFT OUTER join fnac.account_relation_type acrt " +
-            "    on fiac.account_relation_type_id = acrt.id " +
-            "   and acrt.deleted_date is null " +
-            " inner join fnac.financial_account_structure fnas " +
-            "    on fnas.id = fiac.financial_account_structure_id " +
-            "   and fnas.deleted_date is null " +
-            "  left outer join fnac.financial_account fiac_parent " +
-            "    on fiac.financial_account_parent_id = fiac_parent.id " +
-            "   and fiac_parent.deleted_date is null " +
-            "  left outer join fnac.financial_account fiac_adjustment " +
-            "    on fiac_adjustment.id = fiac.account_adjustment_id " +
-            "   and fiac_adjustment.deleted_date is null " +
-            "  left outer join fnac.account_permanent_status fsts " +
-            "    on fsts.id = fiac.account_permanent_status_id " +
-            "   and fsts.deleted_date is null " +
-            " where fiac.organization_id = :organizationId" +
-            "   and fnas.financial_coding_type_id = :financialCodingTypeId" +
-            "   and (:description is null or fiac.description like %:description% )" +
-            "   and fiac.deleted_date is null " +
+            "   AND ACNT.DELETED_DATE IS NULL" +
+            "  LEFT OUTER JOIN FNAC.ACCOUNT_RELATION_TYPE ACRT" +
+            "    ON FIAC.ACCOUNT_RELATION_TYPE_ID = ACRT.ID" +
+            "   AND ACRT.DELETED_DATE IS NULL" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS" +
+            "    ON FNAS.ID = FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "   AND FNAS.DELETED_DATE IS NULL" +
+            "  LEFT OUTER JOIN FNAC.FINANCIAL_ACCOUNT FIAC_PARENT" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_PARENT_ID = FIAC_PARENT.ID" +
+            "   AND FIAC_PARENT.DELETED_DATE IS NULL" +
+            "  LEFT OUTER JOIN FNAC.FINANCIAL_ACCOUNT FIAC_ADJUSTMENT" +
+            "    ON FIAC_ADJUSTMENT.ID = FIAC.ACCOUNT_ADJUSTMENT_ID" +
+            "   AND FIAC_ADJUSTMENT.DELETED_DATE IS NULL" +
+            "  LEFT OUTER JOIN FNAC.ACCOUNT_PERMANENT_STATUS FSTS" +
+            "    ON FSTS.ID = FIAC.ACCOUNT_PERMANENT_STATUS_ID" +
+            "   AND FSTS.DELETED_DATE IS NULL" +
+            " WHERE EXISTS" +
+            " (SELECT 1" +
+            "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "               FNAS.FINANCIAL_CODING_TYPE_ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
             "  and (:accountRelationType is null or " +
             "  fiac.account_relation_type_id = :accountRelationTypeId) " +
+            "   and (:financialAccountStructure is null or " +
+            " fiac.financial_account_structure_id = :financialAccountStructureId)" +
+            "   AND FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   and (:description is null or fiac.description like %:description% )" +
+            "   AND FIAC.DELETED_DATE IS NULL" +
             "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
             "   or (:financialAccountParent is not null  and " +
-            "       fiac.financial_account_parent_id =:financialAccountParentId))" +
-            "   and (:financialAccountStructure is null or " +
-            " fiac.financial_account_structure_id = :financialAccountStructureId)"
+            "       fiac.financial_account_parent_id =:financialAccountParentId))"
             , nativeQuery = true)
     Page<Object[]> financialAccountList(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
                                         Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
@@ -136,7 +222,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
 
     @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.financialAccountStructure.id=:financialAccountStructureId and fa.organization.id=:organizationId ")
-    Long getCountByFinancialAccountAndCode(String code,Long financialAccountStructureId,Long organizationId);
+    Long getCountByFinancialAccountAndCode(String code, Long financialAccountStructureId, Long organizationId);
 
     @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.id not in(:financialAccountId)  ")
     Long getCountByFinancialAccountAndCode(String code, Long financialAccountId);
@@ -410,7 +496,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " or fdi.financial_account_id =:financialAccountId" +
             " or fdp.financial_account_id=:financialAccountId" +
             " or rs.financial_account_id=:financialAccountId" +
-            " or t.financial_account_parent_id = :financialAccountId)",nativeQuery = true)
+            " or t.financial_account_parent_id = :financialAccountId)", nativeQuery = true)
     Long findByFinancialAccountIdForDelete(Long financialAccountId);
 
 

@@ -96,31 +96,77 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .organizationId(Long.parseLong(item[1].toString()))
                         .description(item[3].toString())
                         .code(item[2].toString())
-                        .activeFlag(item[8] == null ? null : Long.parseLong(item[8].toString()))
-                        .accountNatureTypeId(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                        .accountRelationTypeDescription(item[10] == null ? null : item[10].toString())
-                        .accountRelationTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
-                        .accountNatureTypeDescription(item[9] == null ? null : item[9].toString())
-                        .financialAccountParentId(item[7] == null ? null : Long.parseLong(item[7].toString()))
-                        .financialAccountStructureId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .hasChild(item[11] == null ? null : Long.parseLong(item[11].toString()))
-                        .accountStatusId(item[12] == null ? null : Long.parseLong(item[12].toString()))
-                        .accountStatusCode(item[13] == null ? null : (item[13].toString()))
-                        .accountStatusDescription(item[14] == null ? null : (item[14].toString()))
-                        .flgShowInAcc(Integer.parseInt(item[15].toString()) == 1)
-                        .flgPermanentStatus(Integer.parseInt(item[16].toString()) == 1)
-                        .color(item[17] == null ? null : item[17].toString())
-                        .relatedToOtherFlag(item[18] == null ? null : Long.parseLong(item[18].toString()))
-                        .referenceFlag(item[19] == null ? null : Long.parseLong(item[19].toString()))
-                        .convertFlag(item[20] == null ? 0 : Long.parseLong(item[20].toString()))
-                        .exchangeFlag(item[21] == null ? null : Long.parseLong(item[21].toString()))
+                        .activeFlag(item[12] == null ? null : Long.parseLong(item[12].toString()))
+                        .accountNatureTypeId(item[8] == null ? null : Long.parseLong(item[8].toString()))
+                        .accountRelationTypeDescription(item[14] == null ? null : item[14].toString())
+                        .accountRelationTypeId(item[10] == null ? null : Long.parseLong(item[10].toString()))
+                        .accountNatureTypeDescription(item[13] == null ? null : item[13].toString())
+                        .financialAccountParentId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+                        .financialAccountStructureId(item[9] == null ? null : Long.parseLong(item[9].toString()))
+                        .hasChild(item[15] == null ? null : Long.parseLong(item[15].toString()))
+                        .accountStatusId(item[16] == null ? null : Long.parseLong(item[16].toString()))
+                        .accountStatusCode(item[17] == null ? null : (item[17].toString()))
+                        .accountStatusDescription(item[18] == null ? null : (item[18].toString()))
+                        .flgShowInAcc(Integer.parseInt(item[19].toString()) == 1)
+                        .flgPermanentStatus(Integer.parseInt(item[20].toString()) == 1)
+                        .color(item[21] == null ? null : item[21].toString())
+                        .relatedToOtherFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .referenceFlag(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                        .convertFlag(item[6] == null ? 0 : Long.parseLong(item[6].toString()))
+                        .exchangeFlag(item[7] == null ? null : Long.parseLong(item[7].toString()))
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(financialAccountDtos);
         dataSourceResult.setTotal(list.getTotalElements());
         return dataSourceResult;
     }
-
+//    SELECT FIAC.ID," +
+//            "       FIAC.ORGANIZATION_ID," +
+//            "       FIAC.CODE," +
+//            "       FIAC.DESCRIPTION," +
+//            "       FIAC.RELATED_TO_OTHERS_FLAG," +
+//            "       FIAC.REFERENCE_FLAG," +
+//            "       FIAC.CONVERT_FLAG," +
+//            "       FIAC.EXCHANGE_FLAG," +
+//            "       FIAC.ACCOUNT_NATURE_TYPE_ID," +
+//            "       FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID," +
+//            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
+//            "       FIAC.FINANCIAL_ACCOUNT_PARENT_ID," +
+//            "       CASE" +
+//            "         WHEN FIAC.DISABLE_DATE IS NOT NULL THEN" +
+//            "          0" +
+//            "         ELSE" +
+//            "          1" +
+//            "       END ACTIVE_FLAG," +
+//            "       ACNT.DESCRIPTION AS ACCOUNT_NATURE_TYPE_DESCRIPTION," +
+//            "       ACRT.DESCRIPTION AS ACCOUNT_RELATION_TYPE_DESCRIPTION," +
+//            "       CASE" +
+//            "         WHEN (EXISTS" +
+//            "               (SELECT 1" +
+//            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+//            "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
+//            "                    ON FNAS_INNER.ID =" +
+//            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+//            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+//            "                   AND EXISTS" +
+//            "                 (SELECT 1" +
+//            "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+//            "                         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+//            "                           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+//            "                               FNAS_INNER.FINANCIAL_CODING_TYPE_ID" +
+//            "                           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+//            "                )" +
+//            "              ) THEN" +
+//            "          1" +
+//            "         ELSE" +
+//            "          0" +
+//            "       END HASCHILD," +
+//            "       FIAC.ACCOUNT_PERMANENT_STATUS_ID," +
+//            "       FSTS.CODE AS ACCOUNT_STATUS_CODE," +
+//            "       FSTS.DESCRIPTION AS ACCOUNT_STATUS_DESCRIPTION," +
+//            "       FNAS.FLG_SHOW_IN_ACC," +
+//            "       FNAS.FLG_PERMANENT_STATUS," +
+//            "       FNAS.COLOR" +
     private FinancialAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountParameter financialAccountParameter = new FinancialAccountParameter();
         Map<String, Object> map = new HashMap<>();
