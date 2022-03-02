@@ -1,16 +1,25 @@
 package ir.demisco.cfs.model.dto.response;
 
 public class CentricAccountResponse {
-    private Long centricAccountTypeId;
+    private Long id;
+    private String code;
     private String name;
-    private Long organizationId;
+    private Long parentCentricAccountId;
 
-    public Long getCentricAccountTypeId() {
-        return centricAccountTypeId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCentricAccountTypeId(Long centricAccountTypeId) {
-        this.centricAccountTypeId = centricAccountTypeId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -21,17 +30,16 @@ public class CentricAccountResponse {
         this.name = name;
     }
 
-    public Long getOrganizationId() {
-        return organizationId;
+    public Long getParentCentricAccountId() {
+        return parentCentricAccountId;
     }
 
-    public void setOrganizationId(Long organizationId) {
-        this.organizationId = organizationId;
+    public void setParentCentricAccountId(Long parentCentricAccountId) {
+        this.parentCentricAccountId = parentCentricAccountId;
     }
     public static CentricAccountResponse.Builder builder() {
         return new CentricAccountResponse.Builder();
     }
-
     public static final class Builder {
         private CentricAccountResponse centricAccountResponse;
 
@@ -43,8 +51,13 @@ public class CentricAccountResponse {
             return new Builder();
         }
 
-        public Builder centricAccountTypeId(Long centricAccountTypeId) {
-            centricAccountResponse.setCentricAccountTypeId(centricAccountTypeId);
+        public Builder id(Long id) {
+            centricAccountResponse.setId(id);
+            return this;
+        }
+
+        public Builder code(String code) {
+            centricAccountResponse.setCode(code);
             return this;
         }
 
@@ -53,8 +66,8 @@ public class CentricAccountResponse {
             return this;
         }
 
-        public Builder organizationId(Long organizationId) {
-            centricAccountResponse.setOrganizationId(organizationId);
+        public Builder parentCentricAccountId(Long parentCentricAccountId) {
+            centricAccountResponse.setParentCentricAccountId(parentCentricAccountId);
             return this;
         }
 

@@ -148,7 +148,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   or ri4.centric_account_id_4 = :centricAccountId" +
             "   or ri5.centric_account_id_5 = :centricAccountId)"
             , nativeQuery = true)
-    Long findBycentricAccountIdForDelete(Long centricAccountId);
+    Long findByCentricAccountIdForDelete(Long centricAccountId);
 
     @Query(value = " SELECT CNAC.ID," +
             "       CNAC.CODE," +
@@ -178,6 +178,24 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
     Page<Object[]> centricAccountList(Long centricAccountTypeId, String name, Long organizationId
+            , Pageable pageable);
+
+    @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
+            "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
+            " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
+            "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID" +
+            "   AND CNAT.DELETED_DATE IS NULL" +
+            " WHERE CENTRIC_ACCOUNT_TYPE_ID = :centricAccountTypeId" +
+            "   AND CNAC.DELETED_DATE IS NULL" +
+            "   and (:parentCentricAccount is null or " +
+            " CNAC.PARENT_CENTRIC_ACCOUNT_ID = :parentCentricAccountId)" +
+            "   AND EXISTS (SELECT 1" +
+            "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
+            "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            , nativeQuery = true)
+    Page<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, Long organizationId
             , Pageable pageable);
 }
 
