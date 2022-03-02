@@ -1,7 +1,9 @@
 package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.CentricAccountParameter;
+import ir.demisco.cfs.model.dto.FinancialAccountParameter;
 import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountParamRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.model.entity.*;
@@ -12,6 +14,9 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,12 +51,68 @@ public class DefaultCentricAccount implements CentricAccountService {
         this.centricAccountLovProvider = centricAccountLovProvider;
     }
 
+//    @Override
+//    @Transactional
+//    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+//        return gridFilterService.filter(dataSourceRequest, financialPeriodListGridProvider);
+//    }
+
+
     @Override
     @Transactional
     public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        return gridFilterService.filter(dataSourceRequest, financialPeriodListGridProvider);
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
+//        Map<String, Object> paramMap = paramSearch.getParamMap();
+        paramSearch.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), SecurityHelper.getCurrentUser().getOrganizationId()
+                , pageable);
+        List<CentricAccountListResponse> centricAccountListDtos = list.stream().map(item ->
+                CentricAccountListResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .code(item[1] == null ? null : item[1].toString())
+                        .name(item[2].toString())
+                        .activeFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                        .abbreviationName(item[4] == null ? null : item[4].toString())
+                        .latinName(item[5] == null ? null : item[5].toString())
+                        .centricAccountTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
+                        .organizationId(item[7] == null ? null : Long.parseLong(item[7].toString()))
+                        .personId(item[8] == null ? null : Long.parseLong(item[8].toString()))
+                        .centricAccountTypeDescription(item[9] == null ? null : item[9].toString())
+                        .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
+                        .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+                        .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
+                        .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(centricAccountListDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
+    }
+
+    private CentricAccountParamRequest setParameterCentricAccount(List<DataSourceRequest.FilterDescriptor> filters) {
+        CentricAccountParamRequest centricAccountParamRequest = new CentricAccountParamRequest();
+//        Map<String, Object> map = new HashMap<>();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "centricAccountType.id":
+                    centricAccountParamRequest.setCentricAccountTypeId(Long.parseLong(item.getValue().toString()));
+                    break;
+
+                case "name":
+                    if (item.getValue() != null) {
+                        centricAccountParamRequest.setName(item.getValue().toString());
+                    } else {
+                        centricAccountParamRequest.setName("");
+                    }
+                    break;
+
+            }
+        }
+        return centricAccountParamRequest;
     }
 
     @Override
