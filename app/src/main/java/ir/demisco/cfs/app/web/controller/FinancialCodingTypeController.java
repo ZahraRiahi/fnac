@@ -27,6 +27,7 @@ public class FinancialCodingTypeController {
     public ResponseEntity<FinancialCodingTypeDto> saveFinancialCodingType(@RequestBody FinancialCodingTypeDto financialCodingTypeDto) {
         if (financialCodingTypeDto.getId() == null) {
             Long aLong = financialCodingTypeService.save(financialCodingTypeDto);
+
             financialCodingTypeDto.setId(aLong);
             return ResponseEntity.ok(financialCodingTypeDto);
         } else {

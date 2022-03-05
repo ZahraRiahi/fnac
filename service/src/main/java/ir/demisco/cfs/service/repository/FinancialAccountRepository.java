@@ -498,7 +498,50 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " or t.financial_account_parent_id = :financialAccountId)", nativeQuery = true)
     Long findByFinancialAccountIdForDelete(Long financialAccountId);
 
-
+    @Query(value = " SELECT FIAC.ID," +
+            "       FIAC.CODE," +
+            "       FIAC.DESCRIPTION," +
+            "       FIAC.REFERENCE_FLAG," +
+            "       FIAC.EXCHANGE_FLAG," +
+            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
+            "       FIAC.DISABLE_DATE" +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
+            " WHERE EXISTS (SELECT 1" +
+            "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "               FS.FINANCIAL_CODING_TYPE_ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "   AND FS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   AND FIAC.DISABLE_DATE IS NULL" +
+            "   and (:financialAccountList is null or" +
+            "       FIAC.ID in (:financialAccountIdList))" +
+            "   AND CASE" +
+            "         WHEN (EXISTS" +
+            "               (SELECT 1" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+            "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
+            "                    ON FNAS_INNER.ID =" +
+            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                   AND EXISTS" +
+            "                 (SELECT 1" +
+            "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "                         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "                           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "                               FNAS_INNER.FINANCIAL_CODING_TYPE_ID" +
+            "                           AND INER_ORG_REL.ACTIVE_FLAG = 1))) THEN" +
+            "          1" +
+            "         ELSE" +
+            "          0" +
+            "       END = 0" +
+            "   AND FS.FLG_SHOW_IN_ACC = 1" +
+            "   AND FIAC.DISABLE_DATE IS NULL "
+            , nativeQuery = true)
+    Page<Object[]> financialAccountLov(Long organizationId, Long financialCodingTypeId, Object financialAccountList, List<Long> financialAccountIdList
+            , Pageable pageable);
 }
 
 
