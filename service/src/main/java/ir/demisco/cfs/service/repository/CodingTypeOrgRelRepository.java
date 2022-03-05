@@ -12,4 +12,9 @@ public interface CodingTypeOrgRelRepository extends JpaRepository<CodingTypeOrgR
             "             AND INER_ORG_REL.ACTIVE_FLAG = 1 "
             , nativeQuery = true)
     Long getCodingTypeOrgRelByOrganizationAndFinancialCodingType(Long organizationId, Long financialCodingTypeId);
+
+
+    @Query(value = "select INER_ORG_REL.id from fnac.CODING_TYPE_ORG_REL INER_ORG_REL WHERE INER_ORG_REL.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId"
+            , nativeQuery = true)
+    Long findByFinancialCodingTypeIdForDelete(Long financialCodingTypeId);
 }
