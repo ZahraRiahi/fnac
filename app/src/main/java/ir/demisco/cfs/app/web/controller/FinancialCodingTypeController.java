@@ -2,6 +2,7 @@ package ir.demisco.cfs.app.web.controller;
 
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeDto;
 import ir.demisco.cfs.model.dto.response.FinancialCodingTypeResponse;
+import ir.demisco.cfs.service.api.CodingTypeOrgRelService;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api-financialCodingType")
 public class FinancialCodingTypeController {
     private final FinancialCodingTypeService financialCodingTypeService;
+    private final CodingTypeOrgRelService codingTypeOrgRelService;
 
-    public FinancialCodingTypeController(FinancialCodingTypeService financialCodingTypeService) {
+    public FinancialCodingTypeController(FinancialCodingTypeService financialCodingTypeService, CodingTypeOrgRelService codingTypeOrgRelService) {
         this.financialCodingTypeService = financialCodingTypeService;
+        this.codingTypeOrgRelService = codingTypeOrgRelService;
     }
 
     @PostMapping("/list")
@@ -27,11 +30,18 @@ public class FinancialCodingTypeController {
     public ResponseEntity<FinancialCodingTypeDto> saveFinancialCodingType(@RequestBody FinancialCodingTypeDto financialCodingTypeDto) {
         if (financialCodingTypeDto.getId() == null) {
             Long aLong = financialCodingTypeService.save(financialCodingTypeDto);
-
+            codingTypeOrgRelService.save(aLong, SecurityHelper.getCurrentUser().getOrganizationId());
             financialCodingTypeDto.setId(aLong);
+            financialCodingTypeDto.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
             return ResponseEntity.ok(financialCodingTypeDto);
         } else {
-            return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
+            Long aLongUpdate = financialCodingTypeService.save(financialCodingTypeDto);
+            FinancialCodingTypeDto financialCodingTypeDtoUpdate = financialCodingTypeService.update(financialCodingTypeDto);
+            codingTypeOrgRelService.save(aLongUpdate, SecurityHelper.getCurrentUser().getOrganizationId());
+            financialCodingTypeDto.setId(aLongUpdate);
+            financialCodingTypeDto.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+            return ResponseEntity.ok(financialCodingTypeDtoUpdate);
+//            return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
         }
     }
 
