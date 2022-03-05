@@ -119,53 +119,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         dataSourceResult.setTotal(list.getTotalElements());
         return dataSourceResult;
     }
-//    SELECT FIAC.ID," +
-//            "       FIAC.ORGANIZATION_ID," +
-//            "       FIAC.CODE," +
-//            "       FIAC.DESCRIPTION," +
-//            "       FIAC.RELATED_TO_OTHERS_FLAG," +
-//            "       FIAC.REFERENCE_FLAG," +
-//            "       FIAC.CONVERT_FLAG," +
-//            "       FIAC.EXCHANGE_FLAG," +
-//            "       FIAC.ACCOUNT_NATURE_TYPE_ID," +
-//            "       FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID," +
-//            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
-//            "       FIAC.FINANCIAL_ACCOUNT_PARENT_ID," +
-//            "       CASE" +
-//            "         WHEN FIAC.DISABLE_DATE IS NOT NULL THEN" +
-//            "          0" +
-//            "         ELSE" +
-//            "          1" +
-//            "       END ACTIVE_FLAG," +
-//            "       ACNT.DESCRIPTION AS ACCOUNT_NATURE_TYPE_DESCRIPTION," +
-//            "       ACRT.DESCRIPTION AS ACCOUNT_RELATION_TYPE_DESCRIPTION," +
-//            "       CASE" +
-//            "         WHEN (EXISTS" +
-//            "               (SELECT 1" +
-//            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
-//            "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
-//            "                    ON FNAS_INNER.ID =" +
-//            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
-//            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
-//            "                   AND EXISTS" +
-//            "                 (SELECT 1" +
-//            "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
-//            "                         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
-//            "                           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
-//            "                               FNAS_INNER.FINANCIAL_CODING_TYPE_ID" +
-//            "                           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-//            "                )" +
-//            "              ) THEN" +
-//            "          1" +
-//            "         ELSE" +
-//            "          0" +
-//            "       END HASCHILD," +
-//            "       FIAC.ACCOUNT_PERMANENT_STATUS_ID," +
-//            "       FSTS.CODE AS ACCOUNT_STATUS_CODE," +
-//            "       FSTS.DESCRIPTION AS ACCOUNT_STATUS_DESCRIPTION," +
-//            "       FNAS.FLG_SHOW_IN_ACC," +
-//            "       FNAS.FLG_PERMANENT_STATUS," +
-//            "       FNAS.COLOR" +
+
     private FinancialAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountParameter financialAccountParameter = new FinancialAccountParameter();
         Map<String, Object> map = new HashMap<>();
@@ -710,14 +664,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
             } else {
                 Long byFinancialAccountIdForDelete = financialAccountRepository.findByFinancialAccountIdForDelete(financialAccountId);
-                if(byFinancialAccountIdForDelete == 0L) {
+                if (byFinancialAccountIdForDelete == 0L) {
                     accountDefaultValueRepository.findByFinancialAccountIdAndDeletedDateIsNull(financialAccountId).forEach(e -> accountDefaultValueRepository.deleteById(e.getId()));
                     accountRelatedDescriptionRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedDescriptionRepository.deleteById(e.getId()));
                     accountRelatedTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountRelatedTypeRepository.deleteById(e.getId()));
                     accountMoneyTypeRepository.findByFinancialAccountId(financialAccountId).forEach(e -> accountMoneyTypeRepository.deleteById(e.getId()));
                     financialAccountRepository.deleteById(financialAccountId);
                     return true;
-                }else {
+                } else {
                     throw new RuleException("fin.financialAccountStructure.check.for.delete");
                 }
             }
@@ -801,11 +755,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         ).collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
-        return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
-    }
+//    @Override
+//    @Transactional
+//    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
+//        return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
+//    }
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
@@ -837,5 +791,58 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
         return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
 
+    }
+
+    @Override
+    @Transactional
+    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        FinancialAccountLovRequest param = setFinancialAccountLov(filters);
+        Map<String, Object> paramMap = param.getParamMap();
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("id"), param.getFinancialAccountIdList()
+                , pageable);
+        List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
+                FinancialAccountLovResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .description(item[2].toString())
+                        .code(item[1].toString())
+                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .disableDate(item[6] == null ? null : (Date) item[6])
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(financialAccountDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
+    }
+
+    private FinancialAccountLovRequest setFinancialAccountLov(List<DataSourceRequest.FilterDescriptor> filters) {
+        FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
+        Map<String, Object> map = new HashMap<>();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "financialAccountStructure.financialCodingType.id":
+                    financialAccountLovRequest.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
+                    break;
+
+                case "id":
+                    ArrayList arrayList = (ArrayList) item.getValue();
+                    if (!arrayList.isEmpty()) {
+                        map.put("financialAccountList", "financialAccountList");
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setFinancialAccountIdList(arrayList);
+                    } else {
+                        map.put("financialAccountList", null);
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
+                    }
+                    break;
+
+            }
+        }
+        return financialAccountLovRequest;
     }
 }
