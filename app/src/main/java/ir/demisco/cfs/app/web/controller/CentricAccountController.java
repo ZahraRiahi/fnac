@@ -3,6 +3,7 @@ package ir.demisco.cfs.app.web.controller;
 import ir.demisco.cfs.model.dto.request.*;
 import ir.demisco.cfs.model.dto.response.*;
 import ir.demisco.cfs.service.api.CentricAccountService;
+import ir.demisco.cfs.service.api.CentricOrgRelService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
@@ -15,9 +16,11 @@ import java.util.List;
 @RequestMapping("/api-centricAccount")
 public class CentricAccountController {
     private final CentricAccountService centricAccountService;
+    private final CentricOrgRelService centricOrgRelService;
 
-    public CentricAccountController(CentricAccountService centricAccountService) {
+    public CentricAccountController(CentricAccountService centricAccountService, CentricOrgRelService centricOrgRelService) {
         this.centricAccountService = centricAccountService;
+        this.centricOrgRelService = centricOrgRelService;
     }
 
 //    @PostMapping("/list")
@@ -45,6 +48,7 @@ public class CentricAccountController {
     @PostMapping("/save")
     public ResponseEntity<CentricAccountDto> saveCentricAccount(@RequestBody CentricAccountRequest centricAccountRequest) {
         CentricAccountDto centricAccountDto = centricAccountService.save(centricAccountRequest);
+        centricOrgRelService.save(SecurityHelper.getCurrentUser().getOrganizationId(),centricAccountDto);
         return ResponseEntity.ok(centricAccountDto);
 
     }

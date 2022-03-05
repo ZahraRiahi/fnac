@@ -5,16 +5,16 @@ import ir.demisco.cloud.basic.model.entity.org.Organization;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "coding_type_org_rel", schema = "fnac")
-public class CodingTypeOrgRel {
+@Table(name = "centric_org_rel", schema = "fnac")
+public class CentricOrgRel {
     private Long id;
-    private FinancialCodingType financialCodingType;
+    private CentricAccount centricAccount;
     private Organization organization;
     private Long activeFlag;
 
     @Id
-    @SequenceGenerator(schema = "fnac", name = "coding_type_org_rel_generator", sequenceName = "sq_coding_type_org_rel", allocationSize = 50)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coding_type_org_rel_generator")
+    @SequenceGenerator(schema = "fnac", name = "centric_org_rel_generator", sequenceName = "sq_centric_org_rel", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "centric_org_rel_generator")
     public Long getId() {
         return id;
     }
@@ -24,13 +24,13 @@ public class CodingTypeOrgRel {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FINANCIAL_CODING_TYPE_ID")
-    public FinancialCodingType getFinancialCodingType() {
-        return financialCodingType;
+    @JoinColumn(name = "CENTRIC_ACCOUNT_ID")
+    public CentricAccount getCentricAccount() {
+        return centricAccount;
     }
 
-    public void setFinancialCodingType(FinancialCodingType financialCodingType) {
-        this.financialCodingType = financialCodingType;
+    public void setCentricAccount(CentricAccount centricAccount) {
+        this.centricAccount = centricAccount;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
