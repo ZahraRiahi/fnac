@@ -755,12 +755,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         ).collect(Collectors.toList());
     }
 
-//    @Override
-//    @Transactional
-//    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
-//        return gridFilterService.filter(dataSourceRequest, financialAccountLovProvider);
-//    }
-
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest) {
@@ -781,16 +775,52 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return true;
     }
 
+//    @Override
+//    @Transactional
+//    public DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
+//                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
+//        return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
+//
+//    }
+
+    private FinancialAccountStructureRequest setParameterFinancialAccountByGetByStructure(List<DataSourceRequest.FilterDescriptor> filters) {
+        FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "financialAccountStructure.id":
+                    financialAccountStructureRequest.setFinancialAccountStructureId(Long.parseLong(item.getValue().toString()));
+                    break;
+            }
+        }
+        return financialAccountStructureRequest;
+    }
+
     @Override
     @Transactional
-    public DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
-        return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
-
+    public DataSourceResult getFinancialAccountByGetByStructure(Long organizationId, DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
+//        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId()
+                , pageable);
+        List<FinancialAccountGetByStructureResponse> centricAccountListDtos = list.stream().map(item ->
+                FinancialAccountGetByStructureResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .code(item[1] == null ? null : item[1].toString())
+                        .description(item[2].toString())
+                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(centricAccountListDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
     }
 
     @Override
@@ -801,7 +831,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Map<String, Object> paramMap = param.getParamMap();
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("id"), param.getFinancialAccountIdList()
+        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
                 , pageable);
         List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
                 FinancialAccountLovResponse.builder()
