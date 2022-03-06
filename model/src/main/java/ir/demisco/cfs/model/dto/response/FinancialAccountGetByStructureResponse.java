@@ -6,8 +6,8 @@ public class FinancialAccountGetByStructureResponse {
     private Long id;
     private String description;
     private String code;
-    private Boolean referenceFlag;
-    private Boolean exchangeFlag;
+    private Long referenceFlag;
+    private Long exchangeFlag;
     private Long accountRelationTypeId;
     private Date disableDate;
 
@@ -35,19 +35,19 @@ public class FinancialAccountGetByStructureResponse {
         this.code = code;
     }
 
-    public Boolean getReferenceFlag() {
+    public Long getReferenceFlag() {
         return referenceFlag;
     }
 
-    public void setReferenceFlag(Boolean referenceFlag) {
+    public void setReferenceFlag(Long referenceFlag) {
         this.referenceFlag = referenceFlag;
     }
 
-    public Boolean getExchangeFlag() {
+    public Long getExchangeFlag() {
         return exchangeFlag;
     }
 
-    public void setExchangeFlag(Boolean exchangeFlag) {
+    public void setExchangeFlag(Long exchangeFlag) {
         this.exchangeFlag = exchangeFlag;
     }
 
@@ -97,12 +97,12 @@ public class FinancialAccountGetByStructureResponse {
             return this;
         }
 
-        public Builder referenceFlag(Boolean referenceFlag) {
+        public Builder referenceFlag(Long referenceFlag) {
             financialAccountGetByStructureResponse.setReferenceFlag(referenceFlag);
             return this;
         }
 
-        public Builder exchangeFlag(Boolean exchangeFlag) {
+        public Builder exchangeFlag(Long exchangeFlag) {
             financialAccountGetByStructureResponse.setExchangeFlag(exchangeFlag);
             return this;
         }
