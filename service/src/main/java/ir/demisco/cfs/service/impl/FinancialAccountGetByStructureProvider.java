@@ -50,8 +50,8 @@ public class FinancialAccountGetByStructureProvider implements GridDataProvider 
                     .id((Long) array[0])
                     .code((String) array[1])
                     .description((String) array[2])
-                    .referenceFlag((Boolean) array[3])
-                    .exchangeFlag((Boolean) array[4])
+                    .referenceFlag((Long) array[3])
+                    .exchangeFlag((Long) array[4])
                     .accountRelationTypeId((Long) array[5])
                     .disableDate((Date) array[6])
                     .build();
