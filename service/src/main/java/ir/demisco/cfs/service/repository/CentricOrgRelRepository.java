@@ -12,5 +12,9 @@ public interface CentricOrgRelRepository extends JpaRepository<CentricOrgRel, Lo
             "             AND INER_ORG_REL.ACTIVE_FLAG = 1 "
             , nativeQuery = true)
     Long getCentricOrgRelByOrganizationAndCentricAccount(Long organizationId, Long centricAccountId);
+
+    @Query(value = "select t.id from FNAC.CENTRIC_ORG_REL  T WHERE T.centric_account_id = :centricAccountId and T.organization_id=:organizationId"
+            , nativeQuery = true)
+    Long findByCentricAccountIdForDelete(Long centricAccountId,Long organizationId);
 }
 
