@@ -539,12 +539,32 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         });
     }
 
+//    @Override
+//    @Transactional
+//    public DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+//        return gridFilterService.filter(dataSourceRequest, financialAccountAdjustmentLovProvider);
+//    }
+
     @Override
     @Transactional
-    public DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        return gridFilterService.filter(dataSourceRequest, financialAccountAdjustmentLovProvider);
+    public DataSourceResult getFinancialAccountAdjustmentLov(Long organizationId, DataSourceRequest dataSourceRequest) {
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        Page<Object[]> list = financialAccountRepository.financialAccountAdjustment(SecurityHelper.getCurrentUser().getOrganizationId()
+                , pageable);
+        List<FinancialAccountAdjustmentResponse> centricAccountListDtos = list.stream().map(item ->
+                FinancialAccountAdjustmentResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .fullDescription(item[1] == null ? null : item[1].toString())
+                        .code(item[2] == null ? null : item[2].toString())
+                        .description(item[3].toString())
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(centricAccountListDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
     }
+
 
     @Override
     @Transactional(rollbackOn = Throwable.class)

@@ -38,8 +38,9 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final CentricPersonRoleRepository centricPersonRoleRepository;
     private final CentricAccountTypeRepository centricAccountTypeRepository;
     private final CentricAccountLovProvider centricAccountLovProvider;
+    private final CentricOrgRelRepository centricOrgRelRepository;
 
-    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricAccountLovProvider centricAccountLovProvider) {
+    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricAccountLovProvider centricAccountLovProvider, CentricOrgRelRepository centricOrgRelRepository) {
         this.gridFilterService = gridFilterService;
         this.financialPeriodListGridProvider = financialPeriodListGridProvider;
         this.centricAccountRepository = centricAccountRepository;
@@ -49,16 +50,8 @@ public class DefaultCentricAccount implements CentricAccountService {
         this.centricPersonRoleRepository = centricPersonRoleRepository1;
         this.centricAccountTypeRepository = centricAccountTypeRepository2;
         this.centricAccountLovProvider = centricAccountLovProvider;
+        this.centricOrgRelRepository = centricOrgRelRepository;
     }
-
-//    @Override
-//    @Transactional
-//    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        return gridFilterService.filter(dataSourceRequest, financialPeriodListGridProvider);
-//    }
-
 
     @Override
     @Transactional
@@ -154,18 +147,24 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteCentricAccountById(Long centricAccountId) {
-        List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
-        CentricAccount centricAccount;
-        if (!centricPersonRoles.isEmpty()) {
-            centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
-        }
-        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-        Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
-        if (accountIdForDelete > 0) {
-            throw new RuleException("fin.centricAccount.check.for.delete");
+        Long centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountIdForDelete(centricAccountId,SecurityHelper.getCurrentUser().getOrganizationId());
+        if (centricOrgRelForDelete == null) {
+            throw new RuleException("fin.ruleException.notFoundId");
         } else {
-            centricAccountRepository.deleteById(centricAccount.getId());
-            return true;
+            centricOrgRelRepository.deleteById(centricOrgRelForDelete);
+            List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
+            CentricAccount centricAccount;
+            if (!centricPersonRoles.isEmpty()) {
+                centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
+            }
+            centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
+            Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
+            if (accountIdForDelete > 0) {
+                throw new RuleException("fin.centricAccount.check.for.delete");
+            } else {
+                centricAccountRepository.deleteById(centricAccount.getId());
+                return true;
+            }
         }
     }
 

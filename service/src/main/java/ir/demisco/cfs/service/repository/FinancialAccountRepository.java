@@ -566,6 +566,20 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
     Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Pageable pageable);
+
+
+    @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
+            "  FROM fnac.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
+            " WHERE EXISTS (SELECT 1" +
+            "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "               FS.FINANCIAL_CODING_TYPE_ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            , nativeQuery = true)
+    Page<Object[]> financialAccountAdjustment(Long organizationId, Pageable pageable);
 }
 
 

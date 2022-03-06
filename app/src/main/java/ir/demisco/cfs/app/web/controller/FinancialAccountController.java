@@ -58,7 +58,7 @@ public class FinancialAccountController {
 //    public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
 //        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
 //    }
-    @PostMapping("/GetAdjustment")
+    @GetMapping("/GetAdjustment")
     public ResponseEntity<DataSourceResult> responseEntityFinancialAccountAdjustment(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
