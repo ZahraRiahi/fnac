@@ -233,7 +233,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
     }
 
-
     private List<AccountDefaultValueResponse> accountDefaultValueResponses(Long financialAccountId) {
         List<Object[]> centricAccountListObject = centricAccountRepository.findByCentricAccountListObject(financialAccountId);
         return centricAccountListObject.stream().map(objects ->
@@ -834,18 +833,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         return true;
     }
-
-//    @Override
-//    @Transactional
-//    public DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-//                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
-//        return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
-//
-//    }
 
     private FinancialAccountStructureRequest setParameterFinancialAccountByGetByStructure(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
