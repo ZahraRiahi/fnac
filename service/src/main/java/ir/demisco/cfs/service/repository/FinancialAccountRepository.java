@@ -515,6 +515,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "               FS.FINANCIAL_CODING_TYPE_ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
             "   AND FS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
             "   AND FIAC.DISABLE_DATE IS NULL" +
             "   and (:financialAccountList is null or" +
             "       FIAC.ID in (:financialAccountIdList))" +
@@ -540,7 +542,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   AND FS.FLG_SHOW_IN_ACC = 1" +
             "   AND FIAC.DISABLE_DATE IS NULL "
             , nativeQuery = true)
-    Page<Object[]> financialAccountLov(Long organizationId, Long financialCodingTypeId, Object financialAccountList, List<Long> financialAccountIdList
+    Page<Object[]> financialAccountLov(Long organizationId, Long financialCodingTypeId, Object descriptionObject, String description, Object codeObject, String code, Object financialAccountList, List<Long> financialAccountIdList
             , Pageable pageable);
 
     @Query(value = " SELECT FIAC.ID," +
@@ -558,6 +560,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   AND FIAC.DISABLE_DATE IS NULL" +
             "   AND FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
             "       :financialAccountStructureId" +
+            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
             " AND EXISTS (SELECT 1" +
             "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
@@ -565,7 +569,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "               FS.FINANCIAL_CODING_TYPE_ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Pageable pageable);
+    Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code, Pageable pageable);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
