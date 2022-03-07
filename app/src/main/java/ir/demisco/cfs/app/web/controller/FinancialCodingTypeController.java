@@ -35,13 +35,12 @@ public class FinancialCodingTypeController {
             financialCodingTypeDto.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
             return ResponseEntity.ok(financialCodingTypeDto);
         } else {
-            Long aLongUpdate = financialCodingTypeService.save(financialCodingTypeDto);
+//            Long aLongUpdate = financialCodingTypeService.save(financialCodingTypeDto);
             FinancialCodingTypeDto financialCodingTypeDtoUpdate = financialCodingTypeService.update(financialCodingTypeDto);
-            codingTypeOrgRelService.save(aLongUpdate, SecurityHelper.getCurrentUser().getOrganizationId());
-            financialCodingTypeDto.setId(aLongUpdate);
+            codingTypeOrgRelService.save(financialCodingTypeDtoUpdate.getId(), SecurityHelper.getCurrentUser().getOrganizationId());
+            financialCodingTypeDto.setId(financialCodingTypeDtoUpdate.getId());
             financialCodingTypeDto.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
             return ResponseEntity.ok(financialCodingTypeDtoUpdate);
-//            return ResponseEntity.ok(financialCodingTypeService.update(financialCodingTypeDto));
         }
     }
 
