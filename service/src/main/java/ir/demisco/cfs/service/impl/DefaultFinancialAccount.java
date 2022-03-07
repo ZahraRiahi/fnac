@@ -233,7 +233,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 .flgExists(Long.parseLong(objects[3].toString())).build()).collect(Collectors.toList());
     }
 
-
     private List<AccountDefaultValueResponse> accountDefaultValueResponses(Long financialAccountId) {
         List<Object[]> centricAccountListObject = centricAccountRepository.findByCentricAccountListObject(financialAccountId);
         return centricAccountListObject.stream().map(objects ->
@@ -554,7 +553,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Map<String, Object> paramMap = param.getParamMap();
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
         Page<Object[]> list = financialAccountRepository.financialAccountAdjustment(SecurityHelper.getCurrentUser().getOrganizationId(), paramMap.get("descriptionObject"),
-                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("fullDescriptionObject"),param.getFullDescription(), pageable);
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("fullDescriptionObject"), param.getFullDescription(), pageable);
         List<FinancialAccountAdjustmentResponse> centricAccountListDtos = list.stream().map(item ->
                 FinancialAccountAdjustmentResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
@@ -835,24 +834,37 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return true;
     }
 
-//    @Override
-//    @Transactional
-//    public DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest) {
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("financialAccountStructure.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-//        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-//                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
-//        return gridFilterService.filter(dataSourceRequest, financialAccountGetByStructureProvider);
-//
-//    }
-
     private FinancialAccountStructureRequest setParameterFinancialAccountByGetByStructure(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
+        Map<String, Object> map = new HashMap<>();
         for (DataSourceRequest.FilterDescriptor item : filters) {
             switch (item.getField()) {
                 case "financialAccountStructure.id":
                     financialAccountStructureRequest.setFinancialAccountStructureId(Long.parseLong(item.getValue().toString()));
+                    financialAccountStructureRequest.setParamMap(map);
+                    break;
+
+                case "description":
+                    if (item.getValue() != null) {
+                        map.put("descriptionObject", "descriptionObject");
+                        financialAccountStructureRequest.setParamMap(map);
+                        financialAccountStructureRequest.setDescription(item.getValue().toString());
+                    } else {
+                        map.put("descriptionObject", null);
+                        financialAccountStructureRequest.setParamMap(map);
+                        financialAccountStructureRequest.setDescription(null);
+                    }
+                    break;
+                case "code":
+                    if (item.getValue() != null) {
+                        map.put("codeObject", "codeObject");
+                        financialAccountStructureRequest.setParamMap(map);
+                        financialAccountStructureRequest.setCode(item.getValue().toString());
+                    } else {
+                        map.put("codeObject", null);
+                        financialAccountStructureRequest.setParamMap(map);
+                        financialAccountStructureRequest.setCode(null);
+                    }
                     break;
             }
         }
@@ -864,10 +876,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     public DataSourceResult getFinancialAccountByGetByStructure(Long organizationId, DataSourceRequest dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
-//        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        Map<String, Object> paramMap = param.getParamMap();
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId()
-                , pageable);
+        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId(),
+                paramMap.get("descriptionObject"),
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(), pageable);
         List<FinancialAccountGetByStructureResponse> centricAccountListDtos = list.stream().map(item ->
                 FinancialAccountGetByStructureResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
@@ -891,7 +904,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         Map<String, Object> paramMap = param.getParamMap();
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
+        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("descriptionObject"),
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
                 , pageable);
         List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
                 FinancialAccountLovResponse.builder()
@@ -930,7 +944,28 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
                     }
                     break;
-
+                case "description":
+                    if (item.getValue() != null) {
+                        map.put("descriptionObject", "descriptionObject");
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setDescription(item.getValue().toString());
+                    } else {
+                        map.put("descriptionObject", null);
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setDescription(null);
+                    }
+                    break;
+                case "code":
+                    if (item.getValue() != null) {
+                        map.put("codeObject", "codeObject");
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setCode(item.getValue().toString());
+                    } else {
+                        map.put("codeObject", null);
+                        financialAccountLovRequest.setParamMap(map);
+                        financialAccountLovRequest.setCode(null);
+                    }
+                    break;
 //                case "code":
 //                    if (item.getValue() != null) {
 //                        financialAccountLovRequest.setC(item.getValue().toString());

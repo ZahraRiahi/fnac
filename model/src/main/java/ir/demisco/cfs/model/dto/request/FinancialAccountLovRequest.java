@@ -8,6 +8,8 @@ public class FinancialAccountLovRequest {
     private Object financialAccountList;
     private List<Long> financialAccountIdList;
     private Long organizationId;
+    private String description;
+    private String code;
     Map<String, Object> paramMap;
 
     public Long getFinancialCodingTypeId() {
@@ -40,6 +42,22 @@ public class FinancialAccountLovRequest {
 
     public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Map<String, Object> getParamMap() {
