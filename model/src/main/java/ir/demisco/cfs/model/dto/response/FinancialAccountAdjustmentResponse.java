@@ -1,10 +1,13 @@
 package ir.demisco.cfs.model.dto.response;
 
+import java.util.Map;
+
 public class FinancialAccountAdjustmentResponse {
     private Long id;
     private String code;
     private String description;
     private String fullDescription;
+    Map<String, Object> paramMap;
 
     public Long getId() {
         return id;
@@ -36,6 +39,14 @@ public class FinancialAccountAdjustmentResponse {
 
     public void setFullDescription(String fullDescription) {
         this.fullDescription = fullDescription;
+    }
+
+    public Map<String, Object> getParamMap() {
+        return paramMap;
+    }
+
+    public void setParamMap(Map<String, Object> paramMap) {
+        this.paramMap = paramMap;
     }
 
     public static FinancialAccountAdjustmentResponse.Builder builder() {
