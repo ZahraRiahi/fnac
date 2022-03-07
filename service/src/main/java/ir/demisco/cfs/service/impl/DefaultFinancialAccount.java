@@ -549,9 +549,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     @Override
     @Transactional
     public DataSourceResult getFinancialAccountAdjustmentLov(Long organizationId, DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        FinancialAccountAdjustmentResponse param = setParameterFinancialAccountAdjustmentLov(filters);
+        Map<String, Object> paramMap = param.getParamMap();
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.financialAccountAdjustment(SecurityHelper.getCurrentUser().getOrganizationId()
-                , pageable);
+        Page<Object[]> list = financialAccountRepository.financialAccountAdjustment(SecurityHelper.getCurrentUser().getOrganizationId(), paramMap.get("descriptionObject"),
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("fullDescriptionObject"),param.getFullDescription(), pageable);
         List<FinancialAccountAdjustmentResponse> centricAccountListDtos = list.stream().map(item ->
                 FinancialAccountAdjustmentResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
@@ -565,6 +568,43 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return dataSourceResult;
     }
 
+    private FinancialAccountAdjustmentResponse setParameterFinancialAccountAdjustmentLov(List<DataSourceRequest.FilterDescriptor> filters) {
+        FinancialAccountAdjustmentResponse financialAccountAdjustmentResponse = new FinancialAccountAdjustmentResponse();
+        Map<String, Object> map = new HashMap<>();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "description":
+                    if (item.getValue() != null) {
+                        map.put("descriptionObject", "descriptionObject");
+                        financialAccountAdjustmentResponse.setDescription(item.getValue().toString());
+                    } else {
+                        map.put("descriptionObject", null);
+                        financialAccountAdjustmentResponse.setDescription(null);
+                    }
+                    break;
+                case "code":
+                    if (item.getValue() != null) {
+                        map.put("codeObject", "codeObject");
+                        financialAccountAdjustmentResponse.setCode(item.getValue().toString());
+                    } else {
+                        map.put("codeObject", null);
+                        financialAccountAdjustmentResponse.setCode(null);
+                    }
+                    break;
+                case "fullDescription":
+                    if (item.getValue() != null) {
+                        map.put("fullDescriptionObject", "fullDescriptionObject");
+                        financialAccountAdjustmentResponse.setFullDescription(item.getValue().toString());
+                    } else {
+                        map.put("fullDescriptionObject", null);
+                        financialAccountAdjustmentResponse.setFullDescription(null);
+                    }
+
+            }
+        }
+        financialAccountAdjustmentResponse.setParamMap(map);
+        return financialAccountAdjustmentResponse;
+    }
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
@@ -891,8 +931,14 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     }
                     break;
 
+//                case "code":
+//                    if (item.getValue() != null) {
+//                        financialAccountLovRequest.setC(item.getValue().toString());
+//                    }
+
             }
         }
         return financialAccountLovRequest;
     }
+
 }
