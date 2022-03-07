@@ -577,9 +577,12 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "               FS.FINANCIAL_CODING_TYPE_ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
+            "   and (:fullDescriptionObject is null or FIAC.FULL_DESCRIPTION like %:fullDescription% )"
             , nativeQuery = true)
-    Page<Object[]> financialAccountAdjustment(Long organizationId, Pageable pageable);
+    Page<Object[]> financialAccountAdjustment(Long organizationId, Object descriptionObject, String description, Object codeObject, String code, Object fullDescriptionObject, String fullDescription, Pageable pageable);
 }
 
 
