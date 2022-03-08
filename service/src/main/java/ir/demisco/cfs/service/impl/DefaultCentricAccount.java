@@ -147,24 +147,24 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteCentricAccountById(Long centricAccountId) {
-        Long centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountIdForDelete(centricAccountId,SecurityHelper.getCurrentUser().getOrganizationId());
-        if (centricOrgRelForDelete == null) {
-            throw new RuleException("fin.ruleException.notFoundId");
-        } else {
+        Long centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountIdForDelete(centricAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
+        if (centricOrgRelForDelete != null) {
+//            throw new RuleException("fin.ruleException.notFoundId");
+//        } else {
             centricOrgRelRepository.deleteById(centricOrgRelForDelete);
-            List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
-            CentricAccount centricAccount;
-            if (!centricPersonRoles.isEmpty()) {
-                centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
-            }
-            centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-            Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
-            if (accountIdForDelete > 0) {
-                throw new RuleException("fin.centricAccount.check.for.delete");
-            } else {
-                centricAccountRepository.deleteById(centricAccount.getId());
-                return true;
-            }
+        }
+        List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
+        CentricAccount centricAccount;
+        if (!centricPersonRoles.isEmpty()) {
+            centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
+        }
+        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
+        Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
+        if (accountIdForDelete > 0) {
+            throw new RuleException("fin.centricAccount.check.for.delete");
+        } else {
+            centricAccountRepository.deleteById(centricAccount.getId());
+            return true;
         }
     }
 
