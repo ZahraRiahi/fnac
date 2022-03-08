@@ -68,16 +68,15 @@ public class DefaultFinancialCodingType implements FinancialCodingTypeService {
         } else {
             financialCodingTypeRepository.findById(financialCodingTypeId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             Long codingTypeOrgRelForDelete = codingTypeOrgRelRepository.findByFinancialCodingTypeIdForDelete(financialCodingTypeId);
-            if (codingTypeOrgRelForDelete == null) {
-                throw new RuleException("fin.ruleException.notFoundId");
-            } else {
+            if (codingTypeOrgRelForDelete != null) {
                 codingTypeOrgRelRepository.deleteById(codingTypeOrgRelForDelete);
-                financialCodingTypeRepository.deleteById(financialCodingTypeId);
-                return true;
             }
-
+            financialCodingTypeRepository.deleteById(financialCodingTypeId);
+            return true;
         }
+
     }
+
 
     private FinancialCodingTypeDto convertFinancialPeriodToDto(FinancialCodingType financialCodingType) {
         return FinancialCodingTypeDto.builder().id(financialCodingType.getId())
