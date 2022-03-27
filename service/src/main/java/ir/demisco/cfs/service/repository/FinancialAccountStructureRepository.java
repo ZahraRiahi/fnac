@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FinancialAccountStructureRepository extends JpaRepository<FinancialAccountStructure, Long> {
-    @Query("select fas from  FinancialAccountStructure fas where fas.financialCodingType.id=:financialCodingTypeId and fas.deletedDate is null")
+    @Query("select fas from  FinancialAccountStructure fas where fas.financialCodingType.id=:financialCodingTypeId ")
     List<FinancialAccountStructure> findByFinancialCodingTypeId(Long financialCodingTypeId);
 
     @Query("select coalesce(COUNT(fas.id),0) from FinancialAccountStructure fas " +
