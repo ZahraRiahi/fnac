@@ -1,12 +1,13 @@
 package ir.demisco.cfs.model.entity;
 
+import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import ir.demisco.cloud.basic.model.entity.org.Organization;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "centric_org_rel", schema = "fnac")
-public class CentricOrgRel {
+public class CentricOrgRel extends AuditModel<Long> {
     private Long id;
     private CentricAccount centricAccount;
     private Organization organization;
