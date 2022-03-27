@@ -1,12 +1,13 @@
 package ir.demisco.cfs.model.entity;
 
+import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 import ir.demisco.cloud.basic.model.entity.org.Organization;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "coding_type_org_rel", schema = "fnac")
-public class CodingTypeOrgRel {
+public class CodingTypeOrgRel extends AuditModel<Long> {
     private Long id;
     private FinancialCodingType financialCodingType;
     private Organization organization;
