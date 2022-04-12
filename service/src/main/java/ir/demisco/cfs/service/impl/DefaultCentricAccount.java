@@ -5,10 +5,22 @@ import ir.demisco.cfs.model.dto.request.CentricAccountGetRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountParamRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.response.*;
-import ir.demisco.cfs.model.entity.*;
+import ir.demisco.cfs.model.dto.response.CentricAccountDto;
+import ir.demisco.cfs.model.dto.response.CentricAccountListResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountOutPutResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountResponse;
+import ir.demisco.cfs.model.dto.response.PersonRoleTypeDto;
+import ir.demisco.cfs.model.entity.CentricAccount;
+import ir.demisco.cfs.model.entity.CentricPersonRole;
 import ir.demisco.cfs.service.api.CentricAccountService;
-import ir.demisco.cfs.service.repository.*;
+import ir.demisco.cfs.service.repository.CentricAccountRepository;
+import ir.demisco.cfs.service.repository.CentricAccountTypeRepository;
+import ir.demisco.cfs.service.repository.CentricOrgRelRepository;
+import ir.demisco.cfs.service.repository.CentricPersonRoleRepository;
+import ir.demisco.cfs.service.repository.OrganizationRepository;
+import ir.demisco.cfs.service.repository.PersonRepository;
+import ir.demisco.cfs.service.repository.PersonRoleTypeRepository;
 import ir.demisco.cloud.core.middle.exception.RuleException;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
@@ -20,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +43,6 @@ import java.util.stream.Collectors;
 @Service
 public class DefaultCentricAccount implements CentricAccountService {
     private final GridFilterService gridFilterService;
-    private final CentricAccountListGridProvider financialPeriodListGridProvider;
     private final CentricAccountRepository centricAccountRepository;
     private final OrganizationRepository organizationRepository;
     private final PersonRepository personRepository;
@@ -40,9 +52,8 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final CentricAccountLovProvider centricAccountLovProvider;
     private final CentricOrgRelRepository centricOrgRelRepository;
 
-    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountListGridProvider financialPeriodListGridProvider, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricAccountLovProvider centricAccountLovProvider, CentricOrgRelRepository centricOrgRelRepository) {
+    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricAccountLovProvider centricAccountLovProvider, CentricOrgRelRepository centricOrgRelRepository) {
         this.gridFilterService = gridFilterService;
-        this.financialPeriodListGridProvider = financialPeriodListGridProvider;
         this.centricAccountRepository = centricAccountRepository;
         this.organizationRepository = organizationRepository;
         this.personRepository = personRepository;
@@ -65,15 +76,15 @@ public class DefaultCentricAccount implements CentricAccountService {
         List<CentricAccountListResponse> centricAccountListDtos = list.stream().map(item ->
                 CentricAccountListResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
-                        .code(item[1] == null ? null : item[1].toString())
+                        .code(gatItemForString(item, 1))
                         .name(item[2].toString())
-                        .activeFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
-                        .abbreviationName(item[4] == null ? null : item[4].toString())
-                        .latinName(item[5] == null ? null : item[5].toString())
-                        .centricAccountTypeId(item[6] == null ? null : Long.parseLong(item[6].toString()))
-                        .organizationId(item[7] == null ? null : Long.parseLong(item[7].toString()))
-                        .personId(item[8] == null ? null : Long.parseLong(item[8].toString()))
-                        .centricAccountTypeDescription(item[9] == null ? null : item[9].toString())
+                        .activeFlag(getItemForLong(item, 3))
+                        .abbreviationName(gatItemForString(item, 4))
+                        .latinName(gatItemForString(item, 5))
+                        .centricAccountTypeId(getItemForLong(item, 6))
+                        .organizationId(getItemForLong(item, 7))
+                        .personId(getItemForLong(item, 8))
+                        .centricAccountTypeDescription(gatItemForString(item, 9))
                         .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
                         .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
                         .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
@@ -83,6 +94,18 @@ public class DefaultCentricAccount implements CentricAccountService {
         dataSourceResult.setData(centricAccountListDtos);
         dataSourceResult.setTotal(list.getTotalElements());
         return dataSourceResult;
+    }
+
+    private Long getItemForLong(Object[] item, int i) {
+        return item[i] == null ? null : Long.parseLong(item[i].toString());
+    }
+
+    private String gatItemForString(Object[] item, int i) {
+        return item[i] == null ? null : item[i].toString();
+    }
+
+    private Double getItemForDouble(Object[] item, int i) {
+        return item[i] == null ? null : ((BigDecimal) item[i]).doubleValue();
     }
 
     private CentricAccountParamRequest setParameterCentricAccount(List<DataSourceRequest.FilterDescriptor> filters) {
@@ -100,7 +123,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                         centricAccountParamRequest.setName("");
                     }
                     break;
-
+                default:
+                    break;
             }
         }
         return centricAccountParamRequest;
@@ -218,6 +242,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                         centricAccountParameter.setParentCentricAccountId(0L);
                     }
                     break;
+                default:
+                    break;
             }
         }
         return centricAccountParameter;
@@ -279,7 +305,7 @@ public class DefaultCentricAccount implements CentricAccountService {
 
     @Override
     @Transactional
-    public DataSourceResult getCentricAccountLov(Long OrganizationId, DataSourceRequest dataSourceRequest) {
+    public DataSourceResult getCentricAccountLov(Long organizationId, DataSourceRequest dataSourceRequest) {
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
                 .create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
         dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
@@ -333,6 +359,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                         centricAccountGetRequest.setParamMap(map);
                         centricAccountGetRequest.setParentCentricAccountId(0L);
                     }
+                    break;
+                default:
                     break;
             }
         }
