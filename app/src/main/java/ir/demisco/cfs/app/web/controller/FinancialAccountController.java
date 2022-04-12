@@ -1,14 +1,26 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.*;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
+import ir.demisco.cfs.model.dto.response.AccountPermanentStatusDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cfs.service.api.FinancialAccountService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.persistence.EntityManagerFactory;
 import javax.validation.Valid;
 import java.util.List;
@@ -43,9 +55,6 @@ public class FinancialAccountController {
 
     @PostMapping("/save")
     public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody @Valid FinancialAccountRequest financialAccountRequest, BindingResult result ) {
-        if (result.hasErrors()){
-            System.out.println(result.getAllErrors());
-        }
         if (financialAccountRequest.getId() == null) {
             FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
             return ResponseEntity.ok(financialAccountOutPutDto);
@@ -53,26 +62,21 @@ public class FinancialAccountController {
             return ResponseEntity.ok(financialAccountService.update(financialAccountRequest));
         }
     }
-
-    //   @GetMapping("/GetAdjustment")
-//    public ResponseEntity<List<FinancialAccountAdjustmentResponse>> responseEntityFinancialAccountAdjustmen() {
-//        return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId()));
-//    }
     @PostMapping("/GetAdjustment")
     public ResponseEntity<DataSourceResult> responseEntityFinancialAccountAdjustment(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
     }
 
     @GetMapping("/delete/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialAccountId) {
+    public ResponseEntity<Boolean> delete(@PathVariable("id") Long financialAccountId) {
         boolean result;
-        result = financialAccountService.deleteFinancialAccountById(FinancialAccountId);
+        result = financialAccountService.deleteFinancialAccountById(financialAccountId);
         return ResponseEntity.ok(result);
 
     }
 
     @PostMapping("/setStatus")
-    public ResponseEntity<Boolean> GetByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
+    public ResponseEntity<Boolean> getByPerson(@RequestBody FinancialAccountStatusRequest financialAccountStatusRequest) {
         boolean result;
         result = financialAccountService.getFinancialAccountByIdAndStatusFlag(financialAccountStatusRequest, SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
@@ -94,11 +98,6 @@ public class FinancialAccountController {
         result = financialAccountService.getFinancialAccountGetInsertAllowControl(financialAccountAllowChildRequest);
         return ResponseEntity.ok(result);
     }
-
-//    @PostMapping("/GetByStructure")
-//    public ResponseEntity<List<FinancialAccountGetByStructureResponse>> responseEntityGetByStructure(@RequestBody FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest) {
-//        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(),financialAccountGetByStructureRequest));
-//    }
 
     @PostMapping("/GetByStructure")
     public ResponseEntity<DataSourceResult> responseEntityGetByStructure(@RequestBody DataSourceRequest dataSourceRequest) {

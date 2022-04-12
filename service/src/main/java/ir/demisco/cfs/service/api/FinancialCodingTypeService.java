@@ -6,7 +6,7 @@ import ir.demisco.cfs.model.dto.response.FinancialCodingTypeResponse;
 import java.util.List;
 
 public interface FinancialCodingTypeService {
-    List<FinancialCodingTypeResponse> getFinancialCodingTypeByOrganizationId(Long OrganizationId);
+    List<FinancialCodingTypeResponse> getFinancialCodingTypeByOrganizationId(Long organizationId);
 
     Long save(FinancialCodingTypeDto financialCodingTypeDto);
 

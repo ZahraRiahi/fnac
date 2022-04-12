@@ -7,7 +7,7 @@ public class FinancialAccountTypeDto {
     private String description;
     private String code;
     private Long flgExists;
-    private LocalDateTime DeletedDate;
+    private LocalDateTime deletedDate;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class FinancialAccountTypeDto {
     }
 
     public LocalDateTime getDeletedDate() {
-        return DeletedDate;
+        return deletedDate;
     }
 
     public void setDeletedDate(LocalDateTime deletedDate) {
-        DeletedDate = deletedDate;
+        this.deletedDate = deletedDate;
     }
 
     public static FinancialAccountTypeDto.Builder builder() {
@@ -83,8 +83,8 @@ public class FinancialAccountTypeDto {
             return this;
         }
 
-        public Builder DeletedDate(LocalDateTime DeletedDate) {
-            financialAccountTypeDto.setDeletedDate(DeletedDate);
+        public Builder deletedDate(LocalDateTime deletedDate) {
+            financialAccountTypeDto.setDeletedDate(deletedDate);
             return this;
         }
 

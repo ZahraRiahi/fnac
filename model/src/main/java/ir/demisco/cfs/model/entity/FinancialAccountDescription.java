@@ -2,7 +2,13 @@ package ir.demisco.cfs.model.entity;
 
 import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,7 +16,7 @@ import java.time.LocalDateTime;
 public class FinancialAccountDescription extends AuditModel<Long> {
     private Long id;
     private String description;
-    private LocalDateTime DeletedDate;
+    private LocalDateTime deletedDate;
 
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_description_generator", sequenceName = "sq_financial_account_description", allocationSize = 50)
@@ -34,10 +40,10 @@ public class FinancialAccountDescription extends AuditModel<Long> {
 
     @Column(name = "DELETED_DATE")
     public LocalDateTime getDeletedDate() {
-        return DeletedDate;
+        return deletedDate;
     }
 
     public void setDeletedDate(LocalDateTime deletedDate) {
-        DeletedDate = deletedDate;
+        this.deletedDate = deletedDate;
     }
 }

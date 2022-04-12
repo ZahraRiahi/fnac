@@ -3,7 +3,10 @@ package ir.demisco.cfs.service.api;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDtoResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 
