@@ -29,7 +29,7 @@ public class PersonRoleTypeDto {
     }
 
     public void setFlagExist(Long flagExist) {
-        flagExist = flagExist;
+        this.flagExist = flagExist;
     }
 
     public static final class Builder {
