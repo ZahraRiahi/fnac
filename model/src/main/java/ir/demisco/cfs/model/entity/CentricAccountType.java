@@ -23,7 +23,6 @@ public class CentricAccountType extends AuditModel<Long> {
     private Long documentRelatedFlag;
     private Long parrentFlag;
     private LocalDateTime deletedDate;
-//    private List<AccountRelationTypeDetail> accountRelationTypeDetails;
     @Id
     public Long getId() {
         return id;
