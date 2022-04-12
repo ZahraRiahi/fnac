@@ -2,8 +2,9 @@ package ir.demisco.cfs.model.entity;
 
 import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.*;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ public class AccountNatureType extends AuditModel<Long> {
 
     private Long id;
     private String description;
-    private LocalDateTime DeletedDate;
+    private LocalDateTime deletedDate;
 
     @Id
     public Long getId() {
@@ -34,11 +35,12 @@ public class AccountNatureType extends AuditModel<Long> {
     }
 
     @Column(name = "DELETED_DATE")
+
     public LocalDateTime getDeletedDate() {
-        return DeletedDate;
+        return deletedDate;
     }
 
     public void setDeletedDate(LocalDateTime deletedDate) {
-        DeletedDate = deletedDate;
+        this.deletedDate = deletedDate;
     }
 }

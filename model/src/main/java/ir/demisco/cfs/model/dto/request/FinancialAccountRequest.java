@@ -1,7 +1,5 @@
 package ir.demisco.cfs.model.dto.request;
 
-import ir.demisco.cfs.model.entity.AccountRelatedDescription;
-
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -10,13 +8,12 @@ public class FinancialAccountRequest {
     private Long organizationId;
     private Long financialAccountStructureId;
     private String fullDescription;
-    private String Description;
+    private String description;
     private String code;
     private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private Boolean relatedToOthersFlag;
-//    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private Long financialAccountParentId;
     private String relatedToFundType;
@@ -64,11 +61,11 @@ public class FinancialAccountRequest {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public String getCode() {
@@ -110,14 +107,6 @@ public class FinancialAccountRequest {
     public void setRelatedToOthersFlag(Boolean relatedToOthersFlag) {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
-
-//    public Boolean getPermanentFlag() {
-//        return permanentFlag;
-//    }
-//
-//    public void setPermanentFlag(Boolean permanentFlag) {
-//        this.permanentFlag = permanentFlag;
-//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;

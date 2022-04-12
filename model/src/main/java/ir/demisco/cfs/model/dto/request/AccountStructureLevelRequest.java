@@ -4,8 +4,8 @@ public class AccountStructureLevelRequest {
     private Long id;
     private Long structureLevel;
     private String structureLevelCode;
-    private Long FinancialStructureId;
-    private Long FinancialAccountId;
+    private Long financialStructureId;
+    private Long financialAccountId;
 
     public Long getId() {
         return id;
@@ -32,19 +32,18 @@ public class AccountStructureLevelRequest {
     }
 
     public Long getFinancialStructureId() {
-        return FinancialStructureId;
+        return financialStructureId;
     }
 
     public void setFinancialStructureId(Long financialStructureId) {
-        FinancialStructureId = financialStructureId;
+        this.financialStructureId = financialStructureId;
     }
 
     public Long getFinancialAccountId() {
-        return FinancialAccountId;
+        return financialAccountId;
     }
 
     public void setFinancialAccountId(Long financialAccountId) {
-        FinancialAccountId = financialAccountId;
+        this.financialAccountId = financialAccountId;
     }
-
 }

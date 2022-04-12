@@ -1,6 +1,5 @@
 package ir.demisco.cfs.service.impl;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;

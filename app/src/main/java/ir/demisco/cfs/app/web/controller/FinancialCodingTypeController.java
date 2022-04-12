@@ -6,7 +6,11 @@ import ir.demisco.cfs.service.api.CodingTypeOrgRelService;
 import ir.demisco.cfs.service.api.FinancialCodingTypeService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -35,7 +39,6 @@ public class FinancialCodingTypeController {
             financialCodingTypeDto.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
             return ResponseEntity.ok(financialCodingTypeDto);
         } else {
-//            Long aLongUpdate = financialCodingTypeService.save(financialCodingTypeDto);
             FinancialCodingTypeDto financialCodingTypeDtoUpdate = financialCodingTypeService.update(financialCodingTypeDto);
             codingTypeOrgRelService.save(financialCodingTypeDtoUpdate.getId(), SecurityHelper.getCurrentUser().getOrganizationId());
             financialCodingTypeDto.setId(financialCodingTypeDtoUpdate.getId());
@@ -45,9 +48,9 @@ public class FinancialCodingTypeController {
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable("id") Long FinancialCodingTypeId) {
+    public ResponseEntity<Boolean> delete(@PathVariable("id") Long financialCodingTypeId) {
         boolean result;
-        result = financialCodingTypeService.deleteFinancialCodingTypeById(FinancialCodingTypeId);
+        result = financialCodingTypeService.deleteFinancialCodingTypeById(financialCodingTypeId);
         return ResponseEntity.ok(result);
 
     }

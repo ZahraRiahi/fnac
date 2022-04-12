@@ -2,7 +2,9 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
 import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
-import ir.demisco.cfs.model.entity.*;
+
+import ir.demisco.cfs.model.entity.AccountRelatedDescription;
+import ir.demisco.cfs.model.entity.FinancialAccountDescription;
 import ir.demisco.cfs.service.api.AccountRelatedDescriptionService;
 import ir.demisco.cfs.service.repository.AccountRelatedDescriptionRepository;
 import ir.demisco.cfs.service.repository.FinancialAccountDescriptionRepository;
@@ -11,7 +13,6 @@ import ir.demisco.cloud.core.middle.exception.RuleException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 
 @Service
 public class DefaultAccountRelatedDescription implements AccountRelatedDescriptionService {
@@ -30,9 +31,7 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
     @Transactional(rollbackOn = Throwable.class)
     public boolean deleteAccountRelatedDescriptionById(Long accountRelatedDescriptionId) {
         accountRelatedDescriptionRepository.findById(accountRelatedDescriptionId).orElseThrow(() -> new RuleException("fin.accountRelatedDescription.delete"));
-//        accountRelatedDescription.setDeletedDate(LocalDateTime.now());
         accountRelatedDescriptionRepository.deleteById(accountRelatedDescriptionId);
-//        accountRelatedDescriptionRepository.save(accountRelatedDescription);
         return true;
     }
 
@@ -66,6 +65,8 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
                 AccountRelatedDescription accountRelatedDescription = accountRelatedDescriptionRepository.findByFinancialAccountDescriptionId(financialAccountDescription.getId());
                 return convertAccountRelatedDescriptionDto(accountRelatedDescription);
             }
+        } else {
+
         }
         return null;
     }

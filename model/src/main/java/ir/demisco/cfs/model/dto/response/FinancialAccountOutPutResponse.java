@@ -33,9 +33,6 @@ public class FinancialAccountOutPutResponse {
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
     private List<AccountMoneyTypeResponse> accountMoneyTypeOutPutModel;
 
-    public FinancialAccountOutPutResponse() {
-    }
-
     public Long getId() {
         return id;
     }
@@ -333,11 +330,6 @@ public class FinancialAccountOutPutResponse {
             financialAccountOutPutResponse.setRelatedToOthersFlag(relatedToOthersFlag);
             return this;
         }
-
-//        public Builder permanentFlag(Boolean permanentFlag) {
-//            financialAccountOutPutResponse.setPermanentFlag(permanentFlag);
-//            return this;
-//        }
 
         public Builder accountRelationTypeId(Long accountRelationTypeId) {
             financialAccountOutPutResponse.setAccountRelationTypeId(accountRelationTypeId);

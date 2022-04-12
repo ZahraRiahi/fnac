@@ -5,7 +5,10 @@ import ir.demisco.cfs.model.dto.response.AccountMoneyTypeDto;
 import ir.demisco.cfs.service.api.AccountMoneyTypeService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,7 +20,6 @@ public class AccountMoneyTypeController {
     public AccountMoneyTypeController(AccountMoneyTypeService accountMoneyTypeService) {
         this.accountMoneyTypeService = accountMoneyTypeService;
     }
-
 
     @PostMapping("/Get")
     public ResponseEntity<List<AccountMoneyTypeDto>> responseEntity(@RequestBody AccountMoneyTypeRequest accountMoneyTypeRequest) {

@@ -8,9 +8,6 @@ import java.util.List;
 
 public interface FinancialCodingTypeRepository extends JpaRepository<FinancialCodingType, Long> {
 
-//    @Query("select fct from FinancialCodingType fct where fct.organization.id=:organizationId and fct.deletedDate is null")
-//    List<FinancialCodingType> findByOrganizationId(Long organizationId);
-
     @Query(value = " SELECT FNCT.id, FNCT.DESCRIPTION" +
             "    FROM fnac.FINANCIAL_CODING_TYPE FNCT" +
             "    WHERE EXISTS (SELECT 1" +

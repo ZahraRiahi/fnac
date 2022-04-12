@@ -1,7 +1,13 @@
 package ir.demisco.cfs.service.api;
 
-import ir.demisco.cfs.model.dto.request.*;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountRequest;
+import ir.demisco.cfs.model.dto.request.FinancialAccountStatusRequest;
+import ir.demisco.cfs.model.dto.response.AccountPermanentStatusDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountOutPutResponse;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 
@@ -18,8 +24,7 @@ public interface FinancialAccountService {
 
     FinancialAccountOutPutDto update(FinancialAccountRequest financialAccountRequest);
 
-    //    List<FinancialAccountAdjustmentResponse> getFinancialAccountAdjustmentLov(Long OrganizationId);
-    DataSourceResult getFinancialAccountAdjustmentLov(Long OrganizationId, DataSourceRequest dataSourceRequest);
+    DataSourceResult getFinancialAccountAdjustmentLov(Long organizationId, DataSourceRequest dataSourceRequest);
 
     Boolean deleteFinancialAccountById(Long financialAccount);
 
@@ -31,8 +36,6 @@ public interface FinancialAccountService {
 
     Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest);
 
-//    List<FinancialAccountGetByStructureResponse> getFinancialAccountByGetByStructure(Long organizationId, FinancialAccountGetByStructureRequest financialAccountGetByStructureRequest);
-
-    DataSourceResult getFinancialAccountByGetByStructure(Long OrganizationId, DataSourceRequest dataSourceRequest);
+    DataSourceResult getFinancialAccountByGetByStructure(Long organizationId, DataSourceRequest dataSourceRequest);
 
 }

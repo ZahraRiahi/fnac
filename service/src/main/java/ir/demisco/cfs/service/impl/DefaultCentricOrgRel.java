@@ -1,6 +1,5 @@
 package ir.demisco.cfs.service.impl;
 
-import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.entity.CentricOrgRel;
 import ir.demisco.cfs.service.api.CentricOrgRelService;

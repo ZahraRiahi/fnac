@@ -15,7 +15,7 @@ public class FinancialAccountType extends AuditModel<Long> {
     private String code;
     private String description;
     private Boolean uniqueUsedFlag;
-    private LocalDateTime DeletedDate;
+    private LocalDateTime deletedDate;
 
     @Id
     public Long getId() {
@@ -55,10 +55,10 @@ public class FinancialAccountType extends AuditModel<Long> {
 
     @Column(name = "DELETED_DATE")
     public LocalDateTime getDeletedDate() {
-        return DeletedDate;
+        return deletedDate;
     }
 
     public void setDeletedDate(LocalDateTime deletedDate) {
-        DeletedDate = deletedDate;
+        this.deletedDate = deletedDate;
     }
 }

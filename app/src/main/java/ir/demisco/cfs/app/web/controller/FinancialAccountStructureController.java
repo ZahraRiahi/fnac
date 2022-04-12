@@ -3,12 +3,20 @@ package ir.demisco.cfs.app.web.controller;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDtoResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -43,9 +51,9 @@ public class FinancialAccountStructureController {
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Boolean> DeleteFinancialAccountStructure(@PathVariable("id") Long FinancialAccountStructureId) {
+    public ResponseEntity<Boolean> deleteFinancialAccountStructure(@PathVariable("id") Long financialAccountStructureId) {
         boolean result;
-        result = financialAccountStructureService.deleteFinancialAccountStructureById(FinancialAccountStructureId);
+        result = financialAccountStructureService.deleteFinancialAccountStructureById(financialAccountStructureId);
         return ResponseEntity.ok(result);
 
     }
