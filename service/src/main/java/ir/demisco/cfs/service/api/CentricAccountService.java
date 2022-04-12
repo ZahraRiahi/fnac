@@ -2,7 +2,9 @@ package ir.demisco.cfs.service.api;
 
 import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.response.CentricAccountDto;
+import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountOutPutResponse;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 
@@ -23,7 +25,7 @@ public interface CentricAccountService {
 
     List<CentricAccountNewResponse> getCentricAccountByOrganIdAndCentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest);
 
-    DataSourceResult getCentricAccountLov(Long OrganizationId,DataSourceRequest dataSourceRequest);
+    DataSourceResult getCentricAccountLov(Long organizationId,DataSourceRequest dataSourceRequest);
 
 
 }

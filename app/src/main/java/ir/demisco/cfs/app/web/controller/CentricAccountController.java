@@ -1,16 +1,25 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.*;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
+import ir.demisco.cfs.model.dto.response.CentricAccountDto;
+import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountOutPutResponse;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.api.CentricOrgRelService;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api-centricAccount")
@@ -42,14 +51,14 @@ public class CentricAccountController {
     }
 
     @GetMapping("/GetByPerson/{id}")
-    public ResponseEntity<Boolean> GetByPerson(@PathVariable("id") Long personId) {
+    public ResponseEntity<Boolean> getByPerson(@PathVariable("id") Long personId) {
         boolean result;
         result = centricAccountService.getCentricAccountByOrganIdAndPersonId(personId, SecurityHelper.getCurrentUser().getOrganizationId());
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Boolean> DeleteCentricAccount(@PathVariable("id") Long centricAccountId) {
+    public ResponseEntity<Boolean> deleteCentricAccount(@PathVariable("id") Long centricAccountId) {
         boolean result;
         result = centricAccountService.deleteCentricAccountById(centricAccountId);
         return ResponseEntity.ok(result);

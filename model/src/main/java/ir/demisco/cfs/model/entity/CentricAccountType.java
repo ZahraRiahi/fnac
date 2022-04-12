@@ -2,11 +2,11 @@ package ir.demisco.cfs.model.entity;
 
 import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.*;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "centric_account_type", schema = "fnac")
@@ -132,12 +132,4 @@ public class CentricAccountType extends AuditModel<Long> {
         this.deletedDate = deletedDate;
     }
 
-//    @OneToMany(mappedBy = "centricAccountType")
-//    public List<AccountRelationTypeDetail> getAccountRelationTypeDetails() {
-//        return accountRelationTypeDetails;
-//    }
-//
-//    public void setAccountRelationTypeDetails(List<AccountRelationTypeDetail> accountRelationTypeDetails) {
-//        this.accountRelationTypeDetails = accountRelationTypeDetails;
-//    }
 }
