@@ -173,8 +173,6 @@ public class DefaultCentricAccount implements CentricAccountService {
     public Boolean deleteCentricAccountById(Long centricAccountId) {
         Long centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountIdForDelete(centricAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
         if (centricOrgRelForDelete != null) {
-//            throw new RuleException("fin.ruleException.notFoundId");
-//        } else {
             centricOrgRelRepository.deleteById(centricOrgRelForDelete);
         }
         List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
