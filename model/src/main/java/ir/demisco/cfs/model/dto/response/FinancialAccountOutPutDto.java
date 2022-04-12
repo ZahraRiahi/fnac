@@ -9,12 +9,10 @@ public class FinancialAccountOutPutDto {
     private String fullDescription;
     private String code;
     private String description;
-    //    private Boolean activeFlag;
     private String latinDescription;
     private Long accountNatureTypeId;
     private String accountNatureTypeDescription;
     private Boolean relatedToOthersFlag;
-    //    private Boolean permanentFlag;
     private Long accountRelationTypeId;
     private String accountRelationTypeDescription;
     private Long financialAccountParentId;
@@ -79,14 +77,6 @@ public class FinancialAccountOutPutDto {
         this.description = description;
     }
 
-//    public Boolean getActiveFlag() {
-//        return activeFlag;
-//    }
-//
-//    public void setActiveFlag(Boolean activeFlag) {
-//        this.activeFlag = activeFlag;
-//    }
-
     public String getLatinDescription() {
         return latinDescription;
     }
@@ -118,14 +108,6 @@ public class FinancialAccountOutPutDto {
     public void setRelatedToOthersFlag(Boolean relatedToOthersFlag) {
         this.relatedToOthersFlag = relatedToOthersFlag;
     }
-
-//    public Boolean getPermanentFlag() {
-//        return permanentFlag;
-//    }
-//
-//    public void setPermanentFlag(Boolean permanentFlag) {
-//        this.permanentFlag = permanentFlag;
-//    }
 
     public Long getAccountRelationTypeId() {
         return accountRelationTypeId;
@@ -292,11 +274,6 @@ public class FinancialAccountOutPutDto {
             return this;
         }
 
-//        public Builder activeFlag(Boolean activeFlag) {
-//            financialAccountOutPutDto.setActiveFlag(activeFlag);
-//            return this;
-//        }
-
         public Builder latinDescription(String latinDescription) {
             financialAccountOutPutDto.setLatinDescription(latinDescription);
             return this;
@@ -316,11 +293,6 @@ public class FinancialAccountOutPutDto {
             financialAccountOutPutDto.setRelatedToOthersFlag(relatedToOthersFlag);
             return this;
         }
-
-//        public Builder permanentFlag(Boolean permanentFlag) {
-//            financialAccountOutPutDto.setPermanentFlag(permanentFlag);
-//            return this;
-//        }
 
         public Builder accountRelationTypeId(Long accountRelationTypeId) {
             financialAccountOutPutDto.setAccountRelationTypeId(accountRelationTypeId);

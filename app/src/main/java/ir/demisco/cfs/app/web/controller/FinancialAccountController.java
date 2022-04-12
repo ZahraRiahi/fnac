@@ -29,11 +29,9 @@ import java.util.List;
 @RequestMapping("/api-financialAccount")
 public class FinancialAccountController {
     private final FinancialAccountService financialAccountService;
-    private final EntityManagerFactory entityManager;
 
-    public FinancialAccountController(FinancialAccountService financialAccountService, EntityManagerFactory entityManager) {
+    public FinancialAccountController(FinancialAccountService financialAccountService) {
         this.financialAccountService = financialAccountService;
-        this.entityManager = entityManager;
     }
 
     @PostMapping("/list")
