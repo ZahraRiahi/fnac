@@ -3,7 +3,10 @@ package ir.demisco.cfs.service.impl;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureDtoRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureNewRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountStructureRequest;
-import ir.demisco.cfs.model.dto.response.*;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDto;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureDtoResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureNewResponse;
+import ir.demisco.cfs.model.dto.response.FinancialAccountStructureResponse;
 import ir.demisco.cfs.model.entity.FinancialAccountStructure;
 import ir.demisco.cfs.service.api.FinancialAccountStructureService;
 import ir.demisco.cfs.service.repository.FinancialAccountRepository;
@@ -18,7 +21,6 @@ import org.apache.http.util.Asserts;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -159,10 +161,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         } else {
             financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             List<Object[]> byFinancialAccountStructureIdForDelete = financialAccountRepository.findByFinancialAccountStructureIdForDelete(financialAccountStructureId);
-            if(byFinancialAccountStructureIdForDelete.isEmpty()) {
+            if (byFinancialAccountStructureIdForDelete.isEmpty()) {
                 financialAccountStructureRepository.deleteById(financialAccountStructure.getId());
                 return true;
-            }else {
+            } else {
                 throw new RuleException("fin.financialAccountStructure.check.for.delete");
             }
         }
@@ -183,22 +185,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureNewResponse getFinancialAccountStructureByCodingAndParentAndId(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
-        String financialAccountStructure = null;
-        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
-            financialAccountStructure = "financialAccountStructure";
-        } else {
-            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
-        }
+        String financialAccountStructure = checkFinancialAccountStructureIsNull(financialAccountStructureNewRequest);
+
+        checkFinancialAccountStructure(financialAccountStructureNewRequest);
         FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
-        if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {
-            Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureById(financialAccountStructureNewRequest.getFinancialAccountStructureId());
-
-            if (financialAccountStructureId != null) {
-                financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
-                financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
-            }
-        }
-
+        checkFinancialAccountStructure(financialAccountStructureNewRequest);
         List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCoding(financialAccountStructureNewRequest.getFinancialCodingTypeId());
         if (financialAccountStructureCoding.size() == 0) {
             throw new RuleException("fin.financialAccountStructure.flg.getPermanentStatus");
@@ -229,6 +220,28 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             } else {
                 throw new RuleException("fin.financialAccountStructureFlg.getPermanentStatus");
 
+            }
+        }
+    }
+
+    private String checkFinancialAccountStructureIsNull(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        String financialAccountStructure = null;
+        if (financialAccountStructureNewRequest.getFinancialAccountStructureId() != null) {
+            financialAccountStructure = "financialAccountStructure";
+        } else {
+            financialAccountStructureNewRequest.setFinancialAccountStructureId(0L);
+        }
+        return financialAccountStructure;
+    }
+
+    private void checkFinancialAccountStructure(FinancialAccountStructureNewRequest financialAccountStructureNewRequest) {
+        FinancialAccountStructureNewResponse financialAccountStructureNewResponse = new FinancialAccountStructureNewResponse();
+        if (financialAccountStructureNewRequest.getFlgEditMode().equals(true)) {
+            Long financialAccountStructureId = financialAccountStructureRepository.getFinancialAccountStructureById(financialAccountStructureNewRequest.getFinancialAccountStructureId());
+
+            if (financialAccountStructureId != null) {
+                financialAccountStructureNewResponse.setFlgPermanentStatus(1L);
+                financialAccountStructureNewResponse.setAccountPermanentStatusId(null);
             }
         }
     }
