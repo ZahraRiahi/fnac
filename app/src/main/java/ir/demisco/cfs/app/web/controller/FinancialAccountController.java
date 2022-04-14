@@ -51,7 +51,7 @@ public class FinancialAccountController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody @Valid FinancialAccountRequest financialAccountRequest, BindingResult result ) {
+    public ResponseEntity<FinancialAccountOutPutDto> saveCentricAccount(@RequestBody FinancialAccountRequest financialAccountRequest) {
         if (financialAccountRequest.getId() == null) {
             FinancialAccountOutPutDto financialAccountOutPutDto = financialAccountService.save(financialAccountRequest);
             return ResponseEntity.ok(financialAccountOutPutDto);
@@ -59,6 +59,7 @@ public class FinancialAccountController {
             return ResponseEntity.ok(financialAccountService.update(financialAccountRequest));
         }
     }
+
     @PostMapping("/GetAdjustment")
     public ResponseEntity<DataSourceResult> responseEntityFinancialAccountAdjustment(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountAdjustmentLov(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
