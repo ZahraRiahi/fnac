@@ -178,7 +178,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
         CentricAccount centricAccount;
         if (!centricPersonRoles.isEmpty()) {
-            centricPersonRoles.forEach(e -> centricPersonRoleRepository.deleteById(e.getId()));
+            centricPersonRoles.forEach(centricPersonRole -> centricPersonRoleRepository.deleteById(centricPersonRole.getId()));
         }
         centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
         Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
@@ -188,6 +188,7 @@ public class DefaultCentricAccount implements CentricAccountService {
             centricAccountRepository.deleteById(centricAccount.getId());
             return true;
         }
+
     }
 
     @Override

@@ -110,8 +110,6 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   on t.id = ba.centric_account_id" +
             " left join fnac.centric_account ca" +
             "    on t.id = ca.parent_centric_account_id" +
-            " left join fnac.centric_person_role cpr" +
-            "    on t.id = cpr.centric_account_id" +
             " left join fndc.financial_document_item fdi1" +
             "    on t.id = fdi1.centric_account_id_1" +
             " left join fndc.financial_document_item fdi2" +
@@ -138,7 +136,6 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " and( adv.centric_account_id = :centricAccountId" +
             "   or ba.centric_account_id = :centricAccountId" +
             "   or ca.parent_centric_account_id = :centricAccountId" +
-            "   or cpr.centric_account_id = :centricAccountId" +
             "   or fdi1.centric_account_id_1 = :centricAccountId" +
             "   or fdi2.centric_account_id_2 = :centricAccountId" +
             "   or fdi3.centric_account_id_3 = :centricAccountId" +
