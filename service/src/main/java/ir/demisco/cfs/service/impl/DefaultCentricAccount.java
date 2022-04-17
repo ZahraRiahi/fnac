@@ -209,7 +209,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .latinName(centricAccount.getLatinName())
                 .centricAccountTypeId(centricAccount.getCentricAccountType().getId())
                 .centricAccountTypeDescription(centricAccount.getCentricAccountType().getDescription())
-                .organizationId(centricAccount.getOrganization().getId())
+                .organizationId(SecurityHelper.getCurrentUser().getOrganizationId())
                 .personId(centricAccount.getPerson() == null ? null : centricAccount.getPerson().getId())
                 .personName(centricAccount.getPerson() == null ? "" : centricAccount.getPerson().getPersonName())
                 .activeFlag(centricAccount.getActiveFlag())
