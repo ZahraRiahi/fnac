@@ -461,14 +461,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             if (financialDocumentItem.size() != 0) {
                 throw new RuleException("fin.financialAccount.update.useFinancialDocumentItem");
             }
-
         }
     }
 
     private Boolean checkNull(FinancialAccountRequest financialAccountRequest) {
-
         return financialAccountRequest.getId() == null ? Boolean.FALSE : Boolean.TRUE;
-
 
     }
 
