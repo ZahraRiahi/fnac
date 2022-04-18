@@ -424,6 +424,43 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       END = 0" +
             "   AND FS.FLG_SHOW_IN_ACC = 1" +
             "   AND FIAC.DISABLE_DATE IS NULL "
+            , countQuery = " select count(FIAC.id)   " +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
+            " WHERE EXISTS (SELECT 1" +
+            "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "               FS.FINANCIAL_CODING_TYPE_ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "   AND FS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
+            "   AND FIAC.DISABLE_DATE IS NULL" +
+            "   and (:financialAccountList is null or" +
+            "       FIAC.ID in (:financialAccountIdList))" +
+            "   AND CASE" +
+            "         WHEN (EXISTS" +
+            "               (SELECT 1" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+            "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
+            "                    ON FNAS_INNER.ID =" +
+            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                   AND EXISTS" +
+            "                 (SELECT 1" +
+            "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "                         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "                           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "                               FNAS_INNER.FINANCIAL_CODING_TYPE_ID" +
+            "                           AND INER_ORG_REL.ACTIVE_FLAG = 1))) THEN" +
+            "          1" +
+            "         ELSE" +
+            "          0" +
+            "       END = 0" +
+            "   AND FS.FLG_SHOW_IN_ACC = 1" +
+            "   AND FIAC.DISABLE_DATE IS NULL "
             , nativeQuery = true)
     Page<Object[]> financialAccountLov(Long organizationId, Long financialCodingTypeId, Object descriptionObject, String description, Object codeObject, String code, Object financialAccountList, List<Long> financialAccountIdList
             , Pageable pageable);
@@ -456,6 +493,19 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
+            "  FROM fnac.FINANCIAL_ACCOUNT FIAC" +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
+            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
+            " WHERE EXISTS (SELECT 1" +
+            "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "               FS.FINANCIAL_CODING_TYPE_ID" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
+            "   and (:fullDescriptionObject is null or FIAC.FULL_DESCRIPTION like %:fullDescription% )"
+            , countQuery = " select count(FIAC.id)   " +
             "  FROM fnac.FINANCIAL_ACCOUNT FIAC" +
             " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
             "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
