@@ -7,6 +7,7 @@ public class CentricAccountGetRequest {
     private String parentCentricAccount;
     private Long parentCentricAccountId;
     private Long organizationId;
+    private String name;
     Map<String, Object> paramMap;
 
     public Long getCentricAccountTypeId() {
@@ -39,6 +40,14 @@ public class CentricAccountGetRequest {
 
     public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Map<String, Object> getParamMap() {

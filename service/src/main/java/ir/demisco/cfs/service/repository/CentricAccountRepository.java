@@ -174,6 +174,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   AND CNAC.DELETED_DATE IS NULL" +
             "   and (:parentCentricAccount is null or " +
             " CNAC.PARENT_CENTRIC_ACCOUNT_ID = :parentCentricAccountId)" +
+            "   and (:name is null or CNAC.NAME  like %:name%) " +
             "   AND EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
@@ -188,13 +189,14 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   AND CNAC.DELETED_DATE IS NULL" +
             "   and (:parentCentricAccount is null or " +
             " CNAC.PARENT_CENTRIC_ACCOUNT_ID = :parentCentricAccountId)" +
+            "   and (:name is null or CNAC.NAME  like %:name%) " +
             "   AND EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, Long organizationId
+    List<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, String name, Long organizationId
     );
 }
 

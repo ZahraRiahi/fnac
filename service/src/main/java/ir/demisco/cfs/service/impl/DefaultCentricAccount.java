@@ -309,7 +309,7 @@ public class DefaultCentricAccount implements CentricAccountService {
 
     private List<Object[]> getCentricAccountList(CentricAccountGetRequest centricAccountGetRequest, Map<String, Object> centricAccountGetParamMap) {
         return centricAccountRepository.findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(
-                centricAccountGetRequest.getCentricAccountTypeId(), centricAccountGetParamMap.get("parentCentricAccount"), centricAccountGetRequest.getParentCentricAccountId(), SecurityHelper.getCurrentUser().getOrganizationId());
+                centricAccountGetRequest.getCentricAccountTypeId(), centricAccountGetParamMap.get("parentCentricAccount"), centricAccountGetRequest.getParentCentricAccountId(), centricAccountGetRequest.getName(), SecurityHelper.getCurrentUser().getOrganizationId());
     }
 
     private CentricAccountGetRequest setCentricAccountGet(List<DataSourceRequest.FilterDescriptor> filters) {
@@ -331,6 +331,14 @@ public class DefaultCentricAccount implements CentricAccountService {
                         map.put("parentCentricAccount", null);
                         centricAccountGetRequest.setParamMap(map);
                         centricAccountGetRequest.setParentCentricAccountId(0L);
+                    }
+                    break;
+
+                case "name":
+                    if (item.getValue() != null) {
+                        centricAccountGetRequest.setName(item.getValue().toString());
+                    } else {
+                        centricAccountGetRequest.setName("");
                     }
                     break;
                 default:
