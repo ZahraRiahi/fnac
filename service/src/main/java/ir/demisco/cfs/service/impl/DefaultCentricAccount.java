@@ -25,9 +25,6 @@ import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.model.dto.DataSourceResult;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridFilterService;
 import ir.demisco.cloud.core.security.util.SecurityHelper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -62,16 +59,12 @@ public class DefaultCentricAccount implements CentricAccountService {
         this.centricOrgRelRepository = centricOrgRelRepository;
     }
 
-    @Override
-    @Transactional
-    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
-        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
-        paramSearch.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), SecurityHelper.getCurrentUser().getOrganizationId()
-                , pageable);
-        List<CentricAccountListResponse> centricAccountListDtos = list.stream().map(item ->
+    private List<Object[]> getCentricAccountList(CentricAccountParamRequest centricAccountParamRequest, Map<String, Object> centricAccountListParamMap) {
+        return centricAccountRepository.centricAccountList(centricAccountParamRequest.getCentricAccountTypeId(), centricAccountParamRequest.getName(), SecurityHelper.getCurrentUser().getOrganizationId());
+    }
+
+    private List<CentricAccountListResponse> getCentricAccountResponseList(List<Object[]> list) {
+        return list.stream().map(item ->
                 CentricAccountListResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
                         .code(gatItemForString(item, 1))
@@ -88,9 +81,20 @@ public class DefaultCentricAccount implements CentricAccountService {
                         .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
                         .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
                         .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
+        Map<String, Object> paramMap = paramSearch.getParamMap();
+        List<Object[]> list = getCentricAccountList(paramSearch, paramMap);
+        List<CentricAccountListResponse> centricAccountResponseList = getCentricAccountResponseList(list);
         DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(centricAccountListDtos);
-        dataSourceResult.setTotal(list.getTotalElements());
+        dataSourceResult.setData(centricAccountResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
+        dataSourceResult.setTotal(list.size());
+
         return dataSourceResult;
     }
 
@@ -289,7 +293,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         CentricAccountGetRequest param = setCentricAccountGet(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        List<Object[]> list = getCentricAccountList(param, paramMap);
+        List<Object[]> list = getCentricAccountGet(param, paramMap);
         List<CentricAccountResponse> centricAccountResponseList = getCentricAccountResponse(list);
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(centricAccountResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
@@ -307,7 +311,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                         .build()).collect(Collectors.toList());
     }
 
-    private List<Object[]> getCentricAccountList(CentricAccountGetRequest centricAccountGetRequest, Map<String, Object> centricAccountGetParamMap) {
+    private List<Object[]> getCentricAccountGet(CentricAccountGetRequest centricAccountGetRequest, Map<String, Object> centricAccountGetParamMap) {
         return centricAccountRepository.findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(
                 centricAccountGetRequest.getCentricAccountTypeId(), centricAccountGetParamMap.get("parentCentricAccount"), centricAccountGetRequest.getParentCentricAccountId(), centricAccountGetRequest.getName(), SecurityHelper.getCurrentUser().getOrganizationId());
     }

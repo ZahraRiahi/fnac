@@ -1,8 +1,6 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -162,8 +160,8 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    Page<Object[]> centricAccountList(Long centricAccountTypeId, String name, Long organizationId
-            , Pageable pageable);
+    List<Object[]> centricAccountList(Long centricAccountTypeId, String name, Long organizationId
+    );
 
     @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
