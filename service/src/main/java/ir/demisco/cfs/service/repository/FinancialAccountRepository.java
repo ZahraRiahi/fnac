@@ -488,8 +488,25 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "               FS.FINANCIAL_CODING_TYPE_ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            , countQuery = " SELECT count(FIAC.id)" +
+            "              FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
+            "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
+            "               AND FS.DELETED_DATE IS NULL" +
+            "             WHERE FIAC.DELETED_DATE IS NULL" +
+            "               AND FIAC.DISABLE_DATE IS NULL" +
+            "               AND FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
+            "                   :financialAccountStructureId" +
+            "               and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
+            "               and (:codeObject is null or FIAC.CODE like %:code% )" +
+            "             AND EXISTS (SELECT 1" +
+            "                      FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
+            "                     WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "                       AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
+            "                           FS.FINANCIAL_CODING_TYPE_ID" +
+            "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code, Pageable pageable);
+    List<Object[]>  financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +

@@ -468,22 +468,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountRequest.getId() == null ? Boolean.FALSE : Boolean.TRUE;
 
     }
-
-    private void errorHandler(Long variable, String var) {
-        if (variable == null && var.equals("financialAccountStructureByCodeAndChild")) {
-            throw new RuleException("fin.financialAccount.structureCode");
-        }
-        if (variable != null && var.equals("financialAccountStructureByChildAccountStructureAndCode")) {
-            throw new RuleException("fin.financialAccountStructure.saveFinancialAccount");
-        }
-        if (variable == null && var.equals("financialAccountStructureId")) {
-            throw new RuleException("fin.financialAccount.save.childAccount");
-        }
-        if (variable > 0 && var.equals("financialAccountCodeCount")) {
-            throw new RuleException("fin.financialAccount.duplicateCode");
-        }
-    }
-
     private FinancialAccountOutPutDto convertFinancialAccountDto(FinancialAccount financialAccount) {
         FinancialAccountOutPutDto financialAccountOutPutDto = new FinancialAccountOutPutDto();
         financialAccountOutPutDto.setId(financialAccount.getId());
@@ -963,11 +947,16 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
-        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId(),
-                paramMap.get("descriptionObject"),
-                param.getDescription(), paramMap.get("codeObject"), param.getCode(), pageable);
-        List<FinancialAccountGetByStructureResponse> centricAccountListDtos = list.stream().map(item ->
+        List<Object[]> list = getCentricAccountList(param, paramMap);
+        List<FinancialAccountGetByStructureResponse> financialAccountGetByStructureList = getFinancialAccountGetByStructureResponseList(list);
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(financialAccountGetByStructureList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
+        dataSourceResult.setTotal(list.size());
+        return dataSourceResult;
+    }
+
+    private List<FinancialAccountGetByStructureResponse> getFinancialAccountGetByStructureResponseList(List<Object[]> list) {
+        return list.stream().map(item ->
                 FinancialAccountGetByStructureResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
                         .code(item[1] == null ? null : item[1].toString())
@@ -976,10 +965,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
                         .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
                         .build()).collect(Collectors.toList());
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(centricAccountListDtos);
-        dataSourceResult.setTotal(list.getTotalElements());
-        return dataSourceResult;
+    }
+
+    private List<Object[]> getCentricAccountList(FinancialAccountStructureRequest financialAccountStructureRequest, Map<String, Object> financialAccountGetByStructureParamMap) {
+        return financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructureRequest.getFinancialAccountStructureId(), financialAccountGetByStructureParamMap.get("descriptionObject"),
+                financialAccountStructureRequest.getDescription(), financialAccountGetByStructureParamMap.get("codeObject"), financialAccountStructureRequest.getCode());
     }
 
     @Override
@@ -1059,5 +1049,4 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         return financialAccountLovRequest;
     }
-
 }
