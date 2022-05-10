@@ -103,16 +103,25 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
+        Long illigalChange = 0L;
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("fin.financialAccountStructure.financialPeriodId"));
         List<Object> financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
-        if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument.size() != 0) {
-            throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
-        }
+
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
+
+        Long financialAccountStructureCountIlligalChange = financialAccountStructureRepository.getFinancialAccountStructureBySequenceAndFlg(financialAccountStructureDto.getId(), financialAccountStructureDto.getSequence(),
+                financialAccountStructureDto.getDigitCount(), financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
+                financialAccountStructureDto.getFlgShowInAcc(), financialAccountStructureDto.getFlgPermanentStatus());
+        if (financialAccountStructureCountIlligalChange != null) {
+            illigalChange = 1L;
+        }
+        if (illigalChange == 1) {
+            throw new RuleException("برای یک ساختار فقط فیلدهای شرح و رنگ قابل ویرایش می باشند.");
+        }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (financialStructure.size() != 0) {
+        if (financialStructure.size() != 0 && illigalChange == 1) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
         }
 
@@ -122,7 +131,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureDto.getId());
-        if (countFinancialAccount != null) {
+        if (countFinancialAccount != null && illigalChange == 1) {
             throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان ویرایش وجود ندارد");
         }
 
@@ -138,6 +147,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
+        if (financialDocument.size() != 0 && illigalChange == 1) {
+            throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
+        }
+
         financialAccountStructureFlg.setId(financialAccountStructureDto.getId());
         financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructureFlg.setSequence(financialAccountStructureDto.getSequence());
