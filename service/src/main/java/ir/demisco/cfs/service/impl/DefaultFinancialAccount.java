@@ -60,6 +60,7 @@ import ir.demisco.cloud.core.security.util.SecurityHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -122,7 +123,18 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccountParameter param = setParameter(filters);
         Map<String, Object> paramMap = param.getParamMap();
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake());
+        List<Sort.Order> sorts = new ArrayList<>();
+        dataSourceRequest.getSort()
+                .forEach(sortDescriptor ->
+                        {
+                            if (sortDescriptor.getDir().equals("asc")) {
+                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
+                            } else {
+                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+                            }
+                        }
+                );
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
         Page<Object[]> list = financialAccountRepository.financialAccountList(param.getOrganizationId(), param.getFinancialCodingTypeId(), param.getDescription(), paramMap.get("financialAccountParent"), param.getFinancialAccountParentId()
                 , paramMap.get("accountNatureType"), param.getAccountNatureTypeId(), paramMap.get("financialAccountStructure"), param.getFinancialAccountStructureId(), paramMap.get("accountRelationType"), param.getAccountRelationTypeId()
                 , pageable);
@@ -468,6 +480,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountRequest.getId() == null ? Boolean.FALSE : Boolean.TRUE;
 
     }
+
     private FinancialAccountOutPutDto convertFinancialAccountDto(FinancialAccount financialAccount) {
         FinancialAccountOutPutDto financialAccountOutPutDto = new FinancialAccountOutPutDto();
         financialAccountOutPutDto.setId(financialAccount.getId());
