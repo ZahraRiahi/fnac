@@ -117,9 +117,6 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         if (financialAccountStructureCountIlligalChange != null) {
             illigalChange = 1L;
         }
-//        if (illigalChange == 1) {
-//            throw new RuleException("برای یک ساختار فقط فیلدهای شرح و رنگ قابل ویرایش می باشند.");
-//        }
         List<Long> financialStructure = financialAccountRepository.getFinancialAccountByFinancialAccountStructureId(financialAccountStructureDto.getId());
         if (financialStructure.size() != 0 && illigalChange == 1) {
             throw new RuleException("fin.financialAccountStructure.edit.financialAccountId");
