@@ -103,12 +103,10 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public FinancialAccountStructureDto update(FinancialAccountStructureDto financialAccountStructureDto) {
-        Long illigalChange = new Long(0);
+        Long illigalChange = 0L;
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId()).orElseThrow(() -> new RuleException("fin.financialAccountStructure.financialPeriodId"));
         List<Object> financialDocument = financialDocumentItemRepository.findByFinancialDocumentAndFinancialAccountStructure(financialAccountStructureDto.getId());
-//        if (financialAccountStructureDto.getFlgShowInAcc().equals(false) && financialDocument.size() != 0) {
-//            throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
-//        }
+
         if (financialAccountStructureDto.getSequence() <= 0) {
             throw new RuleException("fin.financialAccountStructure.checkSequence");
         }
@@ -117,7 +115,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 financialAccountStructureDto.getDigitCount(), financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
                 financialAccountStructureDto.getFlgShowInAcc(), financialAccountStructureDto.getFlgPermanentStatus());
         if (financialAccountStructureCountIlligalChange != null) {
-            illigalChange = new Long(1);
+            illigalChange = 1L;
         }
         if (illigalChange == 1) {
             throw new RuleException("برای یک ساختار فقط فیلدهای شرح و رنگ قابل ویرایش می باشند.");
