@@ -73,11 +73,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       CASE" +
             "         WHEN (EXISTS" +
             "               (SELECT 1" +
-            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
             "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
             "                    ON FNAS_INNER.ID =" +
-            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
-            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                       FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID " +
+            "                 WHERE FIAC.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
             "                   AND EXISTS" +
             "                 (SELECT 1" +
             "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
@@ -406,11 +406,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   AND CASE" +
             "         WHEN (EXISTS" +
             "               (SELECT 1" +
-            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER1" +
             "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
             "                    ON FNAS_INNER.ID =" +
-            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
-            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                       FIAC_INNER1.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "                 WHERE FIAC_INNER1.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
             "                   AND EXISTS" +
             "                 (SELECT 1" +
             "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
