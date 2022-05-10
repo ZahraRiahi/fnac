@@ -98,8 +98,6 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             , nativeQuery = true)
     List<Long> findFinancialAccountStructureByCoding(Long financialCodingTypeId);
 
-
-
     @Query(value = "   SELECT 1 " +
             "    FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE AST " +
             "    WHERE AST.ID = :childAccountStructure " +
@@ -107,4 +105,15 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "    AND SUBSTR(:code, 0, 1) = '0'  "
             , nativeQuery = true)
     Long getFinancialAccountStructureByChildAccountStructureAndCode(Long childAccountStructure, String code);
+
+    @Query(value = "select 1" +
+            "            from fnac.financial_account_structure" +
+            "           where id = :id" +
+            "             and (sequence != :sequence " +
+            "             or digit_count != :digitCount" +
+            "             or sum_digit != :sumDigit" +
+            "             or financial_coding_type_id != :financialCodingTypeId" +
+            "             or flg_show_in_acc != :flgShowInAcc" +
+            "             or flg_permanent_status != :flgPermanentStatus) ", nativeQuery = true)
+    Long getFinancialAccountStructureBySequenceAndFlg(Long id, Long sequence,Long digitCount,Long sumDigit,Long financialCodingTypeId,Boolean flgShowInAcc,Boolean flgPermanentStatus);
 }
