@@ -3,6 +3,7 @@ package ir.demisco.cfs.model.dto.response;
 public class FinancialAccountStructureResponse {
     private Long id;
     private String description;
+    private Long sequence;
 
     public Long getId() {
         return id;
@@ -18,6 +19,14 @@ public class FinancialAccountStructureResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
     }
 
     public static FinancialAccountStructureResponse.Builder builder() {
@@ -44,7 +53,10 @@ public class FinancialAccountStructureResponse {
             financialAccountStructureResponse.setDescription(description);
             return this;
         }
-
+        public Builder sequence(Long sequence) {
+            financialAccountStructureResponse.setSequence(sequence);
+            return this;
+        }
         public FinancialAccountStructureResponse build() {
             return financialAccountStructureResponse;
         }
