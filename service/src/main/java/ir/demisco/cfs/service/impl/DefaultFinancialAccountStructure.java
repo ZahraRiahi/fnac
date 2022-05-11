@@ -62,8 +62,8 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         List<FinancialAccountStructure> financialAccountStructureList = financialAccountStructureRepository.findByFinancialCodingTypeId(financialCodingTypeId);
         return financialAccountStructureList.stream().map(e -> FinancialAccountStructureResponse.builder().id(e.getId())
                 .description(e.getDescription())
+                .sequence(e.getSequence())
                 .build()).collect(Collectors.toList());
-
     }
 
     @Override
