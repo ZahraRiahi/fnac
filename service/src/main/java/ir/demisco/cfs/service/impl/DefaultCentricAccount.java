@@ -267,7 +267,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional
     public List<CentricAccountNewResponse> getCentricAccountByOrganIdAndCentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
-        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId());
+        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId(),centricAccountNewTypeRequest.getCode(),centricAccountNewTypeRequest.getName());
         return centricAccountAndCentricAccountTypeList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
                 .name(e[2].toString())
                 .code(e[1].toString()).build()).collect(Collectors.toList());
