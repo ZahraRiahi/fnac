@@ -68,9 +68,11 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1) "
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1) " +
+            "   AND ((:code IS NOT NULL AND CNAC.CODE LIKE '%'||:code||'%') OR :code IS NULL) " +
+            "   AND ((:name IS NOT NULL AND CNAC.NAME LIKE '%'|| :name||'%') OR :name IS NULL) "
             , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId);
+    List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId,String code,String name);
 
     @Query(value = "select count(t.id)" +
             "  from fnac.centric_account t" +
