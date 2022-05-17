@@ -44,10 +44,10 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final PersonRoleTypeRepository personRoleTypeRepository;
     private final CentricPersonRoleRepository centricPersonRoleRepository;
     private final CentricAccountTypeRepository centricAccountTypeRepository;
-    private final CentricAccountLovProvider centricAccountLovProvider;
     private final CentricOrgRelRepository centricOrgRelRepository;
+    private final CentricAccountListGridProvider centricAccountListGridProvider;
 
-    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricAccountLovProvider centricAccountLovProvider, CentricOrgRelRepository centricOrgRelRepository) {
+    public DefaultCentricAccount(GridFilterService gridFilterService, CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricOrgRelRepository centricOrgRelRepository, CentricAccountListGridProvider centricAccountListGridProvider) {
         this.gridFilterService = gridFilterService;
         this.centricAccountRepository = centricAccountRepository;
         this.organizationRepository = organizationRepository;
@@ -55,8 +55,8 @@ public class DefaultCentricAccount implements CentricAccountService {
         this.personRoleTypeRepository = personRoleTypeRepository;
         this.centricPersonRoleRepository = centricPersonRoleRepository1;
         this.centricAccountTypeRepository = centricAccountTypeRepository2;
-        this.centricAccountLovProvider = centricAccountLovProvider;
         this.centricOrgRelRepository = centricOrgRelRepository;
+        this.centricAccountListGridProvider = centricAccountListGridProvider;
     }
 
     private List<Object[]> getCentricAccountList(CentricAccountParamRequest centricAccountParamRequest, Map<String, Object> centricAccountListParamMap) {
@@ -81,21 +81,6 @@ public class DefaultCentricAccount implements CentricAccountService {
                         .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
                         .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
                         .build()).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
-        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
-        Map<String, Object> paramMap = paramSearch.getParamMap();
-        List<Object[]> list = getCentricAccountList(paramSearch, paramMap);
-        List<CentricAccountListResponse> centricAccountResponseList = getCentricAccountResponseList(list);
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(centricAccountResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
-        dataSourceResult.setTotal(list.size());
-
-        return dataSourceResult;
     }
 
     private Long getItemForLong(Object[] item, int i) {
@@ -264,28 +249,6 @@ public class DefaultCentricAccount implements CentricAccountService {
         return centricAccountRepository.save(centricAccount);
     }
 
-    @Override
-    @Transactional
-    public List<CentricAccountNewResponse> getCentricAccountByOrganIdAndCentricAccountTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
-        List<Object[]> centricAccountAndCentricAccountTypeList = centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId(),centricAccountNewTypeRequest.getCode(),centricAccountNewTypeRequest.getName());
-        return centricAccountAndCentricAccountTypeList.stream().map(e -> CentricAccountNewResponse.builder().id(Long.parseLong(e[0].toString()))
-                .name(e[2].toString())
-                .code(e[1].toString()).build()).collect(Collectors.toList());
-
-    }
-
-    @Override
-    @Transactional
-    public DataSourceResult getCentricAccountLov(Long organizationId, DataSourceRequest dataSourceRequest) {
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
-        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor
-                .create("organization.id", SecurityHelper.getCurrentUser().getOrganizationId(), DataSourceRequest.Operators.EQUALS));
-
-        return gridFilterService.filter(dataSourceRequest, centricAccountLovProvider);
-    }
 
     @Override
     @Transactional
@@ -360,4 +323,75 @@ public class DefaultCentricAccount implements CentricAccountService {
         return centricAccountGetRequest;
     }
 
+    @Override
+    @Transactional
+    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountDefaultValues.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountDefaultValues.accountRelationTypeDetail.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("accountDefaultValues.accountRelationTypeDetail.accountRelationType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        dataSourceRequest.getFilter().getFilters().add(DataSourceRequest.FilterDescriptor.create("centricAccountType.deletedDate", null, DataSourceRequest.Operators.IS_NULL));
+        return gridFilterService.filter(dataSourceRequest, centricAccountListGridProvider);
+    }
+
+    @Override
+    @Transactional
+    public DataSourceResult getCentricAccountByOrganIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        CentricAccountNewTypeRequest param = setCentricAccountGetByTypeId(filters);
+        Map<String, Object> paramMap = param.getParamMap();
+        List<Object[]> list = getCentricAccountGetByTypeId(param, paramMap);
+        List<CentricAccountNewResponse> centricAccountNewResponseList = getCentricAccountNewResponse(list);
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(centricAccountNewResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
+        dataSourceResult.setTotal(list.size());
+        return dataSourceResult;
+    }
+
+    private CentricAccountNewTypeRequest setCentricAccountGetByTypeId(List<DataSourceRequest.FilterDescriptor> filters) {
+        CentricAccountNewTypeRequest centricAccountNewTypeRequest = new CentricAccountNewTypeRequest();
+        Map<String, Object> map = new HashMap<>();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+
+                case "centricAccountType.id":
+                    centricAccountNewTypeRequest.setCentricAccountTypeId(Long.parseLong(item.getValue().toString()));
+                    centricAccountNewTypeRequest.setParamMap(map);
+                    break;
+
+                case "name":
+                    if (item.getValue() != null) {
+                        centricAccountNewTypeRequest.setName(item.getValue().toString());
+                    } else {
+                        centricAccountNewTypeRequest.setName("");
+                    }
+                    break;
+
+                case "code":
+                    if (item.getValue() != null) {
+                        centricAccountNewTypeRequest.setCode(item.getValue().toString());
+                    } else {
+                        centricAccountNewTypeRequest.setCode("");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return centricAccountNewTypeRequest;
+    }
+
+    private List<Object[]> getCentricAccountGetByTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest, Map<String, Object> centricAccountGetByTypeIdParamMap) {
+        return centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(
+                centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountNewTypeRequest.getCode(), centricAccountNewTypeRequest.getName());
+    }
+
+    private List<CentricAccountNewResponse> getCentricAccountNewResponse(List<Object[]> list) {
+        return list.stream().map(item ->
+                CentricAccountNewResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .code(item[1] == null ? null : item[1].toString())
+                        .name(item[2].toString())
+                        .build()).collect(Collectors.toList());
+    }
 }
