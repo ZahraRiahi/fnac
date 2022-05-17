@@ -1,10 +1,21 @@
 package ir.demisco.cfs.model.dto.request;
 
+import java.util.Map;
+
 public class CentricAccountNewTypeRequest {
     private Long centricAccountTypeId;
     private Long organizationId;
     private String code;
     private String name;
+    Map<String, Object> paramMap;
+
+    public Map<String, Object> getParamMap() {
+        return paramMap;
+    }
+
+    public void setParamMap(Map<String, Object> paramMap) {
+        this.paramMap = paramMap;
+    }
 
     public Long getCentricAccountTypeId() {
         return centricAccountTypeId;

@@ -2,15 +2,10 @@ package ir.demisco.cfs.service.impl;
 
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
 import ir.demisco.cfs.model.entity.CentricAccount;
-import ir.demisco.cloud.core.middle.model.dto.DataSourceRequest;
 import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,31 +64,4 @@ public class CentricAccountListGridProvider implements GridDataProvider {
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public Predicate getCustomRestriction(FilterContext filterContext) {
-        CriteriaBuilder criteriaBuilder = filterContext.getCriteriaBuilder();
-        Root<Object> root = filterContext.getRoot();
-        Join<Object, Object> centricAccountParent = root.join("parentCentricAccount", JoinType.LEFT);
-        criteriaBuilder.equal(centricAccountParent.get("id"), root.get("id"));
-        criteriaBuilder.equal(centricAccountParent.get("id"), root.get("id"));
-        DataSourceRequest dataSourceRequest = filterContext.getDataSourceRequest();
-        for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
-            switch (filter.getField()) {
-                case "centricAccountType.id":
-                case "organization.id":
-                    if (filter.getValue() == null) {
-                        filter.setDisable(true);
-                    }
-                    break;
-                case "name":
-                    if (filter.getValue() == null || filter.getValue() == "") {
-                        filter.setDisable(true);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        return null;
-    }
 }
