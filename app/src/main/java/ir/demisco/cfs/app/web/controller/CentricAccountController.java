@@ -1,9 +1,7 @@
 package ir.demisco.cfs.app.web.controller;
 
-import ir.demisco.cfs.model.dto.request.CentricAccountNewTypeRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountRequest;
 import ir.demisco.cfs.model.dto.response.CentricAccountDto;
-import ir.demisco.cfs.model.dto.response.CentricAccountNewResponse;
 import ir.demisco.cfs.model.dto.response.CentricAccountOutPutResponse;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.api.CentricOrgRelService;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api-centricAccount")
@@ -32,10 +28,12 @@ public class CentricAccountController {
         this.centricOrgRelService = centricOrgRelService;
     }
 
+
     @PostMapping("/list")
     public ResponseEntity<DataSourceResult> responseEntity(@RequestBody DataSourceRequest dataSourceRequest) {
         return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganizationIdAndPersonAndName(dataSourceRequest));
     }
+
 
     @PostMapping("/Get")
     public ResponseEntity<DataSourceResult> responseEntityLov(@RequestBody DataSourceRequest dataSourceRequest) {
@@ -71,10 +69,9 @@ public class CentricAccountController {
     }
 
     @PostMapping("/GetByTypeId")
-    public ResponseEntity<List<CentricAccountNewResponse>> responseEntityCentricAccountType(@RequestBody CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
-        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndCentricAccountTypeId(centricAccountNewTypeRequest));
+    public ResponseEntity<DataSourceResult> responseEntityCentricAccountType(@RequestBody DataSourceRequest dataSourceRequest) {
+        return ResponseEntity.ok(centricAccountService.getCentricAccountByOrganIdAndCentricAccountTypeId(dataSourceRequest));
     }
-
 
 }
 
