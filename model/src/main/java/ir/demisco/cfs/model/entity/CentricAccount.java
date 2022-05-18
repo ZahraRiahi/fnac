@@ -32,7 +32,6 @@ public class CentricAccount extends AuditModel<Long> {
     private Person person;
     private List<CentricPersonRole> centricPersonRoleList;
     private LocalDateTime deletedDate;
-    private List<AccountDefaultValue> accountDefaultValues;
     private CentricAccount parentCentricAccount;
 
     @Id
@@ -139,14 +138,6 @@ public class CentricAccount extends AuditModel<Long> {
         this.deletedDate = deletedDate;
     }
 
-    @OneToMany(mappedBy = "centricAccount", fetch = FetchType.LAZY)
-    public List<AccountDefaultValue> getAccountDefaultValues() {
-        return accountDefaultValues;
-    }
-
-    public void setAccountDefaultValues(List<AccountDefaultValue> accountDefaultValues) {
-        this.accountDefaultValues = accountDefaultValues;
-    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_CENTRIC_ACCOUNT_ID")
