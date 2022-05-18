@@ -73,11 +73,11 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       CASE" +
             "         WHEN (EXISTS" +
             "               (SELECT 1" +
-            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
+            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER" +
             "                 INNER JOIN fnac.FINANCIAL_ACCOUNT_STRUCTURE FNAS_INNER" +
             "                    ON FNAS_INNER.ID =" +
-            "                       FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID " +
-            "                 WHERE FIAC.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
+            "                       FIAC_INNER.FINANCIAL_ACCOUNT_STRUCTURE_ID" +
+            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID" +
             "                   AND EXISTS" +
             "                 (SELECT 1" +
             "                          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
@@ -100,8 +100,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
             " INNER JOIN FNAC.ACCOUNT_NATURE_TYPE ACNT" +
             "    ON FIAC.ACCOUNT_NATURE_TYPE_ID = ACNT.ID" +
-            "   and (:accountNatureType is null or " +
-            "      fiac.account_nature_type_id = :accountNatureTypeId)" +
+            "   and (:accountNatureType is null or" +
+            "       fiac.account_nature_type_id = :accountNatureTypeId)" +
             "   AND ACNT.DELETED_DATE IS NULL" +
             "  LEFT OUTER JOIN FNAC.ACCOUNT_RELATION_TYPE ACRT" +
             "    ON FIAC.ACCOUNT_RELATION_TYPE_ID = ACRT.ID" +
@@ -125,16 +125,17 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "               FNAS.FINANCIAL_CODING_TYPE_ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-            "  and (:accountRelationType is null or " +
-            "  fiac.account_relation_type_id = :accountRelationTypeId) " +
-            "   and (:financialAccountStructure is null or " +
-            " fiac.financial_account_structure_id = :financialAccountStructureId)" +
-            "   AND FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
-            "   and (:description is null or fiac.description like %:description% )" +
+            "   and (:accountRelationType is null or" +
+            "       fiac.account_relation_type_id = :accountRelationTypeId)" +
+            "   and (:financialAccountStructure is null or" +
+            "       fiac.financial_account_structure_id = :financialAccountStructureId)" +
+            "   AND FNAS.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId" +
+            "  and (:description is null or fiac.description like %:description% ) " +
             "   AND FIAC.DELETED_DATE IS NULL" +
-            "   and ((:financialAccountParent is null and  fiac.financial_account_parent_id is null) " +
-            "   or (:financialAccountParent is not null  and " +
-            "       fiac.financial_account_parent_id =:financialAccountParentId))"
+            "   and ((:financialAccountParent is null and" +
+            "       fiac.financial_account_parent_id is null) or" +
+            "       (:financialAccountParent is not null and" +
+            "       fiac.financial_account_parent_id = :financialAccountParentId))"
             , nativeQuery = true)
     Page<Object[]> financialAccountList(Long organizationId, Long financialCodingTypeId, String description, Object financialAccountParent, Long financialAccountParentId, Object accountNatureType,
                                         Long accountNatureTypeId, Object financialAccountStructure, Long financialAccountStructureId,
@@ -506,7 +507,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "                           FS.FINANCIAL_CODING_TYPE_ID" +
             "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    List<Object[]>  financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code);
+    List<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
