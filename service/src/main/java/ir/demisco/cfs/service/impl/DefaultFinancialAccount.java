@@ -345,6 +345,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccountOutPutDto financialAccountOutPutDto;
         FinancialAccount financialAccount = saveFinancialAccount(financialAccountRequest);
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
+        Long financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountOutPutDto.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId());
+        if (financialAccountCodeCount > 0) {
+            throw new RuleException("fin.financialAccount.duplicateCode");
+        }
         saveAccountStructureLevel(financialAccountRequest, financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
                 (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
@@ -368,7 +372,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccountStructureNewRequest.setFlgEditMode(checkNull(financialAccountRequest));
 
         FinancialAccount financialAccount = financialAccountRepository.findById(financialAccountRequest.getId() == null ? 0L : financialAccountRequest.getId()).orElse(new FinancialAccount());
-
         if (financialAccountRequest.getId() == null) {
             FinancialAccountStructureNewResponse financialAccountStructureNewResponse = financialAccountStructureService.getFinancialAccountStructureByCodingAndParentAndId(financialAccountStructureNewRequest);
 
@@ -401,7 +404,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
             if (financialAccountRequest.getId() == null) {
 
-                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountStructureId, financialAccountRequest.getOrganizationId());
+                financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountStructureId, SecurityHelper.getCurrentUser().getOrganizationId());
 
                 if (financialAccountStructureId == null) {
                     throw new RuleException("fin.financialAccount.save.childAccount");
