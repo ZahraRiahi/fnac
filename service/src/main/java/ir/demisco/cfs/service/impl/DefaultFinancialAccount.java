@@ -345,10 +345,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccountOutPutDto financialAccountOutPutDto;
         FinancialAccount financialAccount = saveFinancialAccount(financialAccountRequest);
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
-        Long financialAccountCodeCount = financialAccountRepository.getCountByFinancialAccountAndCode(financialAccountRequest.getCode(), financialAccountOutPutDto.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId());
-        if (financialAccountCodeCount > 0) {
-            throw new RuleException("fin.financialAccount.duplicateCode");
-        }
+
         saveAccountStructureLevel(financialAccountRequest, financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
                 (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
