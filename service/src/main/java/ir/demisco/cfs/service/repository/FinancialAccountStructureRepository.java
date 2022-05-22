@@ -110,10 +110,11 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             "            from fnac.financial_account_structure" +
             "           where id = :id" +
             "             and (sequence != :sequence " +
-            "             or digit_count != :digitCount" +
+            "             or digit_count != :digitCount " +
+            " or description != :description " +
             "             or sum_digit != :sumDigit" +
             "             or financial_coding_type_id != :financialCodingTypeId" +
             "             or flg_show_in_acc != :flgShowInAcc" +
             "             or flg_permanent_status != :flgPermanentStatus) ", nativeQuery = true)
-    Long getFinancialAccountStructureBySequenceAndFlg(Long id, Long sequence,Long digitCount,Long sumDigit,Long financialCodingTypeId,Boolean flgShowInAcc,Boolean flgPermanentStatus);
+    Long getFinancialAccountStructureBySequenceAndFlg(Long id, Long sequence, Long digitCount, String description, Long sumDigit, Long financialCodingTypeId, Boolean flgShowInAcc, Boolean flgPermanentStatus);
 }
