@@ -112,7 +112,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long financialAccountStructureCountIlligalChange = financialAccountStructureRepository.getFinancialAccountStructureBySequenceAndFlg(financialAccountStructureDto.getId(), financialAccountStructureDto.getSequence(),
-                financialAccountStructureDto.getDigitCount(), financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
+                financialAccountStructureDto.getDigitCount(),financialAccountStructureDto.getDescription() ,financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
                 financialAccountStructureDto.getFlgShowInAcc(), financialAccountStructureDto.getFlgPermanentStatus());
         if (financialAccountStructureCountIlligalChange != null) {
             illigalChange = 1L;
