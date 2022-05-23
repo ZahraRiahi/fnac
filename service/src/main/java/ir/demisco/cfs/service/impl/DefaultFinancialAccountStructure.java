@@ -144,6 +144,12 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
+
+            List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndFlgShow(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
+            if (financialAccountStructureCoding.size() != 0) {
+                throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
+            }
+
         if (financialDocument.size() != 0 && illigalChange == 1) {
             throw new RuleException("fin.updateFinancialAccountStructure.checkFinancialDocument");
         }

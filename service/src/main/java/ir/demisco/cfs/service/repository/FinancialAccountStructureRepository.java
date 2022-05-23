@@ -65,6 +65,14 @@ public interface FinancialAccountStructureRepository extends JpaRepository<Finan
             , nativeQuery = true)
     List<Long> getFinancialAccountStructureByCodingAndStructureId(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
 
+    @Query(value = " SELECT 1 " +
+            "  FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE AST " +
+            " WHERE AST.FINANCIAL_CODING_TYPE_ID = :financialCodingTypeId " +
+            "      AND AST.FLG_SHOW_IN_ACC = 1 " +
+            " AND AST.DELETED_DATE IS NULL " +
+            " and (:financialAccountStructure is null or AST.ID != :financialAccountStructureId) "
+            , nativeQuery = true)
+    List<Long> getFinancialAccountStructureByCodingAndFlgShow(Long financialCodingTypeId, Object financialAccountStructure, Long financialAccountStructureId);
 
     @Query(value = "SELECT 1  FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE AST WHERE AST.ID =:childAccountStructure " +
             "    AND AST.DIGIT_COUNT = LENGTH(:code) ", nativeQuery = true)
