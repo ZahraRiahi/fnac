@@ -147,7 +147,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
 
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndFlgShow(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
-                throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
+                throw new RuleException("fin.financialAccountStructureCodingFlag.ruleException.save");
             }
 
         if (financialDocument.size() != 0 && illigalChange == 1) {
