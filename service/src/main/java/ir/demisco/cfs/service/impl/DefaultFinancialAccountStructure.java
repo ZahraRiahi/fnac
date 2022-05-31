@@ -88,6 +88,11 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
+
+        List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndFlgShow(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
+        if (financialAccountStructureCoding.size() != 0) {
+            throw new RuleException("fin.financialAccountStructureCodingFlag.ruleException.save");
+        }
         FinancialAccountStructure financialAccountStructureFlg = financialAccountStructureRepository.findById(financialAccountStructureDto.getId() == null ? 0L : financialAccountStructureDto.getId()).orElse(new FinancialAccountStructure());
         financialAccountStructureFlg.setDescription(financialAccountStructureDto.getDescription());
         financialAccountStructureFlg.setSequence(financialAccountStructureDto.getSequence());
@@ -112,7 +117,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         }
 
         Long financialAccountStructureCountIlligalChange = financialAccountStructureRepository.getFinancialAccountStructureBySequenceAndFlg(financialAccountStructureDto.getId(), financialAccountStructureDto.getSequence(),
-                financialAccountStructureDto.getDigitCount(),financialAccountStructureDto.getDescription() ,financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
+                financialAccountStructureDto.getDigitCount(), financialAccountStructureDto.getDescription(), financialAccountStructureDto.getSumDigit(), financialAccountStructureDto.getFinancialCodingTypeId(),
                 financialAccountStructureDto.getFlgShowInAcc(), financialAccountStructureDto.getFlgPermanentStatus());
         if (financialAccountStructureCountIlligalChange != null) {
             illigalChange = 1L;
@@ -144,7 +149,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
                 throw new RuleException("fin.financialAccountStructureCoding.ruleException.save");
             }
         }
-        if ( illigalChange == 1) {
+        if (illigalChange == 1) {
             List<Long> financialAccountStructureCoding = financialAccountStructureRepository.getFinancialAccountStructureByCodingAndFlgShow(financialAccountStructureDto.getFinancialCodingTypeId(), financialAccountStructure, financialAccountStructureDto.getId());
             if (financialAccountStructureCoding.size() != 0) {
                 throw new RuleException("fin.financialAccountStructureCodingFlag.ruleException.save");
