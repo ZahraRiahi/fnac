@@ -66,9 +66,8 @@ public class DefaultAccountRelatedDescription implements AccountRelatedDescripti
                 return convertAccountRelatedDescriptionDto(accountRelatedDescription);
             }
         } else {
-
+            throw new RuleException("fin.financialAccount.notInformation");
         }
-        return null;
     }
 
 
