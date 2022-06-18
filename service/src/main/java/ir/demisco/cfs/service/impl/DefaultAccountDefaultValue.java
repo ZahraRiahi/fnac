@@ -40,7 +40,7 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
             throw new RuleException("fin.defaultValue.ruleException.save");
         }
         List<AccountDefaultValueDto> accountDefaultValueDtos = new ArrayList<>();
-        accountDefaultValue.forEach(e -> {
+        accountDefaultValue.forEach((Long e) -> {
             AccountDefaultValue defaultValue = new AccountDefaultValue();
             defaultValue.setAccountRelationTypeDetail(accountRelationTypeDetailRepository.getOne(e));
             defaultValue.setFinancialAccount(financialAccountRepository.getOne(accountDefaultValueDtoRequest.getFinancialAccountId()));
