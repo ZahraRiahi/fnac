@@ -13,11 +13,6 @@ public interface AccountRelatedDescriptionRepository extends JpaRepository<Accou
             " and acrd.deletedDate is null and fnad.deletedDate is null ")
     List<Object[]> findByAccountRelatedDescriptionListObject(Long financialAccountId);
 
-
-    //        @Query(value = "select 1" +
-//            " from fnac.account_related_description " +
-//            " where financial_account_des_id = :financialAccountDesId and  financial_account_id = :financialAccountId"
-//            , nativeQuery = true)
     @Query(value = " select 1 from  AccountRelatedDescription ard join ard.financialAccountDescription fad " +
             " join ard.financialAccount fa " +
             " where fad.id=:financialAccountDesId and  fa.id=:financialAccountId ")
