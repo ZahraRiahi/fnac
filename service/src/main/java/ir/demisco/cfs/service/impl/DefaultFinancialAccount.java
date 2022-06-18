@@ -179,7 +179,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private FinancialAccountParameter setParameter(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountParameter financialAccountParameter = new FinancialAccountParameter();
-        Map<String, Object> map = new HashMap<>();
         for (DataSourceRequest.FilterDescriptor item : filters) {
             switch (item.getField()) {
                 case "financialAccountStructure.financialCodingType.id":
@@ -192,26 +191,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     checkFinancialAccountStructureIdSet(financialAccountParameter, item);
                     break;
                 case "accountRelationType.id":
-                    if (item.getValue() != null) {
-                        map.put("accountRelationType", "accountRelationType");
-                        financialAccountParameter.setParamMap(map);
-                        financialAccountParameter.setAccountRelationTypeId(Long.parseLong(item.getValue().toString()));
-                    } else {
-                        map.put("accountRelationType", null);
-                        financialAccountParameter.setParamMap(map);
-                        financialAccountParameter.setAccountRelationTypeId(0L);
-                    }
+                    checkAccountRelationType(financialAccountParameter, item);
                     break;
                 case "financialAccountParent.id":
-                    if (item.getValue() != null) {
-                        map.put("financialAccountParent", "financialAccountParent");
-                        financialAccountParameter.setParamMap(map);
-                        financialAccountParameter.setFinancialAccountParentId(Long.parseLong(item.getValue().toString()));
-                    } else {
-                        map.put("financialAccountParent", null);
-                        financialAccountParameter.setParamMap(map);
-                        financialAccountParameter.setFinancialAccountParentId(0L);
-                    }
+                    checkFinancialAccountParent(financialAccountParameter, item);
                     break;
                 case "description":
                     if (item.getValue() != null) {
@@ -223,6 +206,30 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
         }
         return financialAccountParameter;
+    }
+    private void checkFinancialAccountParent(FinancialAccountParameter financialAccountParameter, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("financialAccountParent", "financialAccountParent");
+            financialAccountParameter.setParamMap(map);
+            financialAccountParameter.setFinancialAccountParentId(Long.parseLong(item.getValue().toString()));
+        } else {
+            map.put("financialAccountParent", null);
+            financialAccountParameter.setParamMap(map);
+            financialAccountParameter.setFinancialAccountParentId(0L);
+        }
+    }
+    private void checkAccountRelationType(FinancialAccountParameter financialAccountParameter, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("accountRelationType", "accountRelationType");
+            financialAccountParameter.setParamMap(map);
+            financialAccountParameter.setAccountRelationTypeId(Long.parseLong(item.getValue().toString()));
+        } else {
+            map.put("accountRelationType", null);
+            financialAccountParameter.setParamMap(map);
+            financialAccountParameter.setAccountRelationTypeId(0L);
+        }
     }
 
     private void checkFinancialAccountStructureCodingTypeSet(FinancialAccountParameter financialAccountParameter, DataSourceRequest.FilterDescriptor item) {
@@ -598,7 +605,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
-        financialAccountStructureListObject.forEach(e -> {
+        financialAccountStructureListObject.forEach((Object[] e) -> {
             AccountStructureLevel accountStructureLevel = new AccountStructureLevel();
             accountStructureLevel.setFinancialAccount(financialAccount);
             accountStructureLevel.setFinancialAccountStructure(financialAccountStructureRepository.getOne(Long.parseLong(e[2].toString())));
@@ -641,31 +648,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         for (DataSourceRequest.FilterDescriptor item : filters) {
             switch (item.getField()) {
                 case "description":
-                    if (item.getValue() != null) {
-                        map.put("descriptionObject", "descriptionObject");
-                        financialAccountAdjustmentResponse.setDescription(item.getValue().toString());
-                    } else {
-                        map.put("descriptionObject", null);
-                        financialAccountAdjustmentResponse.setDescription(null);
-                    }
+                    checkDescriptionObject(financialAccountAdjustmentResponse, item);
                     break;
                 case "code":
-                    if (item.getValue() != null) {
-                        map.put("codeObject", "codeObject");
-                        financialAccountAdjustmentResponse.setCode(item.getValue().toString());
-                    } else {
-                        map.put("codeObject", null);
-                        financialAccountAdjustmentResponse.setCode(null);
-                    }
+                    checkCodeObject(financialAccountAdjustmentResponse, item);
                     break;
                 case "fullDescription":
-                    if (item.getValue() != null) {
-                        map.put("fullDescriptionObject", "fullDescriptionObject");
-                        financialAccountAdjustmentResponse.setFullDescription(item.getValue().toString());
-                    } else {
-                        map.put("fullDescriptionObject", null);
-                        financialAccountAdjustmentResponse.setFullDescription(null);
-                    }
+                    checkFullDescriptionObject(financialAccountAdjustmentResponse, item);
                     break;
                 default:
                     break;
@@ -674,6 +663,42 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         financialAccountAdjustmentResponse.setParamMap(map);
         return financialAccountAdjustmentResponse;
+    }
+
+    private void checkFullDescriptionObject(FinancialAccountAdjustmentResponse
+                                                    financialAccountAdjustmentResponse, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("fullDescriptionObject", "fullDescriptionObject");
+            financialAccountAdjustmentResponse.setFullDescription(item.getValue().toString());
+        } else {
+            map.put("fullDescriptionObject", null);
+            financialAccountAdjustmentResponse.setFullDescription(null);
+        }
+    }
+
+    private void checkDescriptionObject(FinancialAccountAdjustmentResponse
+                                                financialAccountAdjustmentResponse, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("descriptionObject", "descriptionObject");
+            financialAccountAdjustmentResponse.setDescription(item.getValue().toString());
+        } else {
+            map.put("descriptionObject", null);
+            financialAccountAdjustmentResponse.setDescription(null);
+        }
+    }
+
+    private void checkCodeObject(FinancialAccountAdjustmentResponse
+                                         financialAccountAdjustmentResponse, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("codeObject", "codeObject");
+            financialAccountAdjustmentResponse.setCode(item.getValue().toString());
+        } else {
+            map.put("codeObject", null);
+            financialAccountAdjustmentResponse.setCode(null);
+        }
     }
 
     @Override
@@ -925,32 +950,44 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     break;
 
                 case "description":
-                    if (item.getValue() != null) {
-                        map.put("descriptionObject", "descriptionObject");
-                        financialAccountStructureRequest.setParamMap(map);
-                        financialAccountStructureRequest.setDescription(item.getValue().toString());
-                    } else {
-                        map.put("descriptionObject", null);
-                        financialAccountStructureRequest.setParamMap(map);
-                        financialAccountStructureRequest.setDescription(null);
-                    }
+                    checkDescription(financialAccountStructureRequest, item);
                     break;
                 case "code":
-                    if (item.getValue() != null) {
-                        map.put("codeObject", "codeObject");
-                        financialAccountStructureRequest.setParamMap(map);
-                        financialAccountStructureRequest.setCode(item.getValue().toString());
-                    } else {
-                        map.put("codeObject", null);
-                        financialAccountStructureRequest.setParamMap(map);
-                        financialAccountStructureRequest.setCode(null);
-                    }
+                    checkCodeObject(financialAccountStructureRequest, item);
                     break;
                 default:
                     break;
             }
         }
         return financialAccountStructureRequest;
+    }
+
+    private void checkCodeObject(FinancialAccountStructureRequest
+                                         financialAccountStructureRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("codeObject", "codeObject");
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setCode(item.getValue().toString());
+        } else {
+            map.put("codeObject", null);
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setCode(null);
+        }
+    }
+
+    private void checkDescription(FinancialAccountStructureRequest
+                                          financialAccountStructureRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("descriptionObject", "descriptionObject");
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setDescription(item.getValue().toString());
+        } else {
+            map.put("descriptionObject", null);
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setDescription(null);
+        }
     }
 
     @Override
@@ -1014,7 +1051,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     private FinancialAccountLovRequest setFinancialAccountLov(List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
-        Map<String, Object> map = new HashMap<>();
         for (DataSourceRequest.FilterDescriptor item : filters) {
             switch (item.getField()) {
                 case "financialAccountStructure.financialCodingType.id":
@@ -1022,38 +1058,13 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     break;
 
                 case "id":
-                    List<Long> arrayList = (ArrayList) item.getValue();
-                    if (!arrayList.isEmpty()) {
-                        map.put("financialAccountList", "financialAccountList");
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setFinancialAccountIdList(arrayList);
-                    } else {
-                        map.put("financialAccountList", null);
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
-                    }
+                    checkFinancialAccountId(financialAccountLovRequest, item);
                     break;
                 case "description":
-                    if (item.getValue() != null) {
-                        map.put("descriptionObject", "descriptionObject");
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setDescription(item.getValue().toString());
-                    } else {
-                        map.put("descriptionObject", null);
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setDescription(null);
-                    }
+                    checkDescription(financialAccountLovRequest, item);
                     break;
                 case "code":
-                    if (item.getValue() != null) {
-                        map.put("codeObject", "codeObject");
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setCode(item.getValue().toString());
-                    } else {
-                        map.put("codeObject", null);
-                        financialAccountLovRequest.setParamMap(map);
-                        financialAccountLovRequest.setCode(null);
-                    }
+                    checkCodeObject(financialAccountLovRequest, item);
                     break;
                 default:
                     break;
@@ -1061,5 +1072,48 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
         }
         return financialAccountLovRequest;
+    }
+
+    private void checkFinancialAccountId(FinancialAccountLovRequest
+                                                 financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        List<Long> arrayList = (ArrayList) item.getValue();
+        if (!arrayList.isEmpty()) {
+            map.put("financialAccountList", "financialAccountList");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setFinancialAccountIdList(arrayList);
+        } else {
+            map.put("financialAccountList", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
+        }
+    }
+
+    private void checkCodeObject(FinancialAccountLovRequest
+                                         financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("codeObject", "codeObject");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setCode(item.getValue().toString());
+        } else {
+            map.put("codeObject", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setCode(null);
+        }
+    }
+
+    private void checkDescription(FinancialAccountLovRequest
+                                          financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("descriptionObject", "descriptionObject");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setDescription(item.getValue().toString());
+        } else {
+            map.put("descriptionObject", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setDescription(null);
+        }
     }
 }
