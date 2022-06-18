@@ -49,18 +49,4 @@ public class FinancialPeriodStatus extends AuditModel<Long> {
         this.name = name;
     }
 
-    public enum Code {
-        OPEN("OPEN"), CLOSE("CLOSE");
-
-        Code(String code) {
-            this.code = code;
-        }
-
-        String code;
-
-        public String getCode() {
-            return code;
-        }
-
-    }
 }
