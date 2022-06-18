@@ -69,7 +69,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -404,11 +404,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("fin.financialAccountStructure.saveFinancialAccount");
             }
             if (financialAccountRequest.getFinancialAccountParentId() != null) {
-                List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
-                if (!Objects.isNull(financialAccountParent)) {
-                    newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
-                    financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
-                }
+                  List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
+              Optional<String > financialAccountParentOptional=  financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst();
+                   if(financialAccountParentOptional.isPresent() ){
+                    newGeneratedCode = financialAccountParentOptional.get();
+                    financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());}
             }
             if (financialAccountRequest.getId() == null) {
 
