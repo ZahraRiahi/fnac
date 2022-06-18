@@ -69,6 +69,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,7 +126,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         List<Sort.Order> sorts = new ArrayList<>();
         dataSourceRequest.getSort()
-                .forEach(sortDescriptor ->
+                .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
                         {
                             if (sortDescriptor.getDir().equals("asc")) {
                                 sorts.add(Sort.Order.asc(sortDescriptor.getField()));
@@ -207,6 +208,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
         return financialAccountParameter;
     }
+
     private void checkFinancialAccountParent(FinancialAccountParameter financialAccountParameter, DataSourceRequest.FilterDescriptor item) {
         Map<String, Object> map = new HashMap<>();
         if (item.getValue() != null) {
@@ -219,6 +221,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             financialAccountParameter.setFinancialAccountParentId(0L);
         }
     }
+
     private void checkAccountRelationType(FinancialAccountParameter financialAccountParameter, DataSourceRequest.FilterDescriptor item) {
         Map<String, Object> map = new HashMap<>();
         if (item.getValue() != null) {
@@ -353,7 +356,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccount financialAccount = saveFinancialAccount(financialAccountRequest);
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
 
-        saveAccountStructureLevel(financialAccountRequest, financialAccount);
+        saveAccountStructureLevel(financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
                 (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel(saveAccountRelatedDescriptionValue
@@ -402,9 +405,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             }
             if (financialAccountRequest.getFinancialAccountParentId() != null) {
                 List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
-                newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
-                financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
-
+                if (!Objects.isNull(financialAccountParent)) {
+                    newGeneratedCode = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst().get();
+                    financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+                }
             }
             if (financialAccountRequest.getId() == null) {
 
@@ -428,9 +432,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         financialAccount.setCode(financialAccountRequest.getCode());
         financialAccount.setDescription(financialAccountRequest.getDescription());
         financialAccount.setLatinDescription(financialAccountRequest.getLatinDescription());
-        financialAccount = partTwo(financialAccount, financialAccountRequest);
-
-        financialAccount = financialAccountRepository.save(financialAccount);
+        financialAccount = financialAccountRepository.save(partTwo(financialAccount, financialAccountRequest));
         return financialAccount;
     }
 
@@ -518,7 +520,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private List<AccountDefaultValueResponse> saveAccountDefaultValue
             (List<AccountDefaultValueRequest> accountDefaultValueOutPutModel, FinancialAccount financialAccount) {
         List<AccountDefaultValueResponse> accountDefaultValueDtos = new ArrayList<>();
-        accountDefaultValueOutPutModel.forEach(e -> {
+        accountDefaultValueOutPutModel.forEach((AccountDefaultValueRequest e) -> {
             Object centricAccount = null;
             Long centricAccountId;
             if (e.getCentricAccountId() != null) {
@@ -559,7 +561,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             (List<AccountRelatedDescriptionRequest> accountRelatedDescriptionOutPutModel, FinancialAccount
                     financialAccount) {
         List<AccountRelatedDescriptionDto> accountRelatedDescriptionDtos = new ArrayList<>();
-        accountRelatedDescriptionOutPutModel.forEach(e -> {
+        accountRelatedDescriptionOutPutModel.forEach((AccountRelatedDescriptionRequest e) -> {
             e.setFinancialAccountId(financialAccount.getId());
             AccountRelatedDescriptionDto accountRelatedDescriptionDto = accountRelatedDescriptionService.save(e);
             accountRelatedDescriptionDtos.add(accountRelatedDescriptionDto);
@@ -570,7 +572,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private List<AccountMoneyTypeDtoResponse> saveAccountMoneyType
             (List<Long> accountMoneyTypeOutPut, FinancialAccount financialAccount) {
         List<AccountMoneyTypeDtoResponse> accountMoneyTypeDtoResponses = new ArrayList<>();
-        accountMoneyTypeOutPut.forEach(e -> {
+        accountMoneyTypeOutPut.forEach((Long e) -> {
             AccountMoneyType accountMoneyType = new AccountMoneyType();
             accountMoneyType.setFinancialAccount(financialAccount);
             accountMoneyType.setMoneyType(moneyTypeRepository.getOne(e));
@@ -587,7 +589,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
     private List<AccountRelatedTypeDtoResponse> saveAccountRelatedType
             (List<Long> accountRelatedTypeOutPutModel, FinancialAccount financialAccount) {
         List<AccountRelatedTypeDtoResponse> accountRelatedTypeDtoResponses = new ArrayList<>();
-        accountRelatedTypeOutPutModel.forEach(e -> {
+        accountRelatedTypeOutPutModel.forEach((Long e) -> {
             AccountRelatedType accountRelatedType = new AccountRelatedType();
             accountRelatedType.setFinancialAccount(financialAccount);
             accountRelatedType.setFinancialAccountType(financialAccountTypeRepository.getOne(e));
@@ -600,8 +602,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return accountRelatedTypeDtoResponses;
     }
 
-    private void saveAccountStructureLevel(FinancialAccountRequest financialAccountRequest, FinancialAccount
-            financialAccount) {
+    private void saveAccountStructureLevel(FinancialAccount
+                                                   financialAccount) {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
 
@@ -738,7 +740,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         financialAccountStructure);
         if (countFinancialAccountStructure != null) {
             accountStructureLevelRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountStructureLevel -> accountStructureLevelRepository.deleteById(accountStructureLevel.getId()));
-            saveAccountStructureLevel(financialAccountRequest, financialAccount);
+            saveAccountStructureLevel(financialAccount);
         }
     }
 
@@ -765,7 +767,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     .forEach(e -> financialAccountRequest.getAccountDefaultValueInPutModel().stream()
                             .filter(accountDefaultValueRequest ->
                                     e.getId().equals(accountDefaultValueRequest.getId()))
-                            .forEach(accountDefaultValueRequest -> {
+                            .forEach((AccountDefaultValueRequest accountDefaultValueRequest) -> {
                                 if (accountDefaultValueRequest.getCentricAccountId() != null) {
                                     e.setCentricAccount(centricAccountRepository.getOne(accountDefaultValueRequest.getCentricAccountId()));
                                 } else {
@@ -792,11 +794,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 (accountRelatedDescriptionOutPutModel
                         .stream()
                         .map(AccountRelatedDescriptionRequest::getFinancialAccountDesId).collect(Collectors.toList()));
-        accountRelatedDescriptionOutPutModel.forEach(e -> {
+        accountRelatedDescriptionOutPutModel.forEach((AccountRelatedDescriptionRequest e) -> {
             if (e.getId() != null) {
                 financialAccountDescriptionList.stream().filter(f -> f.getId().equals(e.getFinancialAccountDesId()))
                         .findAny()
-                        .ifPresent(financialAccountDescription -> {
+                        .ifPresent((FinancialAccountDescription financialAccountDescription) -> {
                             financialAccountDescription.setDescription(e.getDescription());
                             AccountRelatedDescription accountRelatedDescription = accountRelatedDescriptionRepository
                                     .findByFinancialAccountIdAndFinancialAccountDescriptionIdAndDeletedDateIsNull
