@@ -33,14 +33,14 @@ public class CentricAccount extends AuditModel<Long> {
     private List<CentricPersonRole> centricPersonRoleList;
     private LocalDateTime deletedDate;
     private CentricAccount parentCentricAccount;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "centric_account_generator", sequenceName = "sq_centric_account", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "centric_account_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

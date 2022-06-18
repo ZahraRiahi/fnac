@@ -1,6 +1,8 @@
 package ir.demisco.cfs.model.entity;
 
 
+import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,19 +14,19 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "account_permanent_status", schema = "fnac")
-public class AccountPermanentStatus {
+public class AccountPermanentStatus extends AuditModel<Long> {
     private Long id;
     private String code;
     private String description;
     private LocalDateTime deletedDate;
-
+    @Override
     @Id
-    @SequenceGenerator(schema = "fnac", name = "account_status_generator", sequenceName = "sq_account_status", allocationSize = 50)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_status_generator")
+    @SequenceGenerator(schema = "fnac", name = "account_permanent_status_generator", sequenceName = "sq_account_permanent_status", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_permanent_status_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -22,14 +22,14 @@ public class AccountRelatedDescription extends AuditModel<Long> {
     private FinancialAccountDescription financialAccountDescription;
     private FinancialAccount financialAccount;
     private LocalDateTime deletedDate;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "account_related_description_generator", sequenceName = "sq_account_related_description", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_related_description_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

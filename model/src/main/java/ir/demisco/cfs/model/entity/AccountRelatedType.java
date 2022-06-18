@@ -22,7 +22,7 @@ public class AccountRelatedType extends AuditModel<Long> {
     private FinancialAccountType financialAccountType;
     private LocalDateTime deletedDate;
 
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "account_related_type_generator", sequenceName = "sq_account_related_type", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_related_type_generator")

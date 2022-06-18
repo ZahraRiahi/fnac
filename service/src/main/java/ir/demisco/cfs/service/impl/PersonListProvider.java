@@ -46,10 +46,10 @@ public class PersonListProvider implements GridDataProvider {
                 .create("disableDate", null, DataSourceRequest.Operators.IS_NULL));
 
         for (DataSourceRequest.FilterDescriptor filter : dataSourceRequest.getFilter().getFilters()) {
-                if ("personName".equals(filter.getField()) && filter.getValue() == null || filter.getValue() == "") {
-                    filter.setDisable(true);
-                }
+            if (("personName".equals(filter.getField()) && filter.getValue() == null) || (filter.getValue() == "")) {
+                filter.setDisable(true);
             }
+        }
         return null;
     }
 

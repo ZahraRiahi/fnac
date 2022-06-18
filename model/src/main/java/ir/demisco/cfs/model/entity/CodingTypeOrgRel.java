@@ -22,14 +22,14 @@ public class CodingTypeOrgRel extends AuditModel<Long> {
     private FinancialCodingType financialCodingType;
     private Organization organization;
     private Long activeFlag;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "coding_type_org_rel_generator", sequenceName = "sq_coding_type_org_rel", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coding_type_org_rel_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
