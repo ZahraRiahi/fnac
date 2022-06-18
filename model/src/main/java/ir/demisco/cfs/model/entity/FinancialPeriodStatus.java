@@ -4,7 +4,10 @@ import ir.demisco.cloud.basic.model.entity.domain.AuditModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -15,11 +18,15 @@ public class FinancialPeriodStatus extends AuditModel<Long> {
     private String code;
     private String name;
 
+    @Override
     @Id
+    @SequenceGenerator(schema = "fnpr", name = "FINANCIAL_PERIOD_STATUS_generator", sequenceName = "sq_FINANCIAL_PERIOD_STATUS", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FINANCIAL_PERIOD_STATUS_generator")
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -38,10 +37,6 @@ public class FinancialAccountGetByStructureProvider implements GridDataProvider 
         );
     }
 
-    @Override
-    public List<Order> getCustomSort(FilterContext filterContext) {
-        return null;
-    }
 
     @Override
     public List<Object> mapToDto(List<Object> resultList) {

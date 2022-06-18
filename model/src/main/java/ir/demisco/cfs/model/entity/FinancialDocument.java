@@ -31,14 +31,14 @@ public class FinancialDocument  extends AuditModel<Long> {
     private FinancialDepartment financialDepartment;
     private Long documentNumber;
     private LocalDateTime deletedDate;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fndc", name = "financial_document_generator", sequenceName = "sq_financial_document")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "financial_document_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

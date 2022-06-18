@@ -21,14 +21,14 @@ public class CentricOrgRel extends AuditModel<Long> {
     private CentricAccount centricAccount;
     private Organization organization;
     private Long activeFlag;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "centric_org_rel_generator", sequenceName = "sq_centric_org_rel", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "centric_org_rel_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

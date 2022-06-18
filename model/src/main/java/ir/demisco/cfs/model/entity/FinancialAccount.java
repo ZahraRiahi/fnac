@@ -40,14 +40,14 @@ public class FinancialAccount extends AuditModel<Long> {
     private Boolean hasChild;
     private Date disableDate;
     private AccountPermanentStatus accountPermanentStatus;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_generator", sequenceName = "sq_financial_account", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "financial_account_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

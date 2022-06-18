@@ -10,7 +10,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -41,11 +40,6 @@ public class FinancialAccountLovProvider implements GridDataProvider {
                 filterContext.getPath("disableDate")
 
         );
-    }
-
-    @Override
-    public List<Order> getCustomSort(FilterContext filterContext) {
-        return null;
     }
 
     @Override

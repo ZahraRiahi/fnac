@@ -27,14 +27,14 @@ public class FinancialAccountStructure extends AuditModel<Long> {
     private LocalDateTime deletedDate;
     private Boolean flgShowInAcc;
     private Boolean flgPermanentStatus;
-
+    @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_structure_generator", sequenceName = "sq_financial_account_structure", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "financial_account_structure_generator")
     public Long getId() {
         return id;
     }
-
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

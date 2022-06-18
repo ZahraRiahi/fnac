@@ -6,7 +6,6 @@ import ir.demisco.cloud.core.middle.service.business.api.core.GridDataProvider;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Selection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,10 +28,6 @@ public class FinancialAccountAdjustmentLovProvider implements GridDataProvider {
         );
     }
 
-    @Override
-    public List<Order> getCustomSort(FilterContext filterContext) {
-        return null;
-    }
 
     @Override
     public List<Object> mapToDto(List<Object> resultList) {
