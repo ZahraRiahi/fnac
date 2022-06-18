@@ -64,7 +64,7 @@ public class DefaultAccountDefaultValue implements AccountDefaultValueService {
     @Transactional(rollbackOn = Throwable.class)
     public List<AccountDefaultValueOutPutResponse> updateAccountDefaultValueById(AccountDefaultValueUpdateRequest accountDefaultValueUpdateRequest) {
         List<AccountDefaultValueOutPutResponse> accountDefaultValueDtos = new ArrayList<>();
-        accountDefaultValueUpdateRequest.getAccountDefaultValueUpdateDtos().forEach(e -> {
+        accountDefaultValueUpdateRequest.getAccountDefaultValueUpdateDtos().forEach((AccountDefaultValueUpdateRequest e) -> {
             AccountDefaultValue accountDefaultValue = accountDefaultValueRepository.findByIdAndAccountRelationTypeDetailId(e.getId(), e.getAccountRelationTypeDetailId());
 
             if (e.getCentricAccountId() == null) {
