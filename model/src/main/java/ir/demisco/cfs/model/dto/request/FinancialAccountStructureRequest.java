@@ -7,6 +7,7 @@ public class FinancialAccountStructureRequest {
     private Long financialAccountStructureId;
     private String description;
     private String code;
+    private Long organizationId;
     Map<String, Object> paramMap;
 
     public Long getFinancialCodingTypeId() {
@@ -39,6 +40,14 @@ public class FinancialAccountStructureRequest {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public Map<String, Object> getParamMap() {
