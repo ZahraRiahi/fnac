@@ -404,11 +404,12 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                 throw new RuleException("fin.financialAccountStructure.saveFinancialAccount");
             }
             if (financialAccountRequest.getFinancialAccountParentId() != null) {
-                  List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
-              Optional<String > financialAccountParentOptional=  financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst();
-                   if(financialAccountParentOptional.isPresent() ){
+                List<Object[]> financialAccountParent = financialAccountRepository.findByFinancialAccountAndFinancialAccountParent(financialAccountRequest.getFinancialAccountParentId());
+                Optional<String> financialAccountParentOptional = financialAccountParent.stream().map(objects -> objects[2].toString()).findFirst();
+                if (financialAccountParentOptional.isPresent()) {
                     newGeneratedCode = financialAccountParentOptional.get();
-                    financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());}
+                    financialAccountRequest.setCode(newGeneratedCode + financialAccountRequest.getCode());
+                }
             }
             if (financialAccountRequest.getId() == null) {
 
@@ -999,16 +1000,23 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
         Map<String, Object> paramMap = param.getParamMap();
-        List<Object[]> list = getCentricAccountList(param, paramMap);
-        List<FinancialAccountGetByStructureResponse> financialAccountGetByStructureList = getFinancialAccountGetByStructureResponseList(list);
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(financialAccountGetByStructureList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
-        dataSourceResult.setTotal(list.size());
-        return dataSourceResult;
-    }
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        List<Sort.Order> sorts = new ArrayList<>();
+        dataSourceRequest.getSort()
+                .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
+                        {
+                            if (sortDescriptor.getDir().equals("asc")) {
+                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
+                            } else {
+                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+                            }
+                        }
+                );
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
+        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getOrganizationId(), param.getFinancialAccountStructureId(), paramMap.get("descriptionObject"), param.getDescription()
+                , paramMap.get("codeObject"), param.getCode(), pageable);
 
-    private List<FinancialAccountGetByStructureResponse> getFinancialAccountGetByStructureResponseList(List<Object[]> list) {
-        return list.stream().map(item ->
+        List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
                 FinancialAccountGetByStructureResponse.builder()
                         .id(Long.parseLong(item[0].toString()))
                         .code(item[1] == null ? null : item[1].toString())
@@ -1017,11 +1025,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
                         .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
                         .build()).collect(Collectors.toList());
-    }
-
-    private List<Object[]> getCentricAccountList(FinancialAccountStructureRequest financialAccountStructureRequest, Map<String, Object> financialAccountGetByStructureParamMap) {
-        return financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), financialAccountStructureRequest.getFinancialAccountStructureId(), financialAccountGetByStructureParamMap.get("descriptionObject"),
-                financialAccountStructureRequest.getDescription(), financialAccountGetByStructureParamMap.get("codeObject"), financialAccountStructureRequest.getCode());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(financialAccountDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
     }
 
     @Override
