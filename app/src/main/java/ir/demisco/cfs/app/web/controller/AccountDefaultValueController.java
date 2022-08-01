@@ -26,7 +26,6 @@ public class AccountDefaultValueController {
     @PostMapping("/save")
     public ResponseEntity<List<AccountDefaultValueDto>> saveCentricAccount(@RequestBody AccountDefaultValueDtoRequest accountDefaultValueDtoRequest) {
         return ResponseEntity.ok(accountDefaultValueService.save(accountDefaultValueDtoRequest));
-
     }
 
     @PostMapping("/update")
