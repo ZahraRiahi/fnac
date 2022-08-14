@@ -1013,7 +1013,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         }
                 );
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
-        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getOrganizationId(), param.getFinancialAccountStructureId(), paramMap.get("descriptionObject"), param.getDescription()
+        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId(), paramMap.get("descriptionObject"), param.getDescription()
                 , paramMap.get("codeObject"), param.getCode(), pageable);
 
         List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->

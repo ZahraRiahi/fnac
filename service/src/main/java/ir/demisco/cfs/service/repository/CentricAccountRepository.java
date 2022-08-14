@@ -176,6 +176,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             " CNAC.PARENT_CENTRIC_ACCOUNT_ID = :parentCentricAccountId)" +
             "   and (:name is null or CNAC.NAME  like %:name%) " +
             "   and (:code is null or CNAC.CODE  like %:code%) " +
+            " and cnac.active_flag=1 " +
             "   AND EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
@@ -191,7 +192,8 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   and (:parentCentricAccount is null or " +
             " CNAC.PARENT_CENTRIC_ACCOUNT_ID = :parentCentricAccountId)" +
             "   and (:name is null or CNAC.NAME  like %:name%) " +
-            "   and (:code is null or CNAC.CODE  like %:code%) " +
+            "   and (:code is null or CNAC.CODE  like %:code%)" +
+            " and cnac.active_flag=1 " +
             "   AND EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
