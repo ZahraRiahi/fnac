@@ -72,7 +72,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "   AND ((:code IS NOT NULL AND CNAC.CODE LIKE '%'||:code||'%') OR :code IS NULL) " +
             "   AND ((:name IS NOT NULL AND CNAC.NAME LIKE '%'|| :name||'%') OR :name IS NULL) "
             , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId,String code,String name);
+    List<Object[]> findByCentricAccountAndCentricAccountTypeId(Long centricAccountTypeId, Long organizationId, String code, String name);
 
     @Query(value = "select count(t.id)" +
             "  from fnac.centric_account t" +
@@ -143,11 +143,13 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "    ON PARENT_C.ID = CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
             " WHERE CNAC.CENTRIC_ACCOUNT_TYPE_ID = :centricAccountTypeId" +
             "   and (:name is null or CNAC.NAME  like %:name%) " +
+            "   and (:code is null or CNAC.CODE  like %:code%) " +
             "   AND  EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            " order by CNAC.CODE asc "
             , countQuery = " SELECT count(CNAC.id) " +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
             " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
@@ -156,14 +158,15 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "    ON PARENT_C.ID = CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
             " WHERE CNAC.CENTRIC_ACCOUNT_TYPE_ID = :centricAccountTypeId" +
             "   and (:name is null or CNAC.NAME  like %:name%) " +
+            "   and (:code is null or CNAC.CODE  like %:code%) " +
             "   AND  EXISTS (SELECT 1" +
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            " order by CNAC.CODE asc "
             , nativeQuery = true)
-    List<Object[]> centricAccountList(Long centricAccountTypeId, String name, Long organizationId
-    );
+    List<Object[]> centricAccountList(Long centricAccountTypeId, String name, String code, Long organizationId);
 
     @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
@@ -200,7 +203,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    List<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, String name,String code, Long organizationId
+    List<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, String name, String code, Long organizationId
     );
 }
 

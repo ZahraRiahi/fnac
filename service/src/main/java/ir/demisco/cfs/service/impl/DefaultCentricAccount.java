@@ -55,7 +55,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     }
 
     private List<Object[]> getCentricAccountList(CentricAccountParamRequest centricAccountParamRequest) {
-        return centricAccountRepository.centricAccountList(centricAccountParamRequest.getCentricAccountTypeId(), centricAccountParamRequest.getName(), SecurityHelper.getCurrentUser().getOrganizationId());
+        return centricAccountRepository.centricAccountList(centricAccountParamRequest.getCentricAccountTypeId(), centricAccountParamRequest.getName(), centricAccountParamRequest.getCode(), SecurityHelper.getCurrentUser().getOrganizationId());
     }
 
     private List<CentricAccountListResponse> getCentricAccountResponseList(List<Object[]> list) {
@@ -95,16 +95,36 @@ public class DefaultCentricAccount implements CentricAccountService {
                     break;
 
                 case "name":
-                    if (item.getValue() != null) {
-                        centricAccountParamRequest.setName(item.getValue().toString());
-
-                    }
+                    checkNameList(centricAccountParamRequest, item);
                     break;
+
+                case "code":
+                    checkCodeList(centricAccountParamRequest, item);
+                    break;
+
                 default:
                     break;
             }
         }
         return centricAccountParamRequest;
+    }
+
+    private void checkNameList(CentricAccountParamRequest
+                                       centricAccountParamRequest, DataSourceRequest.FilterDescriptor item) {
+        if (item.getValue() != null) {
+            centricAccountParamRequest.setName(item.getValue().toString());
+        } else {
+            centricAccountParamRequest.setName("");
+        }
+    }
+
+    private void checkCodeList(CentricAccountParamRequest
+                                       centricAccountParamRequest, DataSourceRequest.FilterDescriptor item) {
+        if (item.getValue() != null) {
+            centricAccountParamRequest.setCode(item.getValue().toString());
+        } else {
+            centricAccountParamRequest.setCode("");
+        }
     }
 
     @Override
@@ -227,7 +247,6 @@ public class DefaultCentricAccount implements CentricAccountService {
     }
 
     private CentricAccount saveCentricAccount(CentricAccount centricAccount, CentricAccountRequest centricAccountRequest) {
-
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.getOne(centricAccountRequest.getCentricAccountTypeId()));
@@ -287,11 +306,11 @@ public class DefaultCentricAccount implements CentricAccountService {
                     break;
 
                 case "name":
-                    checkName(centricAccountGetRequest,item);
+                    checkName(centricAccountGetRequest, item);
                     break;
 
                 case "code":
-                    checkCode(centricAccountGetRequest,item);
+                    checkCode(centricAccountGetRequest, item);
                     break;
                 default:
                     break;
@@ -299,6 +318,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         return centricAccountGetRequest;
     }
+
     private void checkName(CentricAccountGetRequest
                                    centricAccountGetRequest, DataSourceRequest.FilterDescriptor item) {
         if (item.getValue() != null) {
@@ -307,6 +327,7 @@ public class DefaultCentricAccount implements CentricAccountService {
             centricAccountGetRequest.setName("");
         }
     }
+
     private void checkCode(CentricAccountGetRequest
                                    centricAccountGetRequest, DataSourceRequest.FilterDescriptor item) {
         if (item.getValue() != null) {
@@ -315,6 +336,7 @@ public class DefaultCentricAccount implements CentricAccountService {
             centricAccountGetRequest.setCode("");
         }
     }
+
     private void checkParentCentricAccount(CentricAccountGetRequest
                                                    centricAccountGetRequest, DataSourceRequest.FilterDescriptor item) {
         Map<String, Object> map = new HashMap<>();
@@ -339,7 +361,6 @@ public class DefaultCentricAccount implements CentricAccountService {
         DataSourceResult dataSourceResult = new DataSourceResult();
         dataSourceResult.setData(centricAccountResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
         dataSourceResult.setTotal(list.size());
-
         return dataSourceResult;
     }
 
@@ -368,11 +389,11 @@ public class DefaultCentricAccount implements CentricAccountService {
                     break;
 
                 case "name":
-                    checkName(centricAccountNewTypeRequest,item);
+                    checkName(centricAccountNewTypeRequest, item);
                     break;
 
                 case "code":
-                    checkCode(centricAccountNewTypeRequest,item);
+                    checkCode(centricAccountNewTypeRequest, item);
                     break;
                 default:
                     break;
@@ -380,14 +401,16 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         return centricAccountNewTypeRequest;
     }
+
     private void checkName(CentricAccountNewTypeRequest
-                                                   centricAccountNewTypeRequest, DataSourceRequest.FilterDescriptor item) {
+                                   centricAccountNewTypeRequest, DataSourceRequest.FilterDescriptor item) {
         if (item.getValue() != null) {
             centricAccountNewTypeRequest.setName(item.getValue().toString());
         } else {
             centricAccountNewTypeRequest.setName("");
         }
     }
+
     private void checkCode(CentricAccountNewTypeRequest
                                    centricAccountNewTypeRequest, DataSourceRequest.FilterDescriptor item) {
         if (item.getValue() != null) {
@@ -396,6 +419,7 @@ public class DefaultCentricAccount implements CentricAccountService {
             centricAccountNewTypeRequest.setCode("");
         }
     }
+
     private List<Object[]> getCentricAccountGetByTypeId(CentricAccountNewTypeRequest centricAccountNewTypeRequest) {
         return centricAccountRepository.findByCentricAccountAndCentricAccountTypeId(
                 centricAccountNewTypeRequest.getCentricAccountTypeId(), SecurityHelper.getCurrentUser().getOrganizationId(), centricAccountNewTypeRequest.getCode(), centricAccountNewTypeRequest.getName());
