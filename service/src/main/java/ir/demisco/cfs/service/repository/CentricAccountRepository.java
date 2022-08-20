@@ -149,7 +149,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-            " order by CNAC.CODE asc "
+            " order by to_number(CNAC.CODE) desc  "
             , countQuery = " SELECT count(CNAC.id) " +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
             " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
@@ -164,7 +164,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-            " order by CNAC.CODE asc "
+            " order by to_number(CNAC.CODE) desc"
             , nativeQuery = true)
     List<Object[]> centricAccountList(Long centricAccountTypeId, String name, String code, Long organizationId);
 
