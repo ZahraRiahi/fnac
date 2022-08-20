@@ -55,7 +55,7 @@ public class DefaultCentricAccount implements CentricAccountService {
     }
 
     private List<Object[]> getCentricAccountList(CentricAccountParamRequest centricAccountParamRequest) {
-        return centricAccountRepository.centricAccountList(centricAccountParamRequest.getCentricAccountTypeId(), centricAccountParamRequest.getName(),centricAccountParamRequest.getCode() ,SecurityHelper.getCurrentUser().getOrganizationId());
+        return centricAccountRepository.centricAccountList(centricAccountParamRequest.getCentricAccountTypeId(), centricAccountParamRequest.getName(), centricAccountParamRequest.getCode(), SecurityHelper.getCurrentUser().getOrganizationId());
     }
 
     private List<CentricAccountListResponse> getCentricAccountResponseList(List<Object[]> list) {
@@ -247,7 +247,6 @@ public class DefaultCentricAccount implements CentricAccountService {
     }
 
     private CentricAccount saveCentricAccount(CentricAccount centricAccount, CentricAccountRequest centricAccountRequest) {
-
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.getOne(centricAccountRequest.getCentricAccountTypeId()));
@@ -355,15 +354,6 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional
     public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
-//        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-//        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
-//        List<Object[]> list = getCentricAccountList(paramSearch);
-//        List<CentricAccountListResponse> centricAccountResponseList = getCentricAccountResponseList(list);
-//        DataSourceResult dataSourceResult = new DataSourceResult();
-//        dataSourceResult.setData(centricAccountResponseList.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
-//        dataSourceResult.setTotal(list.size());
-
-
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
         List<Object[]> list = getCentricAccountList(paramSearch);
