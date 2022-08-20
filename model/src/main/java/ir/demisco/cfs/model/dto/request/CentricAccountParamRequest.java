@@ -5,6 +5,7 @@ import java.util.Map;
 public class CentricAccountParamRequest {
     private Long centricAccountTypeId;
     private String name;
+    private String code;
     private Long organizationId;
     Map<String, Object> paramMap;
 
@@ -22,6 +23,14 @@ public class CentricAccountParamRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Long getOrganizationId() {
