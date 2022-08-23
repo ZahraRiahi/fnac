@@ -55,7 +55,7 @@ public class PersonListProvider implements GridDataProvider {
 
     @Override
     public List<Object> mapToDto(List<Object> resultList) {
-        return resultList.stream().map(object -> {
+        return resultList.stream().map((Object object) -> {
             Object[] array = (Object[]) object;
             return PersonDto.builder()
                     .id(Long.parseLong(array[0].toString()))
