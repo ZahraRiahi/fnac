@@ -424,7 +424,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "          0" +
             "       END = 0" +
             "   AND FS.FLG_SHOW_IN_ACC = 1" +
-            "   AND FIAC.DISABLE_DATE IS NULL "
+            "   AND FIAC.DISABLE_DATE IS NULL " +
+            " order by   TO_NUMBER(FIAC.CODE) asc "
             , countQuery = " select count(FIAC.id)   " +
             "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
             " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
@@ -461,7 +462,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "          0" +
             "       END = 0" +
             "   AND FS.FLG_SHOW_IN_ACC = 1" +
-            "   AND FIAC.DISABLE_DATE IS NULL "
+            "   AND FIAC.DISABLE_DATE IS NULL " +
+            " order by   TO_NUMBER(FIAC.CODE) asc "
             , nativeQuery = true)
     Page<Object[]> financialAccountLov(Long organizationId, Long financialCodingTypeId, Object descriptionObject, String description, Object codeObject, String code, Object financialAccountList, List<Long> financialAccountIdList
             , Pageable pageable);
@@ -488,7 +490,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "               FS.FINANCIAL_CODING_TYPE_ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            " order by   TO_NUMBER(FIAC.CODE) asc "
             , countQuery = " SELECT count(FIAC.id)" +
             "              FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
             "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
@@ -505,7 +508,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "                     WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "                       AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "                           FS.FINANCIAL_CODING_TYPE_ID" +
-            "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)"
+            "                       AND INER_ORG_REL.ACTIVE_FLAG = 1) " +
+            " order by   TO_NUMBER(FIAC.CODE) asc "
             , nativeQuery = true)
     Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code, Pageable pageable);
 
