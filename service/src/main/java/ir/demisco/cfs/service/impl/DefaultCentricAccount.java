@@ -362,6 +362,32 @@ public class DefaultCentricAccount implements CentricAccountService {
                             }
                         }
                 );
+        if (dataSourceRequest.getSort().size() == 0) {
+            List<Sort.Order> sorts1 = new ArrayList<>();
+            Pageable pageable1 = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts1));
+            Page<Object[]> list1 = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable1);
+            List<CentricAccountListResponse> centricAccountResponseList = list1.stream().map(item ->
+                    CentricAccountListResponse.builder()
+                            .id(Long.parseLong(item[0].toString()))
+                            .code(gatItemForString(item, 1))
+                            .name(item[2].toString())
+                            .activeFlag(getItemForLong(item, 3))
+                            .abbreviationName(gatItemForString(item, 4))
+                            .latinName(gatItemForString(item, 5))
+                            .centricAccountTypeId(getItemForLong(item, 6))
+                            .organizationId(getItemForLong(item, 7))
+                            .personId(getItemForLong(item, 8))
+                            .centricAccountTypeDescription(gatItemForString(item, 9))
+                            .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
+                            .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+                            .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
+                            .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
+                            .build()).collect(Collectors.toList());
+            DataSourceResult dataSourceResult = new DataSourceResult();
+            dataSourceResult.setData(centricAccountResponseList);
+            dataSourceResult.setTotal(list1.getTotalElements());
+            return dataSourceResult;
+        }
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
         Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable);
         List<CentricAccountListResponse> centricAccountResponseList = list.stream().map(item ->
