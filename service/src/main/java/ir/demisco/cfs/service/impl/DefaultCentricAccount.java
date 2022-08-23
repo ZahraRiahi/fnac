@@ -65,7 +65,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         return item[i] == null ? null : Long.parseLong(item[i].toString());
     }
 
-    private String gatItemForString(Object[] item, int i) {
+    private String getItemForString(Object[] item, int i) {
         return item[i] == null ? null : item[i].toString();
     }
 
@@ -334,6 +334,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
     }
 
+
     @Override
     @Transactional
     public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
@@ -345,21 +346,13 @@ public class DefaultCentricAccount implements CentricAccountService {
         dataSourceRequest.getSort()
                 .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
                         {
+                            String field = sortDescriptor.getField();
+
                             if (sortDescriptor.getField().equals("code")) {
                                 sorts.add("to_number(" + sortDescriptor.getField() + ") ");
                             }
-
-                            if (sortDescriptor.getField().equals("name")) {
-                                sorts.add(sortDescriptor.getField());
-                            }
-                            if (sortDescriptor.getField().equals("parentCentricAccountName")) {
-                                sorts.add(sortDescriptor.getField());
-                            }
-                            if (sortDescriptor.getDir().equals("asc")) {
-                                direction.set(Sort.Direction.ASC);
-                            } else {
-                                direction.set(Sort.Direction.DESC);
-                            }
+                            checkFields(field, sorts, sortDescriptor);
+                            checkSort(sortDescriptor, direction);
                         }
                 );
         if (dataSourceRequest.getSort().size() == 0) {
@@ -369,15 +362,15 @@ public class DefaultCentricAccount implements CentricAccountService {
             List<CentricAccountListResponse> centricAccountResponseList = list1.stream().map(item ->
                     CentricAccountListResponse.builder()
                             .id(Long.parseLong(item[0].toString()))
-                            .code(gatItemForString(item, 1))
+                            .code(getItemForString(item, 1))
                             .name(item[2].toString())
                             .activeFlag(getItemForLong(item, 3))
-                            .abbreviationName(gatItemForString(item, 4))
-                            .latinName(gatItemForString(item, 5))
+                            .abbreviationName(getItemForString(item, 4))
+                            .latinName(getItemForString(item, 5))
                             .centricAccountTypeId(getItemForLong(item, 6))
                             .organizationId(getItemForLong(item, 7))
                             .personId(getItemForLong(item, 8))
-                            .centricAccountTypeDescription(gatItemForString(item, 9))
+                            .centricAccountTypeDescription(getItemForString(item, 9))
                             .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
                             .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
                             .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
@@ -387,30 +380,45 @@ public class DefaultCentricAccount implements CentricAccountService {
             dataSourceResult.setData(centricAccountResponseList);
             dataSourceResult.setTotal(list1.getTotalElements());
             return dataSourceResult;
+        } else {
+            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
+            Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable);
+            List<CentricAccountListResponse> centricAccountResponseList = list.stream().map(item ->
+                    CentricAccountListResponse.builder()
+                            .id(Long.parseLong(item[0].toString()))
+                            .code(getItemForString(item, 1))
+                            .name(item[2].toString())
+                            .activeFlag(getItemForLong(item, 3))
+                            .abbreviationName(getItemForString(item, 4))
+                            .latinName(getItemForString(item, 5))
+                            .centricAccountTypeId(getItemForLong(item, 6))
+                            .organizationId(getItemForLong(item, 7))
+                            .personId(getItemForLong(item, 8))
+                            .centricAccountTypeDescription(getItemForString(item, 9))
+                            .centricAccountTypeCode(getItemForString(item,10))
+                            .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+                            .parentCentricAccountCode(getItemForString(item,12))
+                            .parentCentricAccountName(getItemForString(item,13))
+                            .build()).collect(Collectors.toList());
+            DataSourceResult dataSourceResult = new DataSourceResult();
+            dataSourceResult.setData(centricAccountResponseList);
+            dataSourceResult.setTotal(list.getTotalElements());
+            return dataSourceResult;
         }
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
-        Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable);
-        List<CentricAccountListResponse> centricAccountResponseList = list.stream().map(item ->
-                CentricAccountListResponse.builder()
-                        .id(Long.parseLong(item[0].toString()))
-                        .code(gatItemForString(item, 1))
-                        .name(item[2].toString())
-                        .activeFlag(getItemForLong(item, 3))
-                        .abbreviationName(gatItemForString(item, 4))
-                        .latinName(gatItemForString(item, 5))
-                        .centricAccountTypeId(getItemForLong(item, 6))
-                        .organizationId(getItemForLong(item, 7))
-                        .personId(getItemForLong(item, 8))
-                        .centricAccountTypeDescription(gatItemForString(item, 9))
-                        .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
-                        .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
-                        .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
-                        .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
-                        .build()).collect(Collectors.toList());
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(centricAccountResponseList);
-        dataSourceResult.setTotal(list.getTotalElements());
-        return dataSourceResult;
+    }
+
+    private void checkSort(DataSourceRequest.SortDescriptor sortDescriptor, AtomicReference<Sort.Direction> direction) {
+        if (sortDescriptor.getDir().equals("asc")) {
+            direction.set(Sort.Direction.ASC);
+        } else {
+            direction.set(Sort.Direction.DESC);
+        }
+    }
+
+    private void checkFields(String field, List<String> sorts, DataSourceRequest.SortDescriptor sortDescriptor) {
+        if (field.equals("name") || field.equals("parentCentricAccountName")) {
+            sorts.add(sortDescriptor.getField());
+        }
     }
 
     @Override
