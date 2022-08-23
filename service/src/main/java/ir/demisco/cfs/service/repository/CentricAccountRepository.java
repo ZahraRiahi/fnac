@@ -1,6 +1,8 @@
 package ir.demisco.cfs.service.repository;
 
 import ir.demisco.cfs.model.entity.CentricAccount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -123,7 +125,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
     Long findByCentricAccountIdForDelete(Long centricAccountId);
 
     @Query(value = " SELECT CNAC.ID," +
-            "       CNAC.CODE," +
+            "       CNAC.CODE as code," +
             "       CNAC.NAME," +
             "       CNAC.ACTIVE_FLAG," +
             "       CNAC.ABBREVIATION_NAME," +
@@ -135,7 +137,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "       CNAT.CODE                      AS CENTRIC_ACCOUNT_TYPE_CODE," +
             "       CNAC.PARENT_CENTRIC_ACCOUNT_ID," +
             "       PARENT_C.CODE                  PARENT_CODE," +
-            "       PARENT_C.NAME                  PARENT_DESCRIPTION" +
+            "       PARENT_C.NAME           as       parentCentricAccountName" +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
             " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
             "    ON CNAC.CENTRIC_ACCOUNT_TYPE_ID = CNAT.ID" +
@@ -148,8 +150,7 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-            " order by to_number(CNAC.CODE) desc  "
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , countQuery = " SELECT count(CNAC.id) " +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
             " INNER JOIN FNAC.CENTRIC_ACCOUNT_TYPE CNAT" +
@@ -163,10 +164,9 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             "          FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
             "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
             "           AND INER_ORG_REL.CENTRIC_ACCOUNT_ID = CNAC.ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
-            " order by to_number(CNAC.CODE) desc"
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)"
             , nativeQuery = true)
-    List<Object[]> centricAccountList(Long centricAccountTypeId, String name, String code, Long organizationId);
+    Page<Object[]> centricAccountList(Long centricAccountTypeId, String name, String code, Long organizationId, Pageable pageable);
 
     @Query(value = " SELECT CNAC.ID, CNAC.CODE, CNAC.NAME, CNAC.PARENT_CENTRIC_ACCOUNT_ID" +
             "  FROM fnac.CENTRIC_ACCOUNT CNAC" +
