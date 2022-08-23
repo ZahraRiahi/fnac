@@ -228,7 +228,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
             List<Object[]> financialAccount = financialAccountRepository.findByFinancialAccountByParentId(financialAccountStructureNewRequest.getFinancialAccountParentId());
             AtomicReference<Long> accountPermanentStatusId = new AtomicReference<>();
             AtomicReference<String> accountPermanentStatusDescription = new AtomicReference<>();
-            financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent(objects -> {
+            financialAccount.stream().filter(objects -> Long.parseLong(objects[2].toString()) == 1L).findAny().ifPresent((Object[] objects) -> {
                         accountPermanentStatusDescription.set(objects[3] == null ? null : objects[3].toString());
                         accountPermanentStatusId.set(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
                     }
