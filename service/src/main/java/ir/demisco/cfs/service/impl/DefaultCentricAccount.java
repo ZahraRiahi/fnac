@@ -357,7 +357,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                 );
         if (dataSourceRequest.getSort().size() == 0) {
             List<Sort.Order> sorts1 = new ArrayList<>();
-            Pageable pageable1 = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts1));
+            Pageable pageable1 = PageRequest.of((dataSourceRequest.getSkip() / dataSourceRequest.getTake()), dataSourceRequest.getTake(), Sort.by(sorts1));
             Page<Object[]> list1 = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable1);
             List<CentricAccountListResponse> centricAccountResponseList = list1.stream().map(item ->
                     CentricAccountListResponse.builder()
@@ -381,7 +381,7 @@ public class DefaultCentricAccount implements CentricAccountService {
             dataSourceResult.setTotal(list1.getTotalElements());
             return dataSourceResult;
         } else {
-            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
+            Pageable pageable = PageRequest.of((dataSourceRequest.getSkip() / dataSourceRequest.getTake()), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
             Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable);
             List<CentricAccountListResponse> centricAccountResponseList = list.stream().map(item ->
                     CentricAccountListResponse.builder()
@@ -395,10 +395,10 @@ public class DefaultCentricAccount implements CentricAccountService {
                             .organizationId(getItemForLong(item, 7))
                             .personId(getItemForLong(item, 8))
                             .centricAccountTypeDescription(getItemForString(item, 9))
-                            .centricAccountTypeCode(getItemForString(item,10))
+                            .centricAccountTypeCode(getItemForString(item, 10))
                             .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
-                            .parentCentricAccountCode(getItemForString(item,12))
-                            .parentCentricAccountName(getItemForString(item,13))
+                            .parentCentricAccountCode(getItemForString(item, 12))
+                            .parentCentricAccountName(getItemForString(item, 13))
                             .build()).collect(Collectors.toList());
             DataSourceResult dataSourceResult = new DataSourceResult();
             dataSourceResult.setData(centricAccountResponseList);
