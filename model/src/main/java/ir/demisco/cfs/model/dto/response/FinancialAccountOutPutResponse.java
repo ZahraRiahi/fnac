@@ -28,6 +28,7 @@ public class FinancialAccountOutPutResponse {
     private String accountStatusDescription;
     private Boolean flgShowInAcc;
     private Boolean flgPermanentStatus;
+    private Boolean profitLossAccountFlag;
     private List<AccountRelatedTypeNewResponse> accountRelatedTypeOutPutModel;
     private List<AccountRelatedDescriptionResponse> accountRelatedDescriptionOutPutModel;
     private List<AccountDefaultValueResponse> accountDefaultValueOutPutModel;
@@ -266,6 +267,14 @@ public class FinancialAccountOutPutResponse {
         this.flgPermanentStatus = flgPermanentStatus;
     }
 
+    public Boolean getProfitLossAccountFlag() {
+        return profitLossAccountFlag;
+    }
+
+    public void setProfitLossAccountFlag(Boolean profitLossAccountFlag) {
+        this.profitLossAccountFlag = profitLossAccountFlag;
+    }
+
     public static FinancialAccountOutPutResponse.Builder builder() {
         return new FinancialAccountOutPutResponse.Builder();
     }
@@ -425,7 +434,10 @@ public class FinancialAccountOutPutResponse {
             financialAccountOutPutResponse.setFlgPermanentStatus(flgPermanentStatus);
             return this;
         }
-
+        public Builder profitLossAccountFlag(Boolean profitLossAccountFlag) {
+            financialAccountOutPutResponse.setProfitLossAccountFlag(profitLossAccountFlag);
+            return this;
+        }
         public FinancialAccountOutPutResponse build() {
             return financialAccountOutPutResponse;
         }

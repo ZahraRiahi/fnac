@@ -37,5 +37,4 @@ public interface FinancialAccountService {
     Boolean getFinancialAccountGetInsertAllowControl(FinancialAccountAllowChildRequest financialAccountAllowChildRequest);
 
     DataSourceResult getFinancialAccountByGetByStructure(Long organizationId, DataSourceRequest dataSourceRequest);
-
 }

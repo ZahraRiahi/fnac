@@ -40,6 +40,8 @@ public class FinancialAccount extends AuditModel<Long> {
     private Boolean hasChild;
     private Date disableDate;
     private AccountPermanentStatus accountPermanentStatus;
+    private Boolean profitLossAccountFlag;
+
     @Override
     @Id
     @SequenceGenerator(schema = "fnac", name = "financial_account_generator", sequenceName = "sq_financial_account", allocationSize = 50)
@@ -47,6 +49,7 @@ public class FinancialAccount extends AuditModel<Long> {
     public Long getId() {
         return id;
     }
+
     @Override
     public void setId(Long id) {
         this.id = id;
@@ -228,5 +231,13 @@ public class FinancialAccount extends AuditModel<Long> {
 
     public void setAccountPermanentStatus(AccountPermanentStatus accountPermanentStatus) {
         this.accountPermanentStatus = accountPermanentStatus;
+    }
+    @Column(name = "PROFIT_LOSS_ACCOUNT_FLAG")
+    public Boolean getProfitLossAccountFlag() {
+        return profitLossAccountFlag;
+    }
+
+    public void setProfitLossAccountFlag(Boolean profitLossAccountFlag) {
+        this.profitLossAccountFlag = profitLossAccountFlag;
     }
 }
