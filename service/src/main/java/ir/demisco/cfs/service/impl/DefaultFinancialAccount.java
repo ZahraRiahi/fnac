@@ -357,7 +357,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         FinancialAccount financialAccount = saveFinancialAccount(financialAccountRequest);
         financialAccountOutPutDto = convertFinancialAccountDto(financialAccount);
 
-        saveAccountStructureLevel(financialAccountRequest,financialAccount);
+        saveAccountStructureLevel(financialAccount);
         financialAccountOutPutDto.setAccountDefaultValueOutPutModel(saveAccountDefaultValue
                 (financialAccountRequest.getAccountDefaultValueInPutModel(), financialAccount));
         financialAccountOutPutDto.setAccountRelatedDescriptionOutputModel(saveAccountRelatedDescriptionValue
@@ -469,7 +469,11 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         } else {
             financialAccount.setAccountAdjustment(null);
         }
-        financialAccount.setProfitLossAccountFlag(financialAccountRequest.getProfitLossAccountFlag());
+        if (financialAccountRequest.getProfitLossAccountFlag() == null) {
+            financialAccount.setProfitLossAccountFlag(false);
+        } else {
+            financialAccount.setProfitLossAccountFlag(financialAccountRequest.getProfitLossAccountFlag());
+        }
         return financialAccount;
     }
 
@@ -491,6 +495,9 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             idObject = "idObject";
         } else {
             financialAccountRequest.setId(0L);
+        }
+        if (financialAccountRequest.getProfitLossAccountFlag() == null) {
+            financialAccountRequest.setProfitLossAccountFlag(false);
         }
         if (financialAccountRequest.getProfitLossAccountFlag().equals(true)) {
             String code = financialAccountRepository.findByFinancialAccountIdForDelete(idObject, financialAccountRequest.getId(), financialAccountRequest.getFinancialAccountStructureId());
@@ -618,8 +625,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return accountRelatedTypeDtoResponses;
     }
 
-    private void saveAccountStructureLevel(FinancialAccountRequest
-                                                   financialAccountRequest,FinancialAccount financialAccount) {
+    private void saveAccountStructureLevel(FinancialAccount financialAccount) {
         List<Object[]> financialAccountStructureListObject =
                 accountStructureLevelRepository.findByFinancialAccountStructureListObject(financialAccount.getId());
         if (!financialAccountStructureListObject.isEmpty()) {
@@ -758,7 +764,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         financialAccountStructure);
         if (countFinancialAccountStructure != null) {
             accountStructureLevelRepository.findByFinancialAccountId(financialAccount.getId()).forEach(accountStructureLevel -> accountStructureLevelRepository.deleteById(accountStructureLevel.getId()));
-            saveAccountStructureLevel(financialAccountRequest,financialAccount);
+            saveAccountStructureLevel(financialAccount);
         }
     }
 
