@@ -11,33 +11,6 @@ import java.util.List;
 
 @Repository
 public interface FinancialAccountRepository extends JpaRepository<FinancialAccount, Long> {
-    @Query(value = " SELECT fac.id," +
-            "       fac.code," +
-            "       fac.description," +
-            "       fac.referenceFlag," +
-            "       fac.exchangeFlag," +
-            "       art.id as accountRelationTypeId, " +
-            "       fac.disableDate " +
-            "  FROM FinancialAccount fac " +
-            " JOIN fac.financialAccountStructure fs " +
-            " left outer join fac.accountRelationType art " +
-            " WHERE fac.organization.id = :organizationId " +
-            "   AND fac.deletedDate IS NULL " +
-            "   AND fac.disableDate IS NULL " +
-            "   AND CASE " +
-            "         WHEN (EXISTS " +
-            "               (SELECT 1 " +
-            "                  FROM FinancialAccount fai " +
-            "                 WHERE fai.financialAccountParent.id = fac.id " +
-            "                   AND fai.deletedDate IS NULL " +
-            "                   AND fai.organization.id = :organizationId)) THEN " +
-            "          1 " +
-            "         ELSE " +
-            "          0 " +
-            "       END = 0 " +
-            "   AND fs.flgShowInAcc = 1 ")
-    Page<Object[]> findByFinancialAccountByOrganizationId(Long organizationId, Pageable pageable);
-
     @Query(value = "  SELECT 1 FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE OUTER_FANS " +
             "    WHERE EXISTS (SELECT 1 " +
             "            FROM fnac.FINANCIAL_ACCOUNT_STRUCTURE INER_FANS " +
@@ -142,11 +115,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
                                         Object accountRelationType, Long accountRelationTypeId
             , Pageable pageable);
 
-    @Query(value = " select fiac from  FinancialAccount fiac " +
-            " where fiac.organization.id=:organizationId and fiac.deletedDate is null")
-    List<FinancialAccount> findByFinancialAccountAdjustmentByOrganizationId(Long organizationId);
-
-
     @Query("select coalesce(COUNT(fa.id),0) from FinancialAccount fa  where fa.code=:code and fa.financialAccountStructure.id=:financialAccountStructureId and fa.organization.id=:organizationId ")
     Long getCountByFinancialAccountAndCode(String code, Long financialAccountStructureId, Long organizationId);
 
@@ -158,7 +126,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " where fs_inner.financialCodingType.id=fs.financialCodingType.id) " +
             " and fa.id=:financialAccountId and fa.deletedDate is null")
     Long findByFinancialAccountId(Long financialAccountId);
-
 
     @Query(value = " select 1 from  FinancialAccount fa join fa.accountRelationType art " +
             " where  fa.accountRelationType.id=:accountRelationTypeId" +
@@ -182,7 +149,6 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "    and fiac.disable_date is not null  "
             , nativeQuery = true)
     Long findByFinancialAccountIdAndOrganization(Long financialAccountId, Long organizationId);
-
 
     @Query(value = "   select 1 " +
             "  from fnac.financial_account fiac " +
@@ -281,70 +247,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             , nativeQuery = true)
     List<Object[]> findByFinancialAccountAndFinancialAccountParent(Long financialAccountParentId);
 
-
-    @Query(value = "   SELECT 1" +
-            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
-            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FNAS" +
-            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FNAS.ID" +
-            " WHERE FIAC.ID = :financialAccountStructureId " +
-            "   AND FNAS.FLG_SHOW_IN_ACC = 1" +
-            "   AND EXISTS (SELECT 1" +
-            "          FROM FNDC.FINANCIAL_DOCUMENT_ITEM FNDI" +
-            "         WHERE FNDI.FINANCIAL_ACCOUNT_ID = FNAS.id) "
-            , nativeQuery = true)
-    Long findByFinancialAccountIdAndStuctureAndAccountId(Long financialAccountStructureId);
-
-
-    @Query(value = " SELECT FIAC.ID," +
-            "       FIAC.CODE," +
-            "       FIAC.DESCRIPTION," +
-            "       FIAC.REFERENCE_FLAG," +
-            "       FIAC.EXCHANGE_FLAG," +
-            "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
-            "       FIAC.DISABLE_DATE " +
-            "  FROM FNAC.FINANCIAL_ACCOUNT FIAC " +
-            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS " +
-            "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID " +
-            " WHERE ORGANIZATION_ID = :organizationId " +
-            "   AND FIAC.DELETED_DATE IS NULL " +
-            "   AND FIAC.DISABLE_DATE IS NULL " +
-            "   AND CASE " +
-            "         WHEN (EXISTS " +
-            "               (SELECT 1 " +
-            "                  FROM FNAC.FINANCIAL_ACCOUNT FIAC_INNER " +
-            "                 WHERE FIAC_INNER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID " +
-            "                   AND FIAC_INNER.DELETED_DATE IS NULL " +
-            "                   AND FIAC_INNER.ORGANIZATION_ID = :organizationId)) THEN " +
-            "          1 " +
-            "         ELSE " +
-            "          0 " +
-            "       END = 0 " +
-            "   AND FS.FLG_SHOW_IN_ACC = 1 "
-            , nativeQuery = true)
-    Page<Object[]> financialAccountLovList(Long organizationId, Pageable pageable);
-
-
     @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1 and fa.disableDate is null and fs.deletedDate is null " +
             " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id and fndi.deletedDate is null )")
     List<Long> findByFinancialAccountIdAndStructureAndCodingType(Long financialAccountStructureId);
-
-    @Query(value = " SELECT fiac.id," +
-            "       fiac.code," +
-            "       fiac.description, " +
-            "       fiac.referenceFlag, " +
-            "       fiac.exchangeFlag, " +
-            "       art.id as accountRelationTypeId, " +
-            "       fiac.disableDate " +
-            "  FROM FinancialAccount fiac " +
-            " JOIN fiac.financialAccountStructure fs " +
-            " left outer join fiac.accountRelationType art " +
-            " WHERE fiac.deletedDate IS NULL " +
-            "   AND fiac.disableDate IS NULL " +
-            " and fs.deletedDate is null " +
-            "  AND fiac.organization.id=:organizationId " +
-            "   AND (:financialAccountStructure is null or  fiac.financialAccountStructure.id=:financialAccountStructureId )")
-    List<Object[]> findByFinancialAccountByOrganAndFinancialAccountStructureId(Long organizationId, Object financialAccountStructure, Long financialAccountStructureId);
-
     List<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
 
     @Query(value = " SELECT 1 " +
@@ -542,6 +447,18 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "   and (:fullDescriptionObject is null or FIAC.FULL_DESCRIPTION like %:fullDescription% )"
             , nativeQuery = true)
     Page<Object[]> financialAccountAdjustment(Long organizationId, Object descriptionObject, String description, Object codeObject, String code, Object fullDescriptionObject, String fullDescription, Pageable pageable);
+
+    @Query(value = " SELECT DISTINCT FA.CODE " +
+            "  FROM FNAC.FINANCIAL_ACCOUNT FA " +
+            " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS " +
+            "    ON FA.FINANCIAL_ACCOUNT_STRUCTURE_ID = FAS.ID " +
+            "   AND (:idObject is null or FA.ID !=:id ) " +
+            "   AND FA.PROFIT_LOSS_ACCOUNT_FLAG = 1 " +
+            "   AND FAS.FINANCIAL_CODING_TYPE_ID = " +
+            "       (SELECT FAS_I.FINANCIAL_CODING_TYPE_ID " +
+            "          FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS_I " +
+            "         where FAS_I.ID = :financialAccountStructureId ) ", nativeQuery = true)
+    String findByFinancialAccountIdForDelete(Object idObject,Long id,Long financialAccountStructureId);
 }
 
 

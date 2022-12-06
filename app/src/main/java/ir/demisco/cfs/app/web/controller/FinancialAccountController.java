@@ -41,11 +41,9 @@ public class FinancialAccountController {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountLov(dataSourceRequest));
     }
 
-
     @GetMapping("/Get/{financialAccountId}")
     public ResponseEntity<FinancialAccountOutPutResponse> responseEntity(@PathVariable Long financialAccountId) {
         return ResponseEntity.ok(financialAccountService.getFinancialAccountGetById(financialAccountId, SecurityHelper.getCurrentUser().getOrganizationId()));
-
     }
 
     @PostMapping("/save")
@@ -68,7 +66,6 @@ public class FinancialAccountController {
         boolean result;
         result = financialAccountService.deleteFinancialAccountById(financialAccountId);
         return ResponseEntity.ok(result);
-
     }
 
     @PostMapping("/setStatus")

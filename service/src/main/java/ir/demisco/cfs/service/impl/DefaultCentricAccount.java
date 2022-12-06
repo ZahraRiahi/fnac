@@ -342,7 +342,6 @@ public class DefaultCentricAccount implements CentricAccountService {
         CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
         List<String> sorts = new ArrayList<>();
         AtomicReference<Sort.Direction> direction = new AtomicReference<>();
-
         dataSourceRequest.getSort()
                 .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
                         {

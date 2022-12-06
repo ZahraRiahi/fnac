@@ -27,6 +27,7 @@ public class FinancialAccountRequest {
     private List<AccountRelatedDescriptionRequest> accountRelatedDescriptionInPutModel;
     private List<Long> moneyTypeId;
     private Long accountStatusId;
+    private Boolean profitLossAccountFlag;
 
     public Long getId() {
         return id;
@@ -211,5 +212,13 @@ public class FinancialAccountRequest {
 
     public void setAccountStatusId(Long accountStatusId) {
         this.accountStatusId = accountStatusId;
+    }
+
+    public Boolean getProfitLossAccountFlag() {
+        return profitLossAccountFlag;
+    }
+
+    public void setProfitLossAccountFlag(Boolean profitLossAccountFlag) {
+        this.profitLossAccountFlag = profitLossAccountFlag;
     }
 }
