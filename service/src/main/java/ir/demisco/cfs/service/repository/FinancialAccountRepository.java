@@ -250,6 +250,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
     @Query(value = " select 1 from  FinancialAccount fa join fa.financialAccountStructure fs where fa.financialAccountStructure.id=:financialAccountStructureId and  fs.flgShowInAcc = 1 and fa.disableDate is null and fs.deletedDate is null " +
             " and exists (select 1 from FinancialDocumentItem fndi where fndi.financialAccount.id=fa.id and fndi.deletedDate is null )")
     List<Long> findByFinancialAccountIdAndStructureAndCodingType(Long financialAccountStructureId);
+
     List<FinancialAccount> findByFinancialAccountParentId(Long financialAccountParentId);
 
     @Query(value = " SELECT 1 " +
@@ -379,44 +380,81 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       FIAC.REFERENCE_FLAG," +
             "       FIAC.EXCHANGE_FLAG," +
             "       FIAC.ACCOUNT_RELATION_TYPE_ID," +
-            "       FIAC.DISABLE_DATE" +
+            "       FIAC.DISABLE_DATE ," +
+            " FS.SEQUENCE " +
             "  FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
             " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
             "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
-            "   AND FS.DELETED_DATE IS NULL" +
-            " WHERE FIAC.DELETED_DATE IS NULL" +
-            "   AND FIAC.DISABLE_DATE IS NULL" +
-            "   AND FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
-            "       :financialAccountStructureId" +
-            "   and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
-            "   and (:codeObject is null or FIAC.CODE like %:code% )" +
-            " AND EXISTS (SELECT 1" +
+            " WHERE FIAC.DISABLE_DATE IS NULL " +
+            "   AND (( FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
+            "       :financialAccountStructureId ) OR EXISTS " +
+            "  (SELECT 1" +
+            "          FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS" +
+            "         WHERE FS.SEQUENCE < " +
+            "           (select FAS2.SEQUENCE " +
+            "                   from FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS2" +
+            " where FAS2.ID = :financialAccountStructureId ) " +
+            "             AND NOT EXISTS " +
+            " (SELECT 1 " +
+            "                   FROM FNAC.FINANCIAL_ACCOUNT FA_INER " +
+            "                  INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS2 " +
+            "                     ON FA_INER.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS2.ID " +
+            "                  WHERE FIAC.DISABLE_DATE IS NULL" +
+            "                    AND FA_INER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID " +
+            "                    AND EXISTS " +
+            "                  (SELECT 1" +
+            "                           FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL2 " +
+            "                          WHERE INER_ORG_REL2.ORGANIZATION_ID = " +
+            "                                :organizationId " +
+            "                            AND INER_ORG_REL2.FINANCIAL_CODING_TYPE_ID = " +
+            "                                FS2.FINANCIAL_CODING_TYPE_ID " +
+            "                            AND INER_ORG_REL2.ACTIVE_FLAG = 1))) " +
+            "       ) " +
+            "   AND EXISTS (SELECT 1" +
             "          FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
-            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
+            "         WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId " +
             "           AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
             "               FS.FINANCIAL_CODING_TYPE_ID" +
-            "           AND INER_ORG_REL.ACTIVE_FLAG = 1)" +
+            "           AND INER_ORG_REL.ACTIVE_FLAG = 1) " +
             " order by   TO_NUMBER(FIAC.CODE) asc "
-            , countQuery = " SELECT count(FIAC.id)" +
-            "              FROM FNAC.FINANCIAL_ACCOUNT FIAC" +
-            "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
-            "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
-            "               AND FS.DELETED_DATE IS NULL" +
-            "             WHERE FIAC.DELETED_DATE IS NULL" +
-            "               AND FIAC.DISABLE_DATE IS NULL" +
-            "               AND FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
-            "                   :financialAccountStructureId" +
-            "               and (:descriptionObject is null or FIAC.DESCRIPTION like %:description% )" +
-            "               and (:codeObject is null or FIAC.CODE like %:code% )" +
-            "             AND EXISTS (SELECT 1" +
-            "                      FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL" +
-            "                     WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId" +
-            "                       AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =" +
-            "                           FS.FINANCIAL_CODING_TYPE_ID" +
-            "                       AND INER_ORG_REL.ACTIVE_FLAG = 1) " +
-            " order by   TO_NUMBER(FIAC.CODE) asc "
+            , countQuery = " SELECT count(FIAC.id) " +
+            "              FROM FNAC.FINANCIAL_ACCOUNT FIAC + " +
+            "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS + " +
+            "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID + " +
+            "             WHERE FIAC.DISABLE_DATE IS NULL  " +
+            "               AND (( FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = " +
+            "                   :financialAccountStructureId ) OR EXISTS  " +
+            "              (SELECT 1 " +
+            "                      FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS " +
+            "                     WHERE FS.SEQUENCE <  " +
+            "                       (select FAS2.SEQUENCE " +
+            "                               from FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS2 " +
+            "             where FAS2.ID = :financialAccountStructureId )  " +
+            "                         AND NOT EXISTS  " +
+            "             (SELECT 1  " +
+            "                               FROM FNAC.FINANCIAL_ACCOUNT FA_INER  " +
+            "                              INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS2  " +
+            "                                 ON FA_INER.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS2.ID " +
+            "                              WHERE FIAC.DISABLE_DATE IS NULL " +
+            "                                AND FA_INER.FINANCIAL_ACCOUNT_PARENT_ID = FIAC.ID  " +
+            "                                AND EXISTS  " +
+            "                              (SELECT 1 " +
+            "                                       FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL2  " +
+            "                                      WHERE INER_ORG_REL2.ORGANIZATION_ID =  " +
+            "                                            :organizationId  " +
+            "                                        AND INER_ORG_REL2.FINANCIAL_CODING_TYPE_ID =  " +
+            "                                            FS2.FINANCIAL_CODING_TYPE_ID  " +
+            "                                        AND INER_ORG_REL2.ACTIVE_FLAG = 1)))  " +
+            "                   )   " +
+            "               AND EXISTS (SELECT 1 " +
+            "                      FROM fnac.CODING_TYPE_ORG_REL INER_ORG_REL " +
+            "                     WHERE INER_ORG_REL.ORGANIZATION_ID = :organizationId  " +
+            "                       AND INER_ORG_REL.FINANCIAL_CODING_TYPE_ID =  " +
+            "                           FS.FINANCIAL_CODING_TYPE_ID " +
+            "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)  " +
+            "             order by   TO_NUMBER(FIAC.CODE) asc "
             , nativeQuery = true)
-    Page<Object[]> financialAccountGetByStructure(Long organizationId, Long financialAccountStructureId, Object descriptionObject, String description, Object codeObject, String code, Pageable pageable);
+    Page<Object[]> financialAccountGetByStructure(Long financialAccountStructureId, Long organizationId, Pageable pageable);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
@@ -458,7 +496,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "       (SELECT FAS_I.FINANCIAL_CODING_TYPE_ID " +
             "          FROM FNAC.FINANCIAL_ACCOUNT_STRUCTURE FAS_I " +
             "         where FAS_I.ID = :financialAccountStructureId ) ", nativeQuery = true)
-    String findByFinancialAccountIdForDelete(Object idObject,Long id,Long financialAccountStructureId);
+    String findByFinancialAccountIdForDelete(Object idObject, Long id, Long financialAccountStructureId);
 }
 
 
