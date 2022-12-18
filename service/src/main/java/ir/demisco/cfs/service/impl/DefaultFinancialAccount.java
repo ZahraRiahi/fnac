@@ -1022,7 +1022,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
             dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
-        Map<String, Object> paramMap = param.getParamMap();
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
         List<Sort.Order> sorts = new ArrayList<>();
         dataSourceRequest.getSort()
@@ -1036,8 +1035,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         }
                 );
         Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
-        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), param.getFinancialAccountStructureId(), paramMap.get("descriptionObject"), param.getDescription()
-                , paramMap.get("codeObject"), param.getCode(), pageable);
+        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
+                , pageable);
 
         List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
                 FinancialAccountGetByStructureResponse.builder()
