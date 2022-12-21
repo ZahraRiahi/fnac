@@ -418,9 +418,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "           AND INER_ORG_REL.ACTIVE_FLAG = 1) " +
             " order by   TO_NUMBER(FIAC.CODE) asc "
             , countQuery = " SELECT count(FIAC.id) " +
-            "              FROM FNAC.FINANCIAL_ACCOUNT FIAC + " +
-            "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS + " +
-            "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID + " +
+            "              FROM FNAC.FINANCIAL_ACCOUNT FIAC  " +
+            "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS  " +
+            "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID  " +
             "             WHERE FIAC.DISABLE_DATE IS NULL  " +
             "               AND (( FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = " +
             "                   :financialAccountStructureId ) OR EXISTS  " +
