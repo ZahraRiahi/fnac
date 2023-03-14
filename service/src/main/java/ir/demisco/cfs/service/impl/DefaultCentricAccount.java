@@ -11,6 +11,7 @@ import ir.demisco.cfs.model.dto.response.CentricAccountOutPutResponse;
 import ir.demisco.cfs.model.dto.response.CentricAccountResponse;
 import ir.demisco.cfs.model.dto.response.PersonRoleTypeDto;
 import ir.demisco.cfs.model.entity.CentricAccount;
+import ir.demisco.cfs.model.entity.CentricOrgRel;
 import ir.demisco.cfs.model.entity.CentricPersonRole;
 import ir.demisco.cfs.service.api.CentricAccountService;
 import ir.demisco.cfs.service.repository.CentricAccountRepository;
@@ -120,6 +121,9 @@ public class DefaultCentricAccount implements CentricAccountService {
                 throw new RuleException("fin.centricAccountUnique.save");
             }
         }
+        if (centricAccount.getId() != null) {
+
+        }
         if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
             if (centricAccount.getId() != null) {
                 List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
@@ -151,9 +155,9 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteCentricAccountById(Long centricAccountId) {
-        Long centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountIdForDelete(centricAccountId, SecurityHelper.getCurrentUser().getOrganizationId());
-        if (centricOrgRelForDelete != null) {
-            centricOrgRelRepository.deleteById(centricOrgRelForDelete);
+        List<CentricOrgRel> centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountId(centricAccountId);
+        if (!centricOrgRelForDelete.isEmpty()) {
+            centricOrgRelForDelete.forEach(centricOrgRel -> centricOrgRelRepository.deleteById(centricOrgRel.getId()));
         }
         List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
         CentricAccount centricAccount;

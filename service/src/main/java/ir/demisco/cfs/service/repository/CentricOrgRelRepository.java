@@ -4,6 +4,8 @@ import ir.demisco.cfs.model.entity.CentricOrgRel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface CentricOrgRelRepository extends JpaRepository<CentricOrgRel, Long> {
     @Query(value = " SELECT 1" +
             "            FROM fnac.CENTRIC_ORG_REL INER_ORG_REL" +
@@ -13,8 +15,7 @@ public interface CentricOrgRelRepository extends JpaRepository<CentricOrgRel, Lo
             , nativeQuery = true)
     Long getCentricOrgRelByOrganizationAndCentricAccount(Long organizationId, Long centricAccountId);
 
-    @Query(value = "select t.id from FNAC.CENTRIC_ORG_REL  T WHERE T.centric_account_id = :centricAccountId and T.organization_id=:organizationId"
-            , nativeQuery = true)
-    Long findByCentricAccountIdForDelete(Long centricAccountId,Long organizationId);
+    @Query("select cor from  CentricOrgRel cor where cor.centricAccount.id=:centricAccountId ")
+    List<CentricOrgRel> findByCentricAccountId(Long centricAccountId);
 }
 
