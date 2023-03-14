@@ -123,34 +123,35 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
         if (centricAccount.getId() != null) {
 
-        }
-        if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-            if (centricAccount.getId() != null) {
-                List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
-                centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                CentricAccount finalCentricAccount = centricAccount;
-                centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
-                    CentricPersonRole centricPersonRole = new CentricPersonRole();
-                    centricPersonRole.setCentricAccount(finalCentricAccount);
-                    centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
-                    centricPersonRoleRepository.save(centricPersonRole);
-                });
-                centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
+            if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
+                if (centricAccount.getId() != null) {
+                    List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
+                    centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
+                    CentricAccount finalCentricAccount = centricAccount;
+                    centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
+                        CentricPersonRole centricPersonRole = new CentricPersonRole();
+                        centricPersonRole.setCentricAccount(finalCentricAccount);
+                        centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
+                        centricPersonRoleRepository.save(centricPersonRole);
+                    });
+                    centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
+                } else {
+                    centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
+                    CentricAccount finalCentricAccount = centricAccount;
+                    centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
+                        CentricPersonRole centricPersonRole = new CentricPersonRole();
+                        centricPersonRole.setCentricAccount(finalCentricAccount);
+                        centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
+                        centricPersonRoleRepository.save(centricPersonRole);
+                    });
+                }
             } else {
                 centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-                CentricAccount finalCentricAccount = centricAccount;
-                centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
-                    CentricPersonRole centricPersonRole = new CentricPersonRole();
-                    centricPersonRole.setCentricAccount(finalCentricAccount);
-                    centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
-                    centricPersonRoleRepository.save(centricPersonRole);
-                });
             }
-        } else {
-            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
         }
-        return convertCentricAccountToDto(centricAccount);
-    }
+            return convertCentricAccountToDto(centricAccount);
+        }
+
 
     @Override
     @Transactional(rollbackOn = Throwable.class)
