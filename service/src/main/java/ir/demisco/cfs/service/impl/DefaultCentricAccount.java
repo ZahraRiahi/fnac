@@ -32,6 +32,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,8 +52,9 @@ public class DefaultCentricAccount implements CentricAccountService {
     private final CentricPersonRoleRepository centricPersonRoleRepository;
     private final CentricAccountTypeRepository centricAccountTypeRepository;
     private final CentricOrgRelRepository centricOrgRelRepository;
+    private final EntityManager entityManager;
 
-    public DefaultCentricAccount(CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricOrgRelRepository centricOrgRelRepository) {
+    public DefaultCentricAccount(CentricAccountRepository centricAccountRepository, OrganizationRepository organizationRepository, PersonRepository personRepository, PersonRoleTypeRepository personRoleTypeRepository, CentricPersonRoleRepository centricPersonRoleRepository1, CentricAccountTypeRepository centricAccountTypeRepository2, CentricOrgRelRepository centricOrgRelRepository, EntityManager entityManager) {
         this.centricAccountRepository = centricAccountRepository;
         this.organizationRepository = organizationRepository;
         this.personRepository = personRepository;
@@ -60,6 +62,7 @@ public class DefaultCentricAccount implements CentricAccountService {
         this.centricPersonRoleRepository = centricPersonRoleRepository1;
         this.centricAccountTypeRepository = centricAccountTypeRepository2;
         this.centricOrgRelRepository = centricOrgRelRepository;
+        this.entityManager = entityManager;
     }
 
     private Long getItemForLong(Object[] item, int i) {
@@ -122,7 +125,20 @@ public class DefaultCentricAccount implements CentricAccountService {
             }
         }
         if (centricAccount.getId() != null) {
+            Long countCentric = centricAccountRepository.getCentricAccountByCodeAndName(centricAccountRequest.getId(), centricAccountRequest.getCode(), centricAccountRequest.getName());
+            if (countCentric != null) {
+                List<Long> countCentricAccountId = centricAccountRepository.findByCentricById(centricAccountRequest.getId());
+                if (countCentricAccountId.isEmpty()) {
+                    entityManager.createNativeQuery(" update fnac.centric_account T" +
+                            "   set   ca.code = :code , ca.name = :name " +
+                            "   WHERE ID = :centricAccountId ").setParameter("financialDocumentItemId", centricAccountRequest.getId()).executeUpdate();
+                } else {
+                    throw new RuleException("مکان تغییر کد/ نام تمرکز به دلیل استفاده در اسناد وجود ندارد");
+                }
+            }
+        }
 
+        if (centricAccount.getId() != null) {
             if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
                 if (centricAccount.getId() != null) {
                     List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
@@ -149,8 +165,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                 centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
             }
         }
-            return convertCentricAccountToDto(centricAccount);
-        }
+        return convertCentricAccountToDto(centricAccount);
+    }
 
 
     @Override
@@ -221,10 +237,10 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .name(centricAccount.getName())
                 .abbreviationName(centricAccount.getAbbreviationName())
                 .latinName(centricAccount.getLatinName())
-                .centricAccountTypeId(centricAccount.getCentricAccountType().getId())
-                .centricAccountTypeDescription(centricAccount.getCentricAccountType().getDescription())
-                .centricAccountTypeCode(centricAccount.getCentricAccountType().getCode())
-                .organizationId(centricAccount.getOrganization().getId())
+                .centricAccountTypeId(centricAccount.getCentricAccountType() == null ? null : centricAccount.getCentricAccountType().getId())
+                .centricAccountTypeDescription(centricAccount.getCentricAccountType() == null ? "" : centricAccount.getCentricAccountType().getDescription())
+                .centricAccountTypeCode(centricAccount.getCentricAccountType() == null ? "" : centricAccount.getCentricAccountType().getCode())
+                .organizationId(centricAccount.getOrganization() == null ? null : centricAccount.getOrganization().getId())
                 .personId(centricAccount.getPerson() == null ? null : centricAccount.getPerson().getId())
                 .personName(centricAccount.getPerson() == null ? "" : centricAccount.getPerson().getPersonName())
                 .activeFlag(centricAccount.getActiveFlag())
