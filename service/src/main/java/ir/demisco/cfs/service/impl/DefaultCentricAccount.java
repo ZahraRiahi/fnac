@@ -172,22 +172,28 @@ public class DefaultCentricAccount implements CentricAccountService {
     @Override
     @Transactional(rollbackOn = Throwable.class)
     public Boolean deleteCentricAccountById(Long centricAccountId) {
-        List<CentricOrgRel> centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountId(centricAccountId);
-        if (!centricOrgRelForDelete.isEmpty()) {
-            centricOrgRelForDelete.forEach(centricOrgRel -> centricOrgRelRepository.deleteById(centricOrgRel.getId()));
-        }
-        List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
-        CentricAccount centricAccount;
-        if (!centricPersonRoles.isEmpty()) {
-            centricPersonRoles.forEach(centricPersonRole -> centricPersonRoleRepository.deleteById(centricPersonRole.getId()));
-        }
-        centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
-        Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
-        if (accountIdForDelete > 0) {
-            throw new RuleException("fin.centricAccount.check.for.delete");
+        List<Long> centricAccountCount = centricAccountRepository.findByCentricById(centricAccountId);
+        if (centricAccountCount.isEmpty()) {
+            List<CentricOrgRel> centricOrgRelForDelete = centricOrgRelRepository.findByCentricAccountId(centricAccountId);
+            if (!centricOrgRelForDelete.isEmpty()) {
+                centricOrgRelForDelete.forEach(centricOrgRel -> centricOrgRelRepository.deleteById(centricOrgRel.getId()));
+            }
+            List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccountId);
+
+            if (!centricPersonRoles.isEmpty()) {
+                centricPersonRoles.forEach(centricPersonRole -> centricPersonRoleRepository.deleteById(centricPersonRole.getId()));
+            }
+            CentricAccount centricAccount;
+            centricAccount = centricAccountRepository.findById(centricAccountId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
+            Long accountIdForDelete = centricAccountRepository.findByCentricAccountIdForDelete(centricAccount.getId());
+            if (accountIdForDelete > 0) {
+                throw new RuleException("fin.centricAccount.check.for.delete");
+            } else {
+                centricAccountRepository.deleteById(centricAccount.getId());
+                return true;
+            }
         } else {
-            centricAccountRepository.deleteById(centricAccount.getId());
-            return true;
+            throw new RuleException("امکان حذف تمرکز به دلیل استفاده در اسناد وجود ندارد");
         }
 
     }
@@ -250,7 +256,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                 .build();
     }
 
-    private CentricAccount saveCentricAccount(CentricAccount centricAccount, CentricAccountRequest centricAccountRequest) {
+    private CentricAccount saveCentricAccount(CentricAccount centricAccount, CentricAccountRequest
+            centricAccountRequest) {
         centricAccount.setCode(centricAccountRequest.getCode());
         centricAccount.setName(centricAccountRequest.getName());
         centricAccount.setCentricAccountType(centricAccountTypeRepository.getOne(centricAccountRequest.getCentricAccountTypeId()));
@@ -269,7 +276,8 @@ public class DefaultCentricAccount implements CentricAccountService {
 
     @Override
     @Transactional
-    public DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest dataSourceRequest) {
+    public DataSourceResult getCentricAccountByOrganizationIdAndCentricAccountTypeId(DataSourceRequest
+                                                                                             dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         CentricAccountGetRequest param = setCentricAccountGet(filters);
         Map<String, Object> paramMap = param.getParamMap();
@@ -291,7 +299,8 @@ public class DefaultCentricAccount implements CentricAccountService {
                         .build()).collect(Collectors.toList());
     }
 
-    private List<Object[]> getCentricAccountGet(CentricAccountGetRequest centricAccountGetRequest, Map<String, Object> centricAccountGetParamMap) {
+    private List<Object[]> getCentricAccountGet(CentricAccountGetRequest
+                                                        centricAccountGetRequest, Map<String, Object> centricAccountGetParamMap) {
         return centricAccountRepository.findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(
                 centricAccountGetRequest.getCentricAccountTypeId(), centricAccountGetParamMap.get("parentCentricAccount"), centricAccountGetRequest.getParentCentricAccountId(), centricAccountGetRequest.getName(), centricAccountGetRequest.getCode(), SecurityHelper.getCurrentUser().getOrganizationId());
     }
@@ -427,7 +436,8 @@ public class DefaultCentricAccount implements CentricAccountService {
         }
     }
 
-    private void checkSort(DataSourceRequest.SortDescriptor sortDescriptor, AtomicReference<Sort.Direction> direction) {
+    private void checkSort(DataSourceRequest.SortDescriptor
+                                   sortDescriptor, AtomicReference<Sort.Direction> direction) {
         if (sortDescriptor.getDir().equals("asc")) {
             direction.set(Sort.Direction.ASC);
         } else {
@@ -454,7 +464,8 @@ public class DefaultCentricAccount implements CentricAccountService {
         return dataSourceResult;
     }
 
-    private CentricAccountNewTypeRequest setCentricAccountGetByTypeId(List<DataSourceRequest.FilterDescriptor> filters) {
+    private CentricAccountNewTypeRequest setCentricAccountGetByTypeId
+            (List<DataSourceRequest.FilterDescriptor> filters) {
         CentricAccountNewTypeRequest centricAccountNewTypeRequest = new CentricAccountNewTypeRequest();
         Map<String, Object> map = new HashMap<>();
         for (DataSourceRequest.FilterDescriptor item : filters) {
