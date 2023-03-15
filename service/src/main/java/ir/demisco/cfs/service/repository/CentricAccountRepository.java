@@ -205,5 +205,22 @@ public interface CentricAccountRepository extends JpaRepository<CentricAccount, 
             , nativeQuery = true)
     List<Object[]> findByCentricAccountAndCentricAccountTypeAndParentCentricAccountAndOrganization(Long centricAccountTypeId, Object parentCentricAccount, Long parentCentricAccountId, String name, String code, Long organizationId
     );
+    @Query(value = " select 1 " +
+            "     from fnac.centric_account ca " +
+            "    where ca.id = :centricAccountId " +
+            "      and (ca.code != :code or ca.name != :name) "
+            , nativeQuery = true)
+    Long getCentricAccountByCodeAndName(Long centricAccountId,String code,String name);
+
+    @Query(value = " select 1" +
+            "             from fndc.financial_document_item di" +
+            "            where di.centric_account_id_1 = :centricAccountId" +
+            "               or di.centric_account_id_2 = :centricAccountId" +
+            "               or di.centric_account_id_3 = :centricAccountId" +
+            "               or di.centric_account_id_4 = :centricAccountId" +
+            "               or di.centric_account_id_5 = :centricAccountId" +
+            "               or di.centric_account_id_6 = :centricAccountId  "
+            , nativeQuery = true)
+    List<Long> findByCentricById(Long centricAccountId);
 }
 
