@@ -974,13 +974,6 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     financialAccountStructureRequest.setFinancialAccountStructureId(Long.parseLong(item.getValue().toString()));
                     financialAccountStructureRequest.setParamMap(map);
                     break;
-
-                case "description":
-                    checkDescription(financialAccountStructureRequest, item);
-                    break;
-                case "code":
-                    checkCodeObject(financialAccountStructureRequest, item);
-                    break;
                 default:
                     break;
             }
