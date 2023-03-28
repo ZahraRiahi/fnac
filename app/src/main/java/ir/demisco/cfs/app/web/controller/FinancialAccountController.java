@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -93,6 +94,6 @@ public class FinancialAccountController {
 
     @PostMapping("/GetByStructure")
     public ResponseEntity<DataSourceResult> responseEntityGetByStructure(@RequestBody DataSourceRequest dataSourceRequest) {
-        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(SecurityHelper.getCurrentUser().getOrganizationId(), dataSourceRequest));
+        return ResponseEntity.ok(financialAccountService.getFinancialAccountByGetByStructure(dataSourceRequest));
     }
 }
