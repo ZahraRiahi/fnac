@@ -1022,7 +1022,10 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                                                                         dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
-        List<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
+        Map<String, Object> paramMap = param.getParamMap();
+        List<Object[]> list = financialAccountRepository.financialAccountGetByStructure(paramMap.get("descriptionObject"),
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(),
+                param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
         );
 
         List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
