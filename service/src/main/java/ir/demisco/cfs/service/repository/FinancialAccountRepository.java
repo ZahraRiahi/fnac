@@ -386,6 +386,8 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             " INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS" +
             "    ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID" +
             " WHERE FIAC.DISABLE_DATE IS NULL " +
+            " and (:descriptionObject is null or FIAC.DESCRIPTION like '%'||:description||'%') " +
+            "   and (:codeObject is null or FIAC.CODE like '%'||:code||'%') " +
             "   AND (( FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID =" +
             "       :financialAccountStructureId ) OR EXISTS " +
             "  (SELECT 1" +
@@ -421,7 +423,9 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "              FROM FNAC.FINANCIAL_ACCOUNT FIAC  " +
             "             INNER JOIN FNAC.FINANCIAL_ACCOUNT_STRUCTURE FS  " +
             "                ON FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = FS.ID  " +
-            "             WHERE FIAC.DISABLE_DATE IS NULL  " +
+            "             WHERE FIAC.DISABLE_DATE IS NULL " +
+            " and (:descriptionObject is null or FIAC.DESCRIPTION like '%'||:description||'%') " +
+            "             and (:codeObject is null or FIAC.CODE like '%'||:code||'%') " +
             "               AND (( FIAC.FINANCIAL_ACCOUNT_STRUCTURE_ID = " +
             "                   :financialAccountStructureId ) OR EXISTS  " +
             "              (SELECT 1 " +
@@ -454,7 +458,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)  " +
             "             order by   TO_NUMBER(FIAC.CODE) asc "
             , nativeQuery = true)
-    List<Object[]> financialAccountGetByStructure(Long financialAccountStructureId, Long organizationId);
+    List<Object[]> financialAccountGetByStructure(Object descriptionObject, String description, Object codeObject, String code,Long financialAccountStructureId, Long organizationId);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
