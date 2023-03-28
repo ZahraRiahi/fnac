@@ -1035,7 +1035,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                         .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
                         .build()).collect(Collectors.toList());
         DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(financialAccountDtos);
+        dataSourceResult.setData(financialAccountDtos.stream().limit(dataSourceRequest.getTake() + dataSourceRequest.getSkip()).skip(dataSourceRequest.getSkip()).collect(Collectors.toList()));
         dataSourceResult.setTotal(list.size());
         return dataSourceResult;
     }
