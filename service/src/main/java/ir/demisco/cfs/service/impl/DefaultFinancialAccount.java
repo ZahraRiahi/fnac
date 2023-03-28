@@ -70,7 +70,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -982,154 +981,134 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return financialAccountStructureRequest;
     }
 
-    private void checkSort(DataSourceRequest.SortDescriptor
-                                   sortDescriptor, AtomicReference<Sort.Direction> direction) {
-        if (sortDescriptor.getDir().equals("asc")) {
-            direction.set(Sort.Direction.ASC);
-        } else {
-            direction.set(Sort.Direction.DESC);
-        }
-    }
-
     @Override
     @Transactional
     public DataSourceResult getFinancialAccountByGetByStructure(DataSourceRequest
                                                                         dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
-        AtomicReference<Sort.Direction> direction = new AtomicReference<>();
+        List<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
+        );
+
+        List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
+                FinancialAccountGetByStructureResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .code(item[1] == null ? null : item[1].toString())
+                        .description(item[2].toString())
+                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(financialAccountDtos);
+        dataSourceResult.setTotal(list.size());
+        return dataSourceResult;
+    }
+
+    @Override
+    @Transactional
+    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
+        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+        FinancialAccountLovRequest param = setFinancialAccountLov(filters);
+        Map<String, Object> paramMap = param.getParamMap();
+        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+        List<Sort.Order> sorts = new ArrayList<>();
         dataSourceRequest.getSort()
                 .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
                         {
-                            checkSort(sortDescriptor, direction);
+                            if (sortDescriptor.getDir().equals("asc")) {
+                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
+                            } else {
+                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+                            }
                         }
                 );
-            List<Sort.Order> sorts1 = new ArrayList<>();
-            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts1));
-            Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
-                    , pageable);
+        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
 
-            List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
-                    FinancialAccountGetByStructureResponse.builder()
-                            .id(Long.parseLong(item[0].toString()))
-                            .code(item[1] == null ? null : item[1].toString())
-                            .description(item[2].toString())
-                            .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
-                            .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                            .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                            .build()).collect(Collectors.toList());
-            DataSourceResult dataSourceResult = new DataSourceResult();
-            dataSourceResult.setData(financialAccountDtos);
-            dataSourceResult.setTotal(list.getTotalElements());
-            return dataSourceResult;
-        }
+        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("descriptionObject"),
+                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
+                , pageable);
+        List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
+                FinancialAccountLovResponse.builder()
+                        .id(Long.parseLong(item[0].toString()))
+                        .description(item[2].toString())
+                        .code(item[1].toString())
+                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                        .disableDate(item[6] == null ? null : (Date) item[6])
+                        .build()).collect(Collectors.toList());
+        DataSourceResult dataSourceResult = new DataSourceResult();
+        dataSourceResult.setData(financialAccountDtos);
+        dataSourceResult.setTotal(list.getTotalElements());
+        return dataSourceResult;
+    }
 
+    private FinancialAccountLovRequest setFinancialAccountLov(List<DataSourceRequest.FilterDescriptor> filters) {
+        FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
+        for (DataSourceRequest.FilterDescriptor item : filters) {
+            switch (item.getField()) {
+                case "financialAccountStructure.financialCodingType.id":
+                    financialAccountLovRequest.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
+                    break;
 
-        @Override
-        @Transactional
-        public DataSourceResult getFinancialAccountLov (DataSourceRequest dataSourceRequest){
-            List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-            FinancialAccountLovRequest param = setFinancialAccountLov(filters);
-            Map<String, Object> paramMap = param.getParamMap();
-            param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
-            List<Sort.Order> sorts = new ArrayList<>();
-            dataSourceRequest.getSort()
-                    .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
-                            {
-                                if (sortDescriptor.getDir().equals("asc")) {
-                                    sorts.add(Sort.Order.asc(sortDescriptor.getField()));
-                                } else {
-                                    sorts.add(Sort.Order.desc(sortDescriptor.getField()));
-                                }
-                            }
-                    );
-            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
+                case "id":
+                    checkFinancialAccountId(financialAccountLovRequest, item);
+                    break;
+                case "description":
+                    checkDescription(financialAccountLovRequest, item);
+                    break;
+                case "code":
+                    checkCodeObject(financialAccountLovRequest, item);
+                    break;
+                default:
+                    break;
 
-            Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("descriptionObject"),
-                    param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
-                    , pageable);
-            List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
-                    FinancialAccountLovResponse.builder()
-                            .id(Long.parseLong(item[0].toString()))
-                            .description(item[2].toString())
-                            .code(item[1].toString())
-                            .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                            .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
-                            .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                            .disableDate(item[6] == null ? null : (Date) item[6])
-                            .build()).collect(Collectors.toList());
-            DataSourceResult dataSourceResult = new DataSourceResult();
-            dataSourceResult.setData(financialAccountDtos);
-            dataSourceResult.setTotal(list.getTotalElements());
-            return dataSourceResult;
-        }
-
-        private FinancialAccountLovRequest setFinancialAccountLov (List < DataSourceRequest.FilterDescriptor > filters)
-        {
-            FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
-            for (DataSourceRequest.FilterDescriptor item : filters) {
-                switch (item.getField()) {
-                    case "financialAccountStructure.financialCodingType.id":
-                        financialAccountLovRequest.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
-                        break;
-
-                    case "id":
-                        checkFinancialAccountId(financialAccountLovRequest, item);
-                        break;
-                    case "description":
-                        checkDescription(financialAccountLovRequest, item);
-                        break;
-                    case "code":
-                        checkCodeObject(financialAccountLovRequest, item);
-                        break;
-                    default:
-                        break;
-
-                }
-            }
-            return financialAccountLovRequest;
-        }
-
-        private void checkFinancialAccountId (FinancialAccountLovRequest
-        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
-            Map<String, Object> map = new HashMap<>();
-            List<Long> arrayList = (ArrayList) item.getValue();
-            if (!arrayList.isEmpty()) {
-                map.put("financialAccountList", "financialAccountList");
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setFinancialAccountIdList(arrayList);
-            } else {
-                map.put("financialAccountList", null);
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
             }
         }
+        return financialAccountLovRequest;
+    }
 
-        private void checkCodeObject (FinancialAccountLovRequest
-        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
-            Map<String, Object> map = new HashMap<>();
-            if (item.getValue() != null) {
-                map.put("codeObject", "codeObject");
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setCode(item.getValue().toString());
-            } else {
-                map.put("codeObject", null);
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setCode(null);
-            }
-        }
-
-        private void checkDescription (FinancialAccountLovRequest
-        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
-            Map<String, Object> map = new HashMap<>();
-            if (item.getValue() != null) {
-                map.put("descriptionObject", "descriptionObject");
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setDescription(item.getValue().toString());
-            } else {
-                map.put("descriptionObject", null);
-                financialAccountLovRequest.setParamMap(map);
-                financialAccountLovRequest.setDescription(null);
-            }
+    private void checkFinancialAccountId(FinancialAccountLovRequest
+                                                 financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        List<Long> arrayList = (ArrayList) item.getValue();
+        if (!arrayList.isEmpty()) {
+            map.put("financialAccountList", "financialAccountList");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setFinancialAccountIdList(arrayList);
+        } else {
+            map.put("financialAccountList", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
         }
     }
+
+    private void checkCodeObject(FinancialAccountLovRequest
+                                         financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("codeObject", "codeObject");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setCode(item.getValue().toString());
+        } else {
+            map.put("codeObject", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setCode(null);
+        }
+    }
+
+    private void checkDescription(FinancialAccountLovRequest
+                                          financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("descriptionObject", "descriptionObject");
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setDescription(item.getValue().toString());
+        } else {
+            map.put("descriptionObject", null);
+            financialAccountLovRequest.setParamMap(map);
+            financialAccountLovRequest.setDescription(null);
+        }
+    }
+}

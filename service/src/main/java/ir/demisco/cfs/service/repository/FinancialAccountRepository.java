@@ -454,7 +454,7 @@ public interface FinancialAccountRepository extends JpaRepository<FinancialAccou
             "                       AND INER_ORG_REL.ACTIVE_FLAG = 1)  " +
             "             order by   TO_NUMBER(FIAC.CODE) asc "
             , nativeQuery = true)
-    Page<Object[]> financialAccountGetByStructure(Long financialAccountStructureId, Long organizationId, Pageable pageable);
+    List<Object[]> financialAccountGetByStructure(Long financialAccountStructureId, Long organizationId);
 
 
     @Query(value = " SELECT FIAC.ID, FIAC.FULL_DESCRIPTION, FIAC.CODE, FIAC.DESCRIPTION" +
