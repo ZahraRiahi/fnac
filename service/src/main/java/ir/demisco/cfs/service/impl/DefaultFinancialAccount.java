@@ -964,6 +964,20 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         return true;
     }
 
+    private void checkCodeObject(FinancialAccountStructureRequest
+                                         financialAccountStructureRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("codeObject", "codeObject");
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setCode(item.getValue().toString());
+        } else {
+            map.put("codeObject", null);
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setCode(null);
+        }
+    }
+
     private FinancialAccountStructureRequest setParameterFinancialAccountByGetByStructure
             (List<DataSourceRequest.FilterDescriptor> filters) {
         FinancialAccountStructureRequest financialAccountStructureRequest = new FinancialAccountStructureRequest();
@@ -974,11 +988,32 @@ public class DefaultFinancialAccount implements FinancialAccountService {
                     financialAccountStructureRequest.setFinancialAccountStructureId(Long.parseLong(item.getValue().toString()));
                     financialAccountStructureRequest.setParamMap(map);
                     break;
+
+                case "description":
+                    checkDescription(financialAccountStructureRequest, item);
+                    break;
+                case "code":
+                    checkCodeObject(financialAccountStructureRequest, item);
+                    break;
                 default:
                     break;
             }
         }
         return financialAccountStructureRequest;
+    }
+
+    private void checkDescription(FinancialAccountStructureRequest
+                                          financialAccountStructureRequest, DataSourceRequest.FilterDescriptor item) {
+        Map<String, Object> map = new HashMap<>();
+        if (item.getValue() != null) {
+            map.put("descriptionObject", "descriptionObject");
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setDescription(item.getValue().toString());
+        } else {
+            map.put("descriptionObject", null);
+            financialAccountStructureRequest.setParamMap(map);
+            financialAccountStructureRequest.setDescription(null);
+        }
     }
 
     @Override
