@@ -3,6 +3,7 @@ package ir.demisco.cfs.service.impl;
 import ir.demisco.cfs.model.dto.FinancialAccountParameter;
 import ir.demisco.cfs.model.dto.request.AccountDefaultValueRequest;
 import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountGetRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountLovRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
@@ -18,6 +19,7 @@ import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
 import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionResponse;
 import ir.demisco.cfs.model.dto.response.AccountRelatedTypeDtoResponse;
 import ir.demisco.cfs.model.dto.response.AccountRelatedTypeNewResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountDto;
 import ir.demisco.cfs.model.dto.response.FinancialAccountGetByStructureResponse;
@@ -1011,8 +1013,8 @@ public class DefaultFinancialAccount implements FinancialAccountService {
 
     @Override
     @Transactional
-    public DataSourceResult getFinancialAccountByGetByStructure(Long organizationId, DataSourceRequest
-            dataSourceRequest) {
+    public DataSourceResult getFinancialAccountByGetByStructure(DataSourceRequest
+                                                                        dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
         param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
