@@ -4,6 +4,7 @@ import ir.demisco.cfs.model.dto.FinancialAccountParameter;
 import ir.demisco.cfs.model.dto.request.AccountDefaultValueRequest;
 import ir.demisco.cfs.model.dto.request.AccountRelatedDescriptionRequest;
 import ir.demisco.cfs.model.dto.request.CentricAccountGetRequest;
+import ir.demisco.cfs.model.dto.request.CentricAccountParamRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountAllowChildRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountLovRequest;
 import ir.demisco.cfs.model.dto.request.FinancialAccountNewRequest;
@@ -19,6 +20,7 @@ import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionDto;
 import ir.demisco.cfs.model.dto.response.AccountRelatedDescriptionResponse;
 import ir.demisco.cfs.model.dto.response.AccountRelatedTypeDtoResponse;
 import ir.demisco.cfs.model.dto.response.AccountRelatedTypeNewResponse;
+import ir.demisco.cfs.model.dto.response.CentricAccountListResponse;
 import ir.demisco.cfs.model.dto.response.CentricAccountResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountAdjustmentResponse;
 import ir.demisco.cfs.model.dto.response.FinancialAccountDto;
@@ -63,6 +65,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -72,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -1011,147 +1015,242 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         }
     }
 
+    //    @Override
+//    @Transactional
+//    public DataSourceResult getCentricAccountByOrganizationIdAndPersonAndName(DataSourceRequest dataSourceRequest) {
+//        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+//        CentricAccountParamRequest paramSearch = setParameterCentricAccount(filters);
+//        List<String> sorts = new ArrayList<>();
+//        AtomicReference<Sort.Direction> direction = new AtomicReference<>();
+//        dataSourceRequest.getSort()
+//                .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
+//                        {
+//                            String field = sortDescriptor.getField();
+//
+//                            if (sortDescriptor.getField().equals("code")) {
+//                                sorts.add("to_number(" + sortDescriptor.getField() + ") ");
+//                            }
+//                            checkFields(field, sorts, sortDescriptor);
+//                            checkSort(sortDescriptor, direction);
+//                        }
+//                );
+//        if (dataSourceRequest.getSort().size() == 0) {
+//            List<Sort.Order> sorts1 = new ArrayList<>();
+//            Pageable pageable1 = PageRequest.of((dataSourceRequest.getSkip() / dataSourceRequest.getTake()), dataSourceRequest.getTake(), Sort.by(sorts1));
+//            Page<Object[]> list1 = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable1);
+//            List<CentricAccountListResponse> centricAccountResponseList = list1.stream().map(item ->
+//                    CentricAccountListResponse.builder()
+//                            .id(Long.parseLong(item[0].toString()))
+//                            .code(getItemForString(item, 1))
+//                            .name(item[2].toString())
+//                            .activeFlag(getItemForLong(item, 3))
+//                            .abbreviationName(getItemForString(item, 4))
+//                            .latinName(getItemForString(item, 5))
+//                            .centricAccountTypeId(getItemForLong(item, 6))
+//                            .organizationId(getItemForLong(item, 7))
+//                            .personId(getItemForLong(item, 8))
+//                            .centricAccountTypeDescription(getItemForString(item, 9))
+//                            .centricAccountTypeCode(item[10] == null ? null : item[10].toString())
+//                            .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+//                            .parentCentricAccountCode(item[12] == null ? null : (item[12].toString()))
+//                            .parentCentricAccountName(item[13] == null ? null : (item[13].toString()))
+//                            .build()).collect(Collectors.toList());
+//            DataSourceResult dataSourceResult = new DataSourceResult();
+//            dataSourceResult.setData(centricAccountResponseList);
+//            dataSourceResult.setTotal(list1.getTotalElements());
+//            return dataSourceResult;
+//        } else {
+//            Pageable pageable = PageRequest.of((dataSourceRequest.getSkip() / dataSourceRequest.getTake()), dataSourceRequest.getTake(), JpaSort.unsafe(direction.get(), String.valueOf(sorts).replace("[", "").replace("]", "")));
+//            Page<Object[]> list = centricAccountRepository.centricAccountList(paramSearch.getCentricAccountTypeId(), paramSearch.getName(), paramSearch.getCode(), SecurityHelper.getCurrentUser().getOrganizationId(), pageable);
+//            List<CentricAccountListResponse> centricAccountResponseList = list.stream().map(item ->
+//                    CentricAccountListResponse.builder()
+//                            .id(Long.parseLong(item[0].toString()))
+//                            .code(getItemForString(item, 1))
+//                            .name(item[2].toString())
+//                            .activeFlag(getItemForLong(item, 3))
+//                            .abbreviationName(getItemForString(item, 4))
+//                            .latinName(getItemForString(item, 5))
+//                            .centricAccountTypeId(getItemForLong(item, 6))
+//                            .organizationId(getItemForLong(item, 7))
+//                            .personId(getItemForLong(item, 8))
+//                            .centricAccountTypeDescription(getItemForString(item, 9))
+//                            .centricAccountTypeCode(getItemForString(item, 10))
+//                            .parentCentricAccountId(item[11] == null ? null : Long.parseLong(item[11].toString()))
+//                            .parentCentricAccountCode(getItemForString(item, 12))
+//                            .parentCentricAccountName(getItemForString(item, 13))
+//                            .build()).collect(Collectors.toList());
+//            DataSourceResult dataSourceResult = new DataSourceResult();
+//            dataSourceResult.setData(centricAccountResponseList);
+//            dataSourceResult.setTotal(list.getTotalElements());
+//            return dataSourceResult;
+//        }
+//    }
+    private void checkSort(DataSourceRequest.SortDescriptor
+                                   sortDescriptor, AtomicReference<Sort.Direction> direction) {
+        if (sortDescriptor.getDir().equals("asc")) {
+            direction.set(Sort.Direction.ASC);
+        } else {
+            direction.set(Sort.Direction.DESC);
+        }
+    }
+
     @Override
     @Transactional
     public DataSourceResult getFinancialAccountByGetByStructure(DataSourceRequest
                                                                         dataSourceRequest) {
         List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
         FinancialAccountStructureRequest param = setParameterFinancialAccountByGetByStructure(filters);
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
-        List<Sort.Order> sorts = new ArrayList<>();
+//        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        List<String> sorts = new ArrayList<>();
+        AtomicReference<Sort.Direction> direction = new AtomicReference<>();
         dataSourceRequest.getSort()
                 .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
                         {
-                            if (sortDescriptor.getDir().equals("asc")) {
-                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
-                            } else {
-                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
-                            }
+//                            String field = sortDescriptor.getField();
+
+//                            checkFields(field, sorts, sortDescriptor);
+                            checkSort(sortDescriptor, direction);
                         }
                 );
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
-        Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
-                , pageable);
+//
+//        dataSourceRequest.getSort()
+//                .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
+//                        {
+//                            if (sortDescriptor.getDir().equals("asc")) {
+//                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
+//                            } else {
+//                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+//                            }
+//                        }
+//                );
+//        if (dataSourceRequest.getSort().size() == 0) {
+            List<Sort.Order> sorts1 = new ArrayList<>();
+            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts1));
+            Page<Object[]> list = financialAccountRepository.financialAccountGetByStructure(param.getFinancialAccountStructureId(), SecurityHelper.getCurrentUser().getOrganizationId()
+                    , pageable);
 
-        List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
-                FinancialAccountGetByStructureResponse.builder()
-                        .id(Long.parseLong(item[0].toString()))
-                        .code(item[1] == null ? null : item[1].toString())
-                        .description(item[2].toString())
-                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
-                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .build()).collect(Collectors.toList());
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(financialAccountDtos);
-        dataSourceResult.setTotal(list.getTotalElements());
-        return dataSourceResult;
-    }
+            List<FinancialAccountGetByStructureResponse> financialAccountDtos = list.stream().map(item ->
+                    FinancialAccountGetByStructureResponse.builder()
+                            .id(Long.parseLong(item[0].toString()))
+                            .code(item[1] == null ? null : item[1].toString())
+                            .description(item[2].toString())
+                            .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                            .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                            .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                            .build()).collect(Collectors.toList());
+            DataSourceResult dataSourceResult = new DataSourceResult();
+            dataSourceResult.setData(financialAccountDtos);
+            dataSourceResult.setTotal(list.getTotalElements());
+            return dataSourceResult;
+        }
 
-    @Override
-    @Transactional
-    public DataSourceResult getFinancialAccountLov(DataSourceRequest dataSourceRequest) {
-        List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
-        FinancialAccountLovRequest param = setFinancialAccountLov(filters);
-        Map<String, Object> paramMap = param.getParamMap();
-        param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
-        List<Sort.Order> sorts = new ArrayList<>();
-        dataSourceRequest.getSort()
-                .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
-                        {
-                            if (sortDescriptor.getDir().equals("asc")) {
-                                sorts.add(Sort.Order.asc(sortDescriptor.getField()));
-                            } else {
-                                sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+
+        @Override
+        @Transactional
+        public DataSourceResult getFinancialAccountLov (DataSourceRequest dataSourceRequest){
+            List<DataSourceRequest.FilterDescriptor> filters = dataSourceRequest.getFilter().getFilters();
+            FinancialAccountLovRequest param = setFinancialAccountLov(filters);
+            Map<String, Object> paramMap = param.getParamMap();
+            param.setOrganizationId(SecurityHelper.getCurrentUser().getOrganizationId());
+            List<Sort.Order> sorts = new ArrayList<>();
+            dataSourceRequest.getSort()
+                    .forEach((DataSourceRequest.SortDescriptor sortDescriptor) ->
+                            {
+                                if (sortDescriptor.getDir().equals("asc")) {
+                                    sorts.add(Sort.Order.asc(sortDescriptor.getField()));
+                                } else {
+                                    sorts.add(Sort.Order.desc(sortDescriptor.getField()));
+                                }
                             }
-                        }
-                );
-        Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
+                    );
+            Pageable pageable = PageRequest.of(dataSourceRequest.getSkip(), dataSourceRequest.getTake(), Sort.by(sorts));
 
-        Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("descriptionObject"),
-                param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
-                , pageable);
-        List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
-                FinancialAccountLovResponse.builder()
-                        .id(Long.parseLong(item[0].toString()))
-                        .description(item[2].toString())
-                        .code(item[1].toString())
-                        .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
-                        .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
-                        .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
-                        .disableDate(item[6] == null ? null : (Date) item[6])
-                        .build()).collect(Collectors.toList());
-        DataSourceResult dataSourceResult = new DataSourceResult();
-        dataSourceResult.setData(financialAccountDtos);
-        dataSourceResult.setTotal(list.getTotalElements());
-        return dataSourceResult;
-    }
+            Page<Object[]> list = financialAccountRepository.financialAccountLov(param.getOrganizationId(), param.getFinancialCodingTypeId(), paramMap.get("descriptionObject"),
+                    param.getDescription(), paramMap.get("codeObject"), param.getCode(), paramMap.get("financialAccountList"), param.getFinancialAccountIdList()
+                    , pageable);
+            List<FinancialAccountLovResponse> financialAccountDtos = list.stream().map(item ->
+                    FinancialAccountLovResponse.builder()
+                            .id(Long.parseLong(item[0].toString()))
+                            .description(item[2].toString())
+                            .code(item[1].toString())
+                            .accountRelationTypeId(item[5] == null ? null : Long.parseLong(item[5].toString()))
+                            .referenceFlag(item[3] == null ? null : Long.parseLong(item[3].toString()))
+                            .exchangeFlag(item[4] == null ? null : Long.parseLong(item[4].toString()))
+                            .disableDate(item[6] == null ? null : (Date) item[6])
+                            .build()).collect(Collectors.toList());
+            DataSourceResult dataSourceResult = new DataSourceResult();
+            dataSourceResult.setData(financialAccountDtos);
+            dataSourceResult.setTotal(list.getTotalElements());
+            return dataSourceResult;
+        }
 
-    private FinancialAccountLovRequest setFinancialAccountLov(List<DataSourceRequest.FilterDescriptor> filters) {
-        FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
-        for (DataSourceRequest.FilterDescriptor item : filters) {
-            switch (item.getField()) {
-                case "financialAccountStructure.financialCodingType.id":
-                    financialAccountLovRequest.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
-                    break;
+        private FinancialAccountLovRequest setFinancialAccountLov (List < DataSourceRequest.FilterDescriptor > filters)
+        {
+            FinancialAccountLovRequest financialAccountLovRequest = new FinancialAccountLovRequest();
+            for (DataSourceRequest.FilterDescriptor item : filters) {
+                switch (item.getField()) {
+                    case "financialAccountStructure.financialCodingType.id":
+                        financialAccountLovRequest.setFinancialCodingTypeId(Long.parseLong(item.getValue().toString()));
+                        break;
 
-                case "id":
-                    checkFinancialAccountId(financialAccountLovRequest, item);
-                    break;
-                case "description":
-                    checkDescription(financialAccountLovRequest, item);
-                    break;
-                case "code":
-                    checkCodeObject(financialAccountLovRequest, item);
-                    break;
-                default:
-                    break;
+                    case "id":
+                        checkFinancialAccountId(financialAccountLovRequest, item);
+                        break;
+                    case "description":
+                        checkDescription(financialAccountLovRequest, item);
+                        break;
+                    case "code":
+                        checkCodeObject(financialAccountLovRequest, item);
+                        break;
+                    default:
+                        break;
 
+                }
+            }
+            return financialAccountLovRequest;
+        }
+
+        private void checkFinancialAccountId (FinancialAccountLovRequest
+        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
+            Map<String, Object> map = new HashMap<>();
+            List<Long> arrayList = (ArrayList) item.getValue();
+            if (!arrayList.isEmpty()) {
+                map.put("financialAccountList", "financialAccountList");
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setFinancialAccountIdList(arrayList);
+            } else {
+                map.put("financialAccountList", null);
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
             }
         }
-        return financialAccountLovRequest;
-    }
 
-    private void checkFinancialAccountId(FinancialAccountLovRequest
-                                                 financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
-        Map<String, Object> map = new HashMap<>();
-        List<Long> arrayList = (ArrayList) item.getValue();
-        if (!arrayList.isEmpty()) {
-            map.put("financialAccountList", "financialAccountList");
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setFinancialAccountIdList(arrayList);
-        } else {
-            map.put("financialAccountList", null);
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setFinancialAccountIdList(new ArrayList<>((int) 0L));
+        private void checkCodeObject (FinancialAccountLovRequest
+        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
+            Map<String, Object> map = new HashMap<>();
+            if (item.getValue() != null) {
+                map.put("codeObject", "codeObject");
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setCode(item.getValue().toString());
+            } else {
+                map.put("codeObject", null);
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setCode(null);
+            }
+        }
+
+        private void checkDescription (FinancialAccountLovRequest
+        financialAccountLovRequest, DataSourceRequest.FilterDescriptor item){
+            Map<String, Object> map = new HashMap<>();
+            if (item.getValue() != null) {
+                map.put("descriptionObject", "descriptionObject");
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setDescription(item.getValue().toString());
+            } else {
+                map.put("descriptionObject", null);
+                financialAccountLovRequest.setParamMap(map);
+                financialAccountLovRequest.setDescription(null);
+            }
         }
     }
-
-    private void checkCodeObject(FinancialAccountLovRequest
-                                         financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
-        Map<String, Object> map = new HashMap<>();
-        if (item.getValue() != null) {
-            map.put("codeObject", "codeObject");
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setCode(item.getValue().toString());
-        } else {
-            map.put("codeObject", null);
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setCode(null);
-        }
-    }
-
-    private void checkDescription(FinancialAccountLovRequest
-                                          financialAccountLovRequest, DataSourceRequest.FilterDescriptor item) {
-        Map<String, Object> map = new HashMap<>();
-        if (item.getValue() != null) {
-            map.put("descriptionObject", "descriptionObject");
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setDescription(item.getValue().toString());
-        } else {
-            map.put("descriptionObject", null);
-            financialAccountLovRequest.setParamMap(map);
-            financialAccountLovRequest.setDescription(null);
-        }
-    }
-}
