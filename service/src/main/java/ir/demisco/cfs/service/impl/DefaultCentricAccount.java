@@ -129,11 +129,14 @@ public class DefaultCentricAccount implements CentricAccountService {
             if (countCentric != null) {
                 List<Long> countCentricAccountId = centricAccountRepository.findByCentricById(centricAccountRequest.getId());
                 if (countCentricAccountId.isEmpty()) {
-                    entityManager.createNativeQuery(" update fnac.centric_account T" +
+                    entityManager.createNativeQuery(" update fnac.centric_account ca" +
                             "   set   ca.code = :code , ca.name = :name " +
-                            "   WHERE ID = :centricAccountId ").setParameter("financialDocumentItemId", centricAccountRequest.getId()).executeUpdate();
+                            "   WHERE ca.ID = :centricAccountId ")
+                            .setParameter("code", centricAccountRequest.getCode())
+                            .setParameter("name", centricAccountRequest.getName())
+                            .setParameter("centricAccountId", centricAccountRequest.getId()).executeUpdate();
                 } else {
-                    throw new RuleException("مکان تغییر کد/ نام تمرکز به دلیل استفاده در اسناد وجود ندارد");
+                    throw new RuleException("امکان تغییر کد/ نام تمرکز به دلیل استفاده در اسناد وجود ندارد");
                 }
             }
         }
@@ -165,6 +168,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                 centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
             }
         }
+        saveCentricAccount(centricAccount, centricAccountRequest);
         return convertCentricAccountToDto(centricAccount);
     }
 
@@ -475,11 +479,9 @@ public class DefaultCentricAccount implements CentricAccountService {
                     centricAccountNewTypeRequest.setCentricAccountTypeId(Long.parseLong(item.getValue().toString()));
                     centricAccountNewTypeRequest.setParamMap(map);
                     break;
-
                 case "name":
                     checkName(centricAccountNewTypeRequest, item);
                     break;
-
                 case "code":
                     checkCode(centricAccountNewTypeRequest, item);
                     break;
