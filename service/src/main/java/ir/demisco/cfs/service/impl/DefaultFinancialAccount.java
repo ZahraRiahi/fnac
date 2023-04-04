@@ -502,8 +502,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountRequest.getProfitLossAccountFlag().equals(true)) {
             String code = financialAccountRepository.findByFinancialAccountIdForDelete(idObject, financialAccountRequest.getId(), financialAccountRequest.getFinancialAccountStructureId());
             if (code != null) {
-                throw new RuleException(" در این کدینگ ، حساب ".concat(code.concat("  به عنوان حساب سود و زیانی مشخص شده است ")));
-
+                throw new RuleException("fin.financialAccount.accountCoding".concat(code.concat("fin.financialAccount.profitAndLossAccount")));
             }
         }
     }
@@ -848,7 +847,7 @@ public class DefaultFinancialAccount implements FinancialAccountService {
         if (financialAccountStructureCount != null) {
             Long financialDocumentItemCount = financialDocumentItemRepository.getFinancialDocumentItemByFinancialAccountId(financialAccountId);
             if (financialDocumentItemCount > 0) {
-                throw new RuleException("حساب مورد نظر در اسناد مالی استفاده شده است");
+                throw new RuleException("fin.financialAccount.theAccountIsUsed");
             } else {
                 Long byFinancialAccountIdForDelete = financialAccountRepository.findByFinancialAccountIdForDelete(financialAccountId);
                 if (byFinancialAccountIdForDelete == 0L) {
