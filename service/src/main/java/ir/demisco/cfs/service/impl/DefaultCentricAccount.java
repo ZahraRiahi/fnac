@@ -159,7 +159,7 @@ public class DefaultCentricAccount implements CentricAccountService {
                     "            or di.centric_account_id_3 =  t.centric_account_id" +
                     "            or di.centric_account_id_4 =  t.centric_account_id" +
                     "            or di.centric_account_id_5 =  t.centric_account_id" +
-                    "            or di.centric_account_id_6 =  t.centric_account_id)) ").setParameter("centricAccountId", centricAccount.getId());
+                    "            or di.centric_account_id_6 =  t.centric_account_id)) ").setParameter("centricAccountId", centricAccount.getId()).executeUpdate();
             CentricAccount finalCentricAccount = centricAccount;
             centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
                 CentricPersonRole centricPersonRole = new CentricPersonRole();
