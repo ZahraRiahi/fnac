@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,35 +140,50 @@ public class DefaultCentricAccount implements CentricAccountService {
             }
         }
 
-        if (centricAccount.getId() != null) {
-            if (centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
-                if (centricAccount.getId() != null) {
-                    List<CentricPersonRole> centricPersonRoles = centricPersonRoleRepository.findByCentricAccountId(centricAccount.getId());
-                    centricPersonRoles.forEach(e -> e.setDeletedDate(LocalDateTime.now()));
-                    CentricAccount finalCentricAccount = centricAccount;
-                    centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
-                        CentricPersonRole centricPersonRole = new CentricPersonRole();
-                        centricPersonRole.setCentricAccount(finalCentricAccount);
-                        centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
-                        centricPersonRoleRepository.save(centricPersonRole);
-                    });
-                    centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
-                } else {
-                    centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-                    CentricAccount finalCentricAccount = centricAccount;
-                    centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
-                        CentricPersonRole centricPersonRole = new CentricPersonRole();
-                        centricPersonRole.setCentricAccount(finalCentricAccount);
-                        centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
-                        centricPersonRoleRepository.save(centricPersonRole);
-                    });
+        if (centricAccount.getId() != null && centricAccountRequest.getCentricAccountTypeCode().equals("10")) {
+            entityManager.createNativeQuery(" delete fnac.centric_person_role  pr where pr.centric_account_id=:centricAccountId and not exists(" +
+                    " select 1 " +
+                    "  from fnac.centric_person_role t" +
+                    " inner join fnac.account_relation_type_detail dt" +
+                    "    on dt.person_role_type_id = t.person_role_type_id" +
+                    "   and t.centric_account_id = :centricAccountId " +
+                    "   and t.person_role_type_id=pr.person_role_type_id" +
+                    " inner join fnac.account_relation_type rel" +
+                    "    on rel.id = dt.account_relation_type_id" +
+                    " inner join fnac.financial_account fn" +
+                    "    on fn.account_relation_type_id = rel.id" +
+                    " where exists (select 1" +
+                    "          from fndc.financial_document_item di" +
+                    "         where di.centric_account_id_1 = t.centric_account_id" +
+                    "            or di.centric_account_id_2 =  t.centric_account_id" +
+                    "            or di.centric_account_id_3 =  t.centric_account_id" +
+                    "            or di.centric_account_id_4 =  t.centric_account_id" +
+                    "            or di.centric_account_id_5 =  t.centric_account_id" +
+                    "            or di.centric_account_id_6 =  t.centric_account_id)) ").setParameter("centricAccountId", centricAccount.getId());
+            CentricAccount finalCentricAccount = centricAccount;
+            centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
+                CentricPersonRole centricPersonRole = new CentricPersonRole();
+                List<Long> count = centricPersonRoleRepository.findByCentricPersonRoleByIdAndCentricId(finalCentricAccount.getId(), aLong.longValue());
+                if (count.isEmpty()) {
+                    centricPersonRole.setCentricAccount(finalCentricAccount);
+                    centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
+                    centricPersonRoleRepository.save(centricPersonRole);
                 }
-            } else {
-                centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
-            }
+            });
+            centricAccount.setActiveFlag(centricAccountRequest.getActiveFlag());
+        } else {
+            centricAccount = saveCentricAccount(centricAccount, centricAccountRequest);
+            CentricAccount finalCentricAccount = centricAccount;
+            centricAccountRequest.getCentricPersonRoleListId().forEach((Long aLong) -> {
+                CentricPersonRole centricPersonRole = new CentricPersonRole();
+                centricPersonRole.setCentricAccount(finalCentricAccount);
+                centricPersonRole.setPersonRoleType(personRoleTypeRepository.getOne(aLong));
+                centricPersonRoleRepository.save(centricPersonRole);
+            });
         }
         saveCentricAccount(centricAccount, centricAccountRequest);
         return convertCentricAccountToDto(centricAccount);
+
     }
 
 
