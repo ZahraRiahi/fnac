@@ -134,7 +134,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
 
         Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureDto.getId());
         if (countFinancialAccount != null && illigalChange == 1) {
-            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده ، امکان ویرایش وجود ندارد");
+            throw new RuleException("fin.financialAccount.financialAccountCan'tUpdate");
         }
 
         String financialAccountStructure = null;
@@ -178,7 +178,7 @@ public class DefaultFinancialAccountStructure implements FinancialAccountStructu
         Long countFinancialAccount = financialAccountRepository.findByFinancialAccountStructureId(financialAccountStructureId);
         FinancialAccountStructure financialAccountStructure;
         if (countFinancialAccount != null) {
-            throw new RuleException("به علت وجود سطح ساختار بعد از سطح انتخاب شده، امکان حذف وجود ندارد");
+            throw new RuleException("fin.financialAccount.financialAccountCan'tDeleted");
         } else {
             financialAccountStructure = financialAccountStructureRepository.findById(financialAccountStructureId).orElseThrow(() -> new RuleException("fin.ruleException.notFoundId"));
             List<Object[]> byFinancialAccountStructureIdForDelete = financialAccountRepository.findByFinancialAccountStructureIdForDelete(financialAccountStructureId);
